@@ -4,5 +4,6 @@
     <string name="app_name">InstantTrivia</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_game__timer">Game_Timer</string>
 
 </resources>
