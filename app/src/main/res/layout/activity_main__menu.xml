@@ -16,21 +16,58 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="51dp" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/abc_primary_text_material_dark"
-        android:text="Play"
-        android:id="@+id/text_play"
-        android:background="@drawable/text_view_mat_indigo500"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:clickable="false"
-        android:padding="25dp"
-        android:layout_alignParentStart="true"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:autoText="false" />
+        android:id="@+id/main_menu_linear">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:text="Play"
+            android:id="@+id/text_play"
+            android:background="@drawable/text_view_mat_indigo500"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:padding="25dp"
+            android:textSize="25sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:text="Options"
+            android:id="@+id/textView"
+            android:background="@drawable/text_view_mat_indigo500"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:padding="25dp"
+            android:textSize="25sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:text="High Scores"
+            android:id="@+id/textView2"
+            android:background="@drawable/text_view_mat_indigo500"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:clickable="false"
+            android:padding="25dp"
+            android:textSize="25sp"
+            android:gravity="center" />
+    </LinearLayout>
 
 </RelativeLayout>
