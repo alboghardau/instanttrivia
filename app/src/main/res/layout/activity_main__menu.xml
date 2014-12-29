@@ -50,34 +50,65 @@
         <ViewSwitcher
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/viewSwitcher" >
+            android:id="@+id/play_switcher" >
 
-            <TextView
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Options"
-                android:id="@+id/textView"
-                android:background="@drawable/text_view_mat_indigo500"
-                android:clickable="false"
-                android:padding="25dp"
-                android:textSize="25sp"
-                android:gravity="center"
-                android:textColor="@color/abc_primary_text_disable_only_material_dark" />
+                android:layout_height="fill_parent"
+                android:id="@+id/play_h_linear"
+                android:background="@drawable/text_view_mat_indigo500">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="High Scores"
-                android:id="@+id/textView2"
-                android:background="@drawable/text_view_mat_indigo500"
-                android:clickable="false"
-                android:padding="25dp"
-                android:textSize="25sp"
-                android:gravity="center"
-                android:textColor="@color/abc_primary_text_disable_only_material_dark" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/play_back_icon"
+                    android:src="@drawable/left_arrow"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:text="Time Trial"
+                    android:id="@+id/text_time"
+                    android:background="@drawable/text_view_mat_indigo500"
+                    android:layout_below="@+id/imageView"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false"
+                    android:padding="25dp"
+                    android:textSize="25sp"
+                    android:gravity="center" />
+
+            </LinearLayout>
         </ViewSwitcher>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Options"
+            android:id="@+id/textView"
+            android:background="@drawable/text_view_mat_indigo500"
+            android:clickable="false"
+            android:padding="25dp"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="High Scores"
+            android:id="@+id/textView2"
+            android:background="@drawable/text_view_mat_indigo500"
+            android:clickable="false"
+            android:padding="25dp"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark" />
 
     </LinearLayout>
 
