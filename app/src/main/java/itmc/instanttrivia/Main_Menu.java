@@ -17,7 +17,9 @@ public class Main_Menu extends ActionBarActivity {
     private LinearLayout lin;
     private ViewSwitcher play_vs;
     private TextView text_play;
+    private TextView text_time;
     private ImageView play_back;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class Main_Menu extends ActionBarActivity {
         play_vs = (ViewSwitcher) findViewById(R.id.play_switcher);
         lin = (LinearLayout) findViewById(R.id.main_menu_linear);
         text_play = (TextView) findViewById(R.id.text_play);
+        text_time = (TextView) findViewById(R.id.text_time);
         play_back = (ImageView) findViewById(R.id.play_back_icon);
 
         //set animation for view switcher
@@ -36,6 +39,7 @@ public class Main_Menu extends ActionBarActivity {
         final Animation left_in = AnimationUtils.loadAnimation(this,R.anim.anim_left_in);
         final Animation left_out = AnimationUtils.loadAnimation(this,R.anim.anim_left_out);
 
+        //click listeners
         text_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +48,7 @@ public class Main_Menu extends ActionBarActivity {
                 play_vs.showNext();
             }
         });
+
         play_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +58,12 @@ public class Main_Menu extends ActionBarActivity {
             }
         });
 
-
+        text_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start_time_game();
+            }
+        });
 
 
 
