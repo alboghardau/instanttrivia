@@ -20,7 +20,6 @@ public class Main_Menu extends ActionBarActivity {
     private TextView text_time;
     private ImageView play_back;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +64,7 @@ public class Main_Menu extends ActionBarActivity {
             }
         });
 
-
-
-
-
     }
-
-
-
-
 
     //start timer game activity
     private void start_time_game()
