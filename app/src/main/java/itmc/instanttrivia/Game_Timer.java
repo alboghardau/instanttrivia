@@ -1,39 +1,57 @@
 package itmc.instanttrivia;
 
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 public class Game_Timer extends ActionBarActivity {
+
+    TextView text_question;
+    LinearLayout lin_answer;
+
+    String question;
+    String answer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
+
+        question = "Who is the biggest mother fucker out there?";
+        answer = "SAURON";
+
+        //define veriables
+        text_question = (TextView) findViewById(R.id.text_question);
+        lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
+
+        text_question.setText(question);
+        fill_answer(answer);
+
     }
 
+    private void fill_answer(String ans)
+    {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_game__timer, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        for( Character ch: ans.toCharArray()){
+            TextView t = new TextView(this);
+            t.setPadding(10,15,10,15);
+            t.setTextSize(20);
+            t.setTextColor(Color.WHITE);
+            t.setText(ch.toString());
+            lin_answer.addView(t);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
         }
 
-        return super.onOptionsItemSelected(item);
     }
+
+
 }
