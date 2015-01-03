@@ -12,6 +12,8 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 
@@ -81,23 +83,22 @@ public class Game_Timer extends ActionBarActivity {
             }
         }
 
+        //generate three random index
+        ArrayList<int> rand_index_ans = new ArrayList<int>();
+        for(int i = 0; i < ans.length(); i++){
+            rand_index_ans.add(i);
+        }
+        ArrayList<int> rand_index_8 = new ArrayList<int>();
 
 
-        int test = 0;
-        //test if char in answer array
-        for (int i = 0; i < 8; i++) {
-            if (a.contains(c.get(i))) {
-                test ++;
-                Log.e("Answer Chars:", "true");
-                break;
-            }
+        //shuffle random numbers
+        Collections.shuffle(rand_index_ans);
+
+        for(int i = 0; i < 3; i++){
+
         }
 
-        //replace one char with one from answer
-        if (test < 2)        {
-            c.set(rnd.nextInt(7),a.get(rnd.nextInt(a.size())));
-            Log.e("Answer Chars:", "false");
-        }
+
 
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", c.toString());
