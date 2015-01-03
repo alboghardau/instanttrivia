@@ -33,7 +33,7 @@ public class Game_Timer extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
 
-        question = "Who is the biggest mother fucker out there?";
+        question = "Q?";
         answer = "SAURON";
         randomchars =  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -50,6 +50,7 @@ public class Game_Timer extends ActionBarActivity {
         fill_answer_chars(answer);
     }
 
+    //generate textview for answer chars and fill them in linear layout
     private void clear_answer(String ans)
     {
         for( Character ch: ans.toCharArray()){
@@ -59,10 +60,10 @@ public class Game_Timer extends ActionBarActivity {
             t.setTextColor(Color.WHITE);
             t.setText("_");
             lin_answer.addView(t);
-
         }
     }
 
+    //generate 8 random chars containing minimum 3 answer chars at beggining
     private void fill_answer_chars(String ans) {
         ArrayList<Character> a = new ArrayList<Character>();
         Character cha = null;
@@ -84,22 +85,29 @@ public class Game_Timer extends ActionBarActivity {
         }
 
         //generate three random index
-        ArrayList<int> rand_index_ans = new ArrayList<int>();
+        ArrayList<Integer> rand_index_ans = new ArrayList<>();
         for(int i = 0; i < ans.length(); i++){
             rand_index_ans.add(i);
         }
-        ArrayList<int> rand_index_8 = new ArrayList<int>();
-
+        ArrayList<Integer> rand_index_8 = new ArrayList<>();
+        for( int i = 0; i < 8; i++) {
+            rand_index_8.add(i);
+        }
 
         //shuffle random numbers
         Collections.shuffle(rand_index_ans);
+        Collections.shuffle(rand_index_8);
 
+        //replace three chars
         for(int i = 0; i < 3; i++){
-
+            if( c.contains(a.get(rand_index_ans.get(i))) == false)
+            {
+                c.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
+            }
         }
 
-
-
+        Log.e("Answ Index", rand_index_ans.toString());
+        Log.e("8 Index", rand_index_8.toString());
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", c.toString());
     }
