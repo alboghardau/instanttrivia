@@ -1,9 +1,11 @@
 package itmc.instanttrivia;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -47,7 +49,10 @@ public class Game_Timer extends ActionBarActivity {
         //declare answer chars store
         c = new ArrayList<Character>();
 
+        //gen random chars
         fill_answer_chars(answer);
+
+        display_start_randoms();
     }
 
     //generate textview for answer chars and fill them in linear layout
@@ -61,6 +66,33 @@ public class Game_Timer extends ActionBarActivity {
             t.setText("_");
             lin_answer.addView(t);
         }
+    }
+
+    private void display_start_randoms(){
+
+        LinearLayout line1 = (LinearLayout) findViewById(R.id.linear_ans_first);
+        LinearLayout line2 = (LinearLayout) findViewById(R.id.lineage_ans_second);
+
+        for(int i = 0; i < 8; i++){
+            TextView t = new TextView(this);
+            t.setText(c.get(i).toString());
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indigo500));
+            t.setTextColor(getResources().getColor(R.color.white));
+            t.setTypeface(Typeface.MONOSPACE);
+            t.setPadding(40,20,40,20);
+            t.setTextSize(40);
+            t.setGravity(Gravity.CENTER);
+
+
+            //display text view
+            if( i < 4)
+            {
+                line1.addView(t);
+            }else{
+                line2.addView(t);
+            }
+        }
+
     }
 
     //generate 8 random chars containing minimum 3 answer chars at beggining

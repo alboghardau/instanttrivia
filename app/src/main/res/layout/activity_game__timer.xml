@@ -68,4 +68,23 @@
         android:layout_below="@+id/text_question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_answer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp"
+        android:id="@+id/linear_ans_first"
+        android:gravity="center"></LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_ans_first"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/lineage_ans_second"
+        android:gravity="center"></LinearLayout>
 </RelativeLayout>
