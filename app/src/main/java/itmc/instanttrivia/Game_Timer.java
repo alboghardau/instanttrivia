@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 
 public class Game_Timer extends ActionBarActivity {
 
@@ -19,6 +22,9 @@ public class Game_Timer extends ActionBarActivity {
 
     String question;
     String answer;
+    String randomchars;
+    ArrayList<Character> c;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +33,74 @@ public class Game_Timer extends ActionBarActivity {
 
         question = "Who is the biggest mother fucker out there?";
         answer = "SAURON";
+        randomchars =  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         //define veriables
         text_question = (TextView) findViewById(R.id.text_question);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
 
         text_question.setText(question);
-        fill_answer(answer);
+        clear_answer(answer);
 
+        //declare answer chars store
+        c = new ArrayList<Character>();
+
+        fill_answer_chars(answer);
     }
 
-    private void fill_answer(String ans)
+    private void clear_answer(String ans)
     {
-
-
         for( Character ch: ans.toCharArray()){
             TextView t = new TextView(this);
             t.setPadding(10,15,10,15);
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
-            t.setText(ch.toString());
+            t.setText("_");
             lin_answer.addView(t);
 
         }
+    }
 
+    private void fill_answer_chars(String ans) {
+        ArrayList<Character> a = new ArrayList<Character>();
+        Character cha = null;
+        Random rnd = new Random();
+        //set answer to array
+        for (Character ch : ans.toCharArray()) {
+            a.add(ch);
+        }
+
+        //generate 8 random chars
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < randomchars.length(); j++) {
+                cha = randomchars.charAt(rnd.nextInt(randomchars.length()));
+                if (c.contains(cha) == false) {
+                    c.add(cha);
+                    break;
+                }
+            }
+        }
+
+
+
+        int test = 0;
+        //test if char in answer array
+        for (int i = 0; i < 8; i++) {
+            if (a.contains(c.get(i))) {
+                test ++;
+                Log.e("Answer Chars:", "true");
+                break;
+            }
+        }
+
+        //replace one char with one from answer
+        if (test < 2)        {
+            c.set(rnd.nextInt(7),a.get(rnd.nextInt(a.size())));
+            Log.e("Answer Chars:", "false");
+        }
+
+        Log.e("Answer", a.toString());
+        Log.e("Answer Chars:", c.toString());
     }
 
 
