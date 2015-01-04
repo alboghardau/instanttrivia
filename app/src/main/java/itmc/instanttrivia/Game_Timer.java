@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class Game_Timer extends ActionBarActivity {
     String answer;
     String randomchars;
     ArrayList<Character> c;
+    ArrayList<Character> ans_arr;
 
 
     @Override
@@ -46,8 +48,13 @@ public class Game_Timer extends ActionBarActivity {
         text_question.setText(question);
         clear_answer(answer);
 
-        //declare answer chars store
+        //declare answer chars store , and store answer in array
         c = new ArrayList<Character>();
+        ans_arr = new ArrayList<Character>();
+        for(Character ch: answer.toCharArray())
+        {
+            ans_arr.add(ch);
+        }
 
         //gen random chars
         fill_answer_chars(answer);
@@ -82,7 +89,17 @@ public class Game_Timer extends ActionBarActivity {
             t.setPadding(40,20,40,20);
             t.setTextSize(40);
             t.setGravity(Gravity.CENTER);
+            //generate id starting with 100
+            t.setId(100+i);
 
+            //set clicker
+            final int finalI = i;
+            t.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   click_btn(100+ finalI);
+                }
+            });
 
             //display text view
             if( i < 4)
@@ -92,6 +109,20 @@ public class Game_Timer extends ActionBarActivity {
                 line2.addView(t);
             }
         }
+    }
+
+    private void click_btn(int id){
+
+        TextView t = (TextView) findViewById(id);
+        Character c_btn = t.getText().charAt(0);
+
+
+
+
+        if(ans_arr.contains(c_btn) == true ){
+            Log.e("text char press", "TRUE");
+        }
+
 
     }
 
