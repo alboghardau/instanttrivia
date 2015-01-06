@@ -15,7 +15,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 27; //variable to update when database is updated
+    public int db_version = 28; //variable to update when database is updated
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -50,7 +50,7 @@ public class DbOP {
             db = mydbhelp.getReadableDatabase();
 
             int i = db_ver();
-            Log.i("test", i+"");
+            Log.e("test", i+"");
             if(db_version > i)
             {
                 mydbhelp.deleteDB();
@@ -60,7 +60,7 @@ public class DbOP {
                 }catch(IOException ioe) {
                     throw new Error("Unable to create db");
                 }
-                Log.i("DB","Questions DB Upgrade working");
+                Log.e("DB","Questions DB Upgrade working");
             }
 
         }
@@ -206,75 +206,6 @@ public class DbOP {
     }
 
 
-    public Integer[][] read_tests(int cat_id)
-    {
-        Cursor cursor = null;
-
-        cursor = db.rawQuery("SELECT * FROM tests WHERE cat_id = " + cat_id +" ORDER BY diff ASC, id ASC", null);
-        cursor.moveToFirst();
-        Integer[][] tests = new Integer[cursor.getCount()+1][3];
-
-        Log.i("count cat_id", cat_id + "");
-        Log.i("count test", cursor.getCount() +"");
-
-        int i = 0;
-        while(cursor.isAfterLast() == false)
-        {
-            tests[i][0] = cursor.getInt(0);
-            tests[i][1] = cursor.getInt(2);
-            tests[i][2] = 0;
-            Log.i("sql_test", cursor.getInt(0) + "");
-
-            i++;
-            cursor.moveToNext();
-        }
-
-        cursor.close();
-        return tests;
-    }
-
-    public String[] read_topics(int cat_id)
-    {
-        Cursor cursor = null;
-
-        cursor = db.rawQuery("SELECT * FROM tests WHERE cat_id= "+ cat_id +" ORDER BY diff ASC, id ASC", null);
-        cursor.moveToFirst();
-        String[] topics = new String[cursor.getCount()+1];
-
-        int i = 0;
-        while(cursor.isAfterLast() == false)
-        {
-            topics[i] = cursor.getString(3);
-            cursor.moveToNext();
-            i++;
-        }
-
-        cursor.close();
-        return topics;
-    }
-
-    public int test_countr(int cat_id)
-    {
-        Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM tests WHERE cat_id=" + cat_id, null);
-
-        int contor = cursor.getCount();
-
-        cursor.close();
-        return contor;
-    }
-
-    public String read_topic(int test_id)
-    {
-        String topic = null;
-        Cursor cursor = null;
-        cursor = db.rawQuery("SELECT * FROM tests WHERE id=" + test_id, null);
-        cursor.moveToFirst();
-        topic = cursor.getString(3);
-
-        cursor.close();
-        return topic;
-    }
 
     public String[][] q_test(int test_id)
     {

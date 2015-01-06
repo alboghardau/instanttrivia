@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.io.OutputStream;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
-    private static String DB_PATH = "data/data/com.itmc.answy/databases/";
+    private static String DB_PATH = "data/data/itmc.instanttrivia/databases/";
     private static final int DATABASE_VERSION = 1;
     private static final String DB_NAME = "answerit.db";
     private final Context myContext;
@@ -33,6 +35,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if(dbExist){
             //do nothing - database already exist
+            Log.e("Database", "Database exists!");
         }else{
             this.getReadableDatabase();
             try {

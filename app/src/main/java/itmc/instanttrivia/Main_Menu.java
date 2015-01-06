@@ -14,6 +14,8 @@ import android.widget.ViewSwitcher;
 
 public class Main_Menu extends ActionBarActivity {
 
+    private DbOP db;
+
     private LinearLayout lin;
     private ViewSwitcher play_vs;
     private TextView text_play;
@@ -37,6 +39,11 @@ public class Main_Menu extends ActionBarActivity {
         final Animation right_out = AnimationUtils.loadAnimation(this,R.anim.anim_right_out);
         final Animation left_in = AnimationUtils.loadAnimation(this,R.anim.anim_left_in);
         final Animation left_out = AnimationUtils.loadAnimation(this,R.anim.anim_left_out);
+
+        //database
+        db = new DbOP(this);
+        db.testnewdb();
+        db.close();
 
         //click listeners
         text_play.setOnClickListener(new View.OnClickListener() {
