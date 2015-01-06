@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,22 +33,33 @@ public class Game_Timer extends ActionBarActivity {
     ArrayList<Character> c;
     ArrayList<Character> ans_arr;
 
+    private DbOP db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
 
-        question = "Q?";
-        answer = "SAURON";
+        //random chars used to generated buttons
         randomchars =  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        //start database operator
+        db = new DbOP(this);
+        db.startdb();
+
+        //read random questions first
+        String[] questy;
+        questy = db.read_rand_question_difficulty(1);
+
+        question = questy[0];
+        answer = questy[1];
 
         //define veriables
         text_question = (TextView) findViewById(R.id.text_question);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
 
         text_question.setText(question);
-        clear_answer(answer);
 
         //declare answer chars store , and store answer in array
         c = new ArrayList<Character>();
@@ -58,9 +71,22 @@ public class Game_Timer extends ActionBarActivity {
 
         //gen random chars
         fill_answer_chars(answer);
+        animate_answer();
 
         display_start_randoms();
     }
+
+    private void animate_answer()
+    {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
+        LinearLayout lin = (LinearLayout) findViewById(R.id.linear_answer);
+
+        clear_answer(answer);
+
+
+        lin.startAnimation(anim);
+    }
+
 
     //generate textview for answer chars and fill them in linear layout
     private void clear_answer(String ans)
@@ -175,5 +201,11 @@ public class Game_Timer extends ActionBarActivity {
         Log.e("Answer Chars:", c.toString());
     }
 
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        db.close();
+    }
 
 }

@@ -15,7 +15,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 28; //variable to update when database is updated
+    public int db_version = 29; //variable to update when database is updated
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -50,7 +50,7 @@ public class DbOP {
             db = mydbhelp.getReadableDatabase();
 
             int i = db_ver();
-            Log.e("test", i+"");
+            Log.e("Database Version", i+"");
             if(db_version > i)
             {
                 mydbhelp.deleteDB();
@@ -131,7 +131,7 @@ public class DbOP {
         {
             seen.clear();
         }
-        Log.i("q no", seen.size()+"");
+        Log.e("q no", seen.size()+"");
 
         question[0] = cursor.getString(cursor.getColumnIndex("question"));
         question[1] = cursor.getString(cursor.getColumnIndex("answer"));
