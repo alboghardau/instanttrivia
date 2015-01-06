@@ -109,7 +109,7 @@ public class Game_Timer extends ActionBarActivity {
         for(int i = 0; i < 8; i++){
             TextView t = new TextView(this);
             t.setText(c.get(i).toString());
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indigo500));
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
             t.setTextColor(getResources().getColor(R.color.white));
             t.setTypeface(Typeface.MONOSPACE);
             t.setPadding(40,20,40,20);
