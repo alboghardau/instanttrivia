@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -71,20 +72,26 @@ public class Game_Timer extends ActionBarActivity {
 
         //gen random chars
         fill_answer_chars(answer);
-        animate_answer();
+        animate_start();
 
         display_start_randoms();
     }
 
-    private void animate_answer()
+    private void animate_start()
     {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
+        Animation anim_logo = AnimationUtils.loadAnimation(this,R.anim.anim_left_in_translate);
+        Animation anim_score = AnimationUtils.loadAnimation(this,R.anim.anim_right_in_translate);
+
         LinearLayout lin = (LinearLayout) findViewById(R.id.linear_answer);
+        ImageView logo = (ImageView) findViewById(R.id.image_logo);
+        TextView score = (TextView) findViewById(R.id.text_score);
 
         clear_answer(answer);
 
-
         lin.startAnimation(anim);
+        logo.startAnimation(anim_logo);
+        score.startAnimation(anim_score);
     }
 
 
@@ -94,7 +101,7 @@ public class Game_Timer extends ActionBarActivity {
         for( Character ch: ans.toCharArray()){
             TextView t = new TextView(this);
             t.setPadding(10,15,10,15);
-            t.setTextSize(20);
+            t.setTextSize(25);
             t.setTextColor(Color.WHITE);
             t.setText("_");
             lin_answer.addView(t);
@@ -112,8 +119,8 @@ public class Game_Timer extends ActionBarActivity {
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
             t.setTextColor(getResources().getColor(R.color.white));
             t.setTypeface(Typeface.MONOSPACE);
-            t.setPadding(40,20,40,20);
-            t.setTextSize(40);
+            t.setPadding(80,30,80,30);
+            t.setTextSize(50);
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
             t.setId(100+i);

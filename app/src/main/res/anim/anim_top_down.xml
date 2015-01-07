@@ -8,7 +8,8 @@
         android:toYScale="1.0"
         android:pivotX="50%"
         android:pivotY="0%"
-        android:duration="1500" />
+        android:startOffset="500"
+        android:duration="1000" />
 
     <alpha
         android:fromAlpha="0"

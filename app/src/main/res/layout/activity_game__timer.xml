@@ -10,34 +10,31 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/text_view_mat_indigo500top"
-        android:paddingTop="15dp"
-        android:paddingBottom="25dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:id="@+id/linear_topbar">
+        android:paddingBottom="10dp"
+        android:id="@+id/linear_topbar"
+        android:paddingRight="20dp"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:paddingLeft="10dp">
 
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Instant Trivia"
-            android:id="@+id/text_timer_name"
-            android:clickable="false"
-            android:textSize="15dp"
-            android:textColor="@color/abc_primary_text_disable_only_material_dark"
-            android:gravity="left" />
+            android:id="@+id/image_logo"
+            android:src="@drawable/logo_small" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Score"
-            android:id="@+id/textView3"
+            android:text="Score: 0"
+            android:id="@+id/text_score"
             android:clickable="false"
             android:textSize="15dp"
             android:textColor="@color/abc_primary_text_disable_only_material_dark"
-            android:gravity="right" />
+            android:gravity="right"
+            android:singleLine="false" />
     </LinearLayout>
 
     <TextView
@@ -68,7 +65,8 @@
         android:layout_below="@+id/text_question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:paddingBottom="15dp" />
 
     <LinearLayout
         android:orientation="vertical"
