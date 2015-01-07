@@ -1,9 +1,12 @@
 package itmc.instanttrivia;
 
+import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -11,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -75,6 +79,26 @@ public class Game_Timer extends ActionBarActivity {
         animate_start();
 
         display_start_randoms();
+        animate_test();
+    }
+
+    private void animate_test(){
+
+        final TextView txt2 = (TextView) findViewById(R.id.text_question);
+        final int old_pad = txt2.getPaddingTop();
+
+        Animation anim = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+
+
+                txt2.setPadding(0,(int)(old_pad+50*interpolatedTime),0,0);
+
+            }
+        };
+        anim.setStartOffset(500);
+        anim.setDuration(1500);
+        txt2.startAnimation(anim);
     }
 
     private void animate_start()
