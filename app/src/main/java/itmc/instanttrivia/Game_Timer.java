@@ -1,9 +1,12 @@
 package itmc.instanttrivia;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.graphics.Color;
+import android.graphics.Interpolator;
 import android.graphics.Typeface;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -12,6 +15,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
@@ -63,8 +68,7 @@ public class Game_Timer extends ActionBarActivity {
         //define veriables
         text_question = (TextView) findViewById(R.id.text_question);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
-
-        text_question.setText(question);
+        final TextView text_start = (TextView) findViewById(R.id.text_start);
 
         //declare answer chars store , and store answer in array
         c = new ArrayList<Character>();
@@ -78,8 +82,21 @@ public class Game_Timer extends ActionBarActivity {
         fill_answer_chars(answer);
         animate_start();
 
-        display_start_randoms();
-        animate_test();
+        text_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                text_start.setOnClickListener(null);
+                display_start_randoms();
+                ViewGroup parent = (ViewGroup) text_start.getParent();
+                parent.removeView(text_start);
+
+                clear_answer(answer);
+
+                text_question.setText(question);
+
+                animate_test();
+            }
+        });
     }
 
     private void animate_test(){
@@ -87,20 +104,21 @@ public class Game_Timer extends ActionBarActivity {
         final TextView txt2 = (TextView) findViewById(R.id.text_question);
         final int old_pad = txt2.getPaddingTop();
 
-        Animation anim = new Animation() {
+        Log.e("test", txt2.getHeight()+"");
+        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop() - txt2.getHeight(), 50);
+        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-
-
-                txt2.setPadding(0,(int)(old_pad+50*interpolatedTime),0,0);
-
+            public void onAnimationUpdate(ValueAnimator animation) {
+                txt2.setPadding(10,(Integer) animation.getAnimatedValue(), 10, (Integer) animation.getAnimatedValue());
             }
-        };
-        anim.setStartOffset(500);
-        anim.setDuration(1500);
-        txt2.startAnimation(anim);
+        });
+
+        val.setDuration(1500);
+        val.start();
+
     }
 
+    //test animation function not used for now
     private void animate_start()
     {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
@@ -110,8 +128,6 @@ public class Game_Timer extends ActionBarActivity {
         LinearLayout lin = (LinearLayout) findViewById(R.id.linear_answer);
         ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
-
-        clear_answer(answer);
 
         lin.startAnimation(anim);
         logo.startAnimation(anim_logo);
