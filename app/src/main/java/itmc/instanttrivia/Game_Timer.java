@@ -1,8 +1,11 @@
 package itmc.instanttrivia;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Interpolator;
 import android.graphics.Typeface;
@@ -22,7 +25,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import org.w3c.dom.Text;
 
@@ -86,7 +91,7 @@ public class Game_Timer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 text_start.setOnClickListener(null);
-                display_start_randoms();
+
                 ViewGroup parent = (ViewGroup) text_start.getParent();
                 parent.removeView(text_start);
 
@@ -105,18 +110,48 @@ public class Game_Timer extends ActionBarActivity {
         final int old_pad = txt2.getPaddingTop();
 
         Log.e("test", txt2.getHeight()+"");
-        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop() - txt2.getHeight(), 50);
+        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop(), 50);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                txt2.setPadding(10,(Integer) animation.getAnimatedValue(), 10, (Integer) animation.getAnimatedValue());
+                txt2.setPadding(10, (Integer) animation.getAnimatedValue(), 10, (Integer) animation.getAnimatedValue());
             }
         });
 
-        val.setDuration(1500);
+        ValueAnimator val2 = ValueAnimator.ofInt(dpToPx(55),dpToPx(100));
+        val2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation2) {
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                params.setMargins(0,(int) animation2.getAnimatedValue() ,0,0);
+                txt2.setLayoutParams(params);
+            }
+        });
+
+        val.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                //cand termina animatia arata litere
+                display_start_randoms();
+            }
+        });
+
+        val.setDuration(750);
+        val2.setDuration(750);
         val.start();
+        val2.start();
+
+
 
     }
+
+    public static int dpToPx(int dp)
+    {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
 
     //test animation function not used for now
     private void animate_start()
