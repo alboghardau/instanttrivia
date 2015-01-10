@@ -144,8 +144,6 @@ public class Game_Timer extends ActionBarActivity {
         val.start();
         val2.start();
 
-
-
     }
 
     //conversie dp to pixels
@@ -178,7 +176,14 @@ public class Game_Timer extends ActionBarActivity {
             t.setPadding(10,15,10,15);
             t.setTextSize(25);
             t.setTextColor(Color.WHITE);
-            t.setText("_");
+
+
+            if(ch.compareTo(" ".charAt(0)) == 0){
+                t.setText(" ");
+            }else {
+                t.setText("_");
+            }
+
             lin_answer.addView(t);
         }
     }
@@ -270,9 +275,13 @@ public class Game_Timer extends ActionBarActivity {
         Collections.shuffle(rand_index_ans);
         Collections.shuffle(rand_index_8);
 
+        int max = rand_index_ans.size()/2;
+        if (max > 6) max = 5;
+        if (max < 1) max = 1;
+
         //replace three chars
-        for(int i = 0; i < rand_index_ans.size()/2; i++){
-            if(( c.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).toString() != " " ) )
+        for(int i = 0; i < max; i++){
+            if(( c.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).compareTo(" ".charAt(0)) != 0) )
             {
                 c.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
             }
