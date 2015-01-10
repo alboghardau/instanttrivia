@@ -47,6 +47,7 @@ public class Game_Timer extends ActionBarActivity {
     String randomchars;
     ArrayList<Character> c;
     ArrayList<Character> ans_arr;
+    ArrayList<Character> ans_pressed;
 
     private DbOP db;
 
@@ -78,10 +79,10 @@ public class Game_Timer extends ActionBarActivity {
         //declare answer chars store , and store answer in array
         c = new ArrayList<Character>();
         ans_arr = new ArrayList<Character>();
-        for(Character ch: answer.toCharArray())
-        {
-            ans_arr.add(ch);
-        }
+        ans_pressed = new ArrayList<Character>();
+
+        //fil answer array from word
+        fill_answer_array(answer);
 
         //gen random chars
         fill_answer_chars(answer);
@@ -104,6 +105,7 @@ public class Game_Timer extends ActionBarActivity {
         });
     }
 
+    //animates question textview
     private void animate_quest(){
 
         final TextView txt2 = (TextView) findViewById(R.id.text_question);
@@ -168,6 +170,14 @@ public class Game_Timer extends ActionBarActivity {
         score.startAnimation(anim_score);
     }
 
+    //clear answer array and upddate it with answer word
+    private void fill_answer_array(String s){
+        ans_arr.clear();
+        for(Character ch: s.toCharArray()){
+            ans_arr.add(ch);
+        }
+    }
+
     //generate textview for answer chars and fill them in linear layout
     private void clear_answer(String ans)
     {
@@ -225,11 +235,81 @@ public class Game_Timer extends ActionBarActivity {
         }
     }
 
+    private void test_word_completion(ArrayList<Character> answer, ArrayList<Character> pressed){
+
+        int answer_lenght = answer.size();
+        lin_answer.removeAllViews();
+
+        //add revealed word to layout
+        for(int i = 0; i < answer_lenght; i++){
+            TextView t = new TextView(this);
+            t.setPadding(10,15,10,15);
+            t.setTextSize(25);
+            t.setTextColor(Color.WHITE);
+
+            if(pressed.contains(answer.get(i)) == true)
+            {
+                t.setText(answer.get(i).toString());
+                Log.e("testchar", "contains");
+            }else{
+                t.setText("_");
+            }
+
+            lin_answer.addView(t);
+        }
+
+
+
+    }
+
+    private void update_ans_chars(int pressed_id){
+
+        ArrayList<Integer> changed = new ArrayList<Integer>();
+        ArrayList<Integer> buffer = new ArrayList<Integer>();
+        ArrayList<Character> chars = new ArrayList<Character>();
+        Character cha = null;
+        changed.add(pressed_id);
+        Random rnd = new Random();
+
+        //generate all ids array and shuffle it
+        for(int i = 100; i < 108; i++){
+            buffer.add(i);
+        }
+        Collections.shuffle(buffer);
+        //add first 3 shuffled to array
+        for(int i = 0; i < 3; i++){
+            changed.add(buffer.get(i));
+        }
+
+        //generate 8 random chars
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < randomchars.length(); j++) {
+                cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
+                if (chars.contains(cha) == false && ans_pressed.contains(cha) == false) {
+                    chars.add(cha);
+                    break;
+                }
+            }
+        }
+
+
+        for( int i = 0; i<changed.size(); i++){
+            TextView t = (TextView) findViewById(changed.get(i));
+            t.setText(chars.get(i).toString());
+        }
+
+
+    }
+
     private void click_btn(int id){
 
         TextView t = (TextView) findViewById(id);
         Character c_btn = t.getText().charAt(0);
 
+        ans_pressed.add(t.getText().charAt(0));
+
+        test_word_completion(ans_arr,ans_pressed);
+        update_ans_chars(id);
 
 
 
