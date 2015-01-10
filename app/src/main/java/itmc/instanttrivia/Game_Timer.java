@@ -99,17 +99,17 @@ public class Game_Timer extends ActionBarActivity {
 
                 text_question.setText(question);
 
-                animate_test();
+                animate_quest();
             }
         });
     }
 
-    private void animate_test(){
+    private void animate_quest(){
 
         final TextView txt2 = (TextView) findViewById(R.id.text_question);
         final int old_pad = txt2.getPaddingTop();
 
-        Log.e("test", txt2.getHeight()+"");
+        //animatie padding
         ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop(), 50);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -118,6 +118,7 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
 
+        //animatie top margin
         ValueAnimator val2 = ValueAnimator.ofInt(dpToPx(55),dpToPx(100));
         val2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -147,13 +148,13 @@ public class Game_Timer extends ActionBarActivity {
 
     }
 
+    //conversie dp to pixels
     public static int dpToPx(int dp)
     {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-
-    //test animation function not used for now
+    //animation function for the start of activity
     private void animate_start()
     {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
@@ -169,7 +170,6 @@ public class Game_Timer extends ActionBarActivity {
         score.startAnimation(anim_score);
     }
 
-
     //generate textview for answer chars and fill them in linear layout
     private void clear_answer(String ans)
     {
@@ -183,6 +183,7 @@ public class Game_Timer extends ActionBarActivity {
         }
     }
 
+    //display random chars at start
     private void display_start_randoms(){
 
         LinearLayout line1 = (LinearLayout) findViewById(R.id.linear_ans_first);
@@ -270,8 +271,8 @@ public class Game_Timer extends ActionBarActivity {
         Collections.shuffle(rand_index_8);
 
         //replace three chars
-        for(int i = 0; i < 3; i++){
-            if( c.contains(a.get(rand_index_ans.get(i))) == false)
+        for(int i = 0; i < rand_index_ans.size()/2; i++){
+            if(( c.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).toString() != " " ) )
             {
                 c.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
             }
