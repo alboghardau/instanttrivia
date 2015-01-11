@@ -289,18 +289,42 @@ public class Game_Timer extends ActionBarActivity {
             }
         }
 
-        //updateaza array cu litere afisate clickers
+        //updateaza array cu litere afisate clickers si inlocuieste butonul apasat
         for( int i = 0; i<changed.size(); i++){
             TextView t = (TextView) findViewById(changed.get(i));
-            t.setText(chars.get(i).toString());
-            c.set(changed.get(i)-100 ,chars.get(i));
+            if(ans_arr.contains(t.getText().charAt(0)) == false || i == 0) {
+                Log.e("test", t.getText().toString());
+                t.setText(chars.get(i).toString());
+                c.set(changed.get(i) - 100, chars.get(i));
+            }
         }
+
+        //verifica daca exista macar o litere ce apartine raspunului
+        if(check_letter_exist() == false){
+            for(int i = 0; i < ans_arr.size(); i++){
+                if(ans_pressed.contains(ans_arr.get(i)) == false){
+                    TextView t = (TextView) findViewById(changed.get(1));
+                    t.setText(ans_arr.get(i).toString());
+                    break;
+                }
+            }
+        }
+
 
         Log.e("Change: id", changed.toString());
         Log.e("C array", c.toString());
     }
 
-
+    //verifica daca literele afisate sunt in raspuns
+    private boolean check_letter_exist()
+    {
+        for(int i = 0; i < 8; i++){
+            if(ans_arr.contains(c.get(i))){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private Character random_letter(){
         Random rnd = new Random();
