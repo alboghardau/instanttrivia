@@ -250,7 +250,7 @@ public class Game_Timer extends ActionBarActivity {
             if(pressed.contains(answer.get(i)) == true)
             {
                 t.setText(answer.get(i).toString());
-                Log.e("testchar", "contains");
+            //    Log.e("testchar", "contains");
             }else{
                 t.setText("_");
             }
@@ -269,7 +269,6 @@ public class Game_Timer extends ActionBarActivity {
         ArrayList<Character> chars = new ArrayList<Character>();
         Character cha = null;
         changed.add(pressed_id);
-        Random rnd = new Random();
 
         //generate all ids array and shuffle it
         for(int i = 100; i < 108; i++){
@@ -281,24 +280,32 @@ public class Game_Timer extends ActionBarActivity {
             changed.add(buffer.get(i));
         }
 
-        //generate 8 random chars
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < randomchars.length(); j++) {
-                cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
-                if (chars.contains(cha) == false && ans_pressed.contains(cha) == false) {
-                    chars.add(cha);
-                    break;
-                }
+        //genereaza 4 caractere la intamplare care nu sunt afisate & in array cu apasate corecte
+        while(chars.size() < 4)
+        {
+            cha = random_letter();
+            if( ans_pressed.contains(cha) == false && c.contains(cha) == false && chars.contains(cha) == false){
+                chars.add(cha);
             }
         }
 
-
+        //updateaza array cu litere afisate clickers
         for( int i = 0; i<changed.size(); i++){
             TextView t = (TextView) findViewById(changed.get(i));
             t.setText(chars.get(i).toString());
+            c.set(changed.get(i)-100 ,chars.get(i));
         }
 
+        Log.e("Change: id", changed.toString());
+        Log.e("C array", c.toString());
+    }
 
+
+
+    private Character random_letter(){
+        Random rnd = new Random();
+        Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
+        return cha;
     }
 
     private void click_btn(int id){
@@ -306,7 +313,9 @@ public class Game_Timer extends ActionBarActivity {
         TextView t = (TextView) findViewById(id);
         Character c_btn = t.getText().charAt(0);
 
-        ans_pressed.add(t.getText().charAt(0));
+        if(ans_arr.contains(t.getText().charAt(0))){
+            ans_pressed.add(t.getText().charAt(0));
+        }
 
         test_word_completion(ans_arr,ans_pressed);
         update_ans_chars(id);
