@@ -2,37 +2,25 @@ package itmc.instanttrivia;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Interpolator;
 import android.graphics.Typeface;
-import android.support.annotation.IntegerRes;
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toolbar;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
@@ -41,6 +29,7 @@ public class Game_Timer extends ActionBarActivity {
 
     TextView text_question;
     LinearLayout lin_answer;
+    ProgressBar prog_bar;
 
     String question;
     String answer;
@@ -48,6 +37,9 @@ public class Game_Timer extends ActionBarActivity {
     ArrayList<Character> c;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
+
+    long milis_timer = 30000;
+    CountDownTimer timer ;
 
     private DbOP db;
 
@@ -75,6 +67,7 @@ public class Game_Timer extends ActionBarActivity {
         text_question = (TextView) findViewById(R.id.text_question);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         final TextView text_start = (TextView) findViewById(R.id.text_start);
+        prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         //declare answer chars store , and store answer in array
         c = new ArrayList<Character>();
@@ -100,9 +93,15 @@ public class Game_Timer extends ActionBarActivity {
 
                 text_question.setText(question);
 
+                //porneste animatia pentru questions
                 animate_quest();
+
+                //genereza si porneste timer
+                timer_create();
             }
         });
+
+
     }
 
     //animates question textview
@@ -120,8 +119,8 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
 
-        //animatie top margin
-        ValueAnimator val2 = ValueAnimator.ofInt(dpToPx(55),dpToPx(100));
+        //animatie top margin, are nevoie de conversie in pixeli din dip
+        ValueAnimator val2 = ValueAnimator.ofInt(dpToPx(80),dpToPx(80));
         val2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation2) {
@@ -262,6 +261,62 @@ public class Game_Timer extends ActionBarActivity {
 
     }
 
+    //genereaza timerul initial
+    private void timer_create(){
+
+        timer = new CountDownTimer(milis_timer, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
+                milis_timer = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
+
+    //mareste timpul alocat pentru timer cu 2 secunde
+    private void timer_increase_time(){
+
+
+        timer.cancel();
+        timer = new CountDownTimer(milis_timer + 2000,100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
+                milis_timer = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
+
+    private void timer_decrease_time(){
+        timer.cancel();
+        timer = new CountDownTimer(milis_timer - 1000, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
+                milis_timer = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
+
+
     private void update_ans_chars(int pressed_id){
 
         ArrayList<Integer> changed = new ArrayList<Integer>();
@@ -310,7 +365,6 @@ public class Game_Timer extends ActionBarActivity {
             }
         }
 
-
         Log.e("Change: id", changed.toString());
         Log.e("C array", c.toString());
     }
@@ -332,25 +386,26 @@ public class Game_Timer extends ActionBarActivity {
         return cha;
     }
 
+    //functie pentru litere.onclick
     private void click_btn(int id){
 
         TextView t = (TextView) findViewById(id);
         Character c_btn = t.getText().charAt(0);
 
+        //testeaza daca litera face parte din raspuns
         if(ans_arr.contains(t.getText().charAt(0))){
             ans_pressed.add(t.getText().charAt(0));
+            timer_increase_time();
+        }else{
+            timer_decrease_time();
         }
 
         test_word_completion(ans_arr,ans_pressed);
         update_ans_chars(id);
 
-
-
         if(ans_arr.contains(c_btn) == true ){
             Log.e("text char press", "TRUE");
         }
-
-
     }
 
     //generate 8 random chars containing minimum 3 answer chars at beggining
@@ -412,5 +467,6 @@ public class Game_Timer extends ActionBarActivity {
         super.onDestroy();
         db.close();
     }
-
 }
+
+

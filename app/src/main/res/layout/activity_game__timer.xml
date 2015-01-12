@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="match_parent"
     tools:context="itmc.instanttrivia.Game_Timer">
 
@@ -42,6 +42,18 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
+    <ProgressBar
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/timer_bar"
+        android:progress="1000"
+        android:max="1000"
+        android:visibility="visible"
+        android:progressDrawable="@drawable/custom_progressbar"
+        android:layout_below="@+id/linear_topbar"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,13 +64,17 @@
         android:background="@color/indigo_500"
         android:textSize="20dp"
         android:paddingTop="150dp"
-        android:paddingBottom="150dp"
+        android:paddingBottom="190dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="#ffffffff"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="80dp"
+        android:enabled="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:longClickable="false" />
 
     <LinearLayout
         android:orientation="horizontal"
