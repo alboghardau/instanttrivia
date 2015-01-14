@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/text_view_mat_indigo500top"
+        android:background="@color/indigo_500"
         android:paddingBottom="10dp"
         android:id="@+id/linear_topbar"
         android:paddingRight="20dp"

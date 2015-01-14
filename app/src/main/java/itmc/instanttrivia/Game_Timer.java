@@ -38,7 +38,10 @@ public class Game_Timer extends ActionBarActivity {
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
 
+    //timers options
     long milis_timer = 30000;
+    long milis_add = 2000;
+    long milis_sub = 1000;
     CountDownTimer timer ;
 
     private DbOP db;
@@ -148,14 +151,12 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //conversie dp to pixels
-    public static int dpToPx(int dp)
-    {
+    public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     //animation function for the start of activity
-    private void animate_start()
-    {
+    private void animate_start(){
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
         Animation anim_logo = AnimationUtils.loadAnimation(this,R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this,R.anim.anim_right_in_translate);
@@ -178,8 +179,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //generate textview for answer chars and fill them in linear layout
-    private void clear_answer(String ans)
-    {
+    private void clear_answer(String ans){
         for( Character ch: ans.toCharArray()){
             TextView t = new TextView(this);
             t.setPadding(10,15,10,15);
@@ -282,9 +282,8 @@ public class Game_Timer extends ActionBarActivity {
     //mareste timpul alocat pentru timer cu 2 secunde
     private void timer_increase_time(){
 
-
         timer.cancel();
-        timer = new CountDownTimer(milis_timer + 2000,100) {
+        timer = new CountDownTimer(milis_timer + milis_add,100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
@@ -301,7 +300,7 @@ public class Game_Timer extends ActionBarActivity {
 
     private void timer_decrease_time(){
         timer.cancel();
-        timer = new CountDownTimer(milis_timer - 1000, 100) {
+        timer = new CountDownTimer(milis_timer - milis_sub, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
@@ -370,8 +369,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //verifica daca literele afisate sunt in raspuns
-    private boolean check_letter_exist()
-    {
+    private boolean check_letter_exist(){
         for(int i = 0; i < 8; i++){
             if(ans_arr.contains(c.get(i))){
                 return true;
@@ -403,9 +401,23 @@ public class Game_Timer extends ActionBarActivity {
         test_word_completion(ans_arr,ans_pressed);
         update_ans_chars(id);
 
+        check_completion();
+
         if(ans_arr.contains(c_btn) == true ){
             Log.e("text char press", "TRUE");
         }
+    }
+
+    //verifica daca cuvantul este completat
+    private boolean check_completion()
+    {
+        for( int i = 0; i < ans_arr.size(); i++){
+            if( ans_pressed.contains(ans_arr.get(i)) != true){
+                return false;
+            }
+        }
+        Log.e("Word Completed", "TRUE");
+        return true;
     }
 
     //generate 8 random chars containing minimum 3 answer chars at beggining
