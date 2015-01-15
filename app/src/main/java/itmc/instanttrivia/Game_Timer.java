@@ -34,7 +34,7 @@ public class Game_Timer extends ActionBarActivity {
     String question;
     String answer;
     String randomchars;
-    ArrayList<Character> buttons;
+    ArrayList<Character> c;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
 
@@ -73,12 +73,12 @@ public class Game_Timer extends ActionBarActivity {
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         //declare answer chars store , and store answer in array
-        buttons = new ArrayList<Character>();
+        c = new ArrayList<Character>();
         ans_arr = new ArrayList<Character>();
         ans_pressed = new ArrayList<Character>();
 
         //fil answer array from word
-        array_answer_fill(answer);
+        fill_answer_array(answer);
 
         //gen random chars
         fill_answer_chars(answer);
@@ -92,7 +92,7 @@ public class Game_Timer extends ActionBarActivity {
                 ViewGroup parent = (ViewGroup) text_start.getParent();
                 parent.removeView(text_start);
 
-                answer_display_hidden(answer);
+                clear_answer(answer);
 
                 text_question.setText(question);
 
@@ -103,6 +103,8 @@ public class Game_Timer extends ActionBarActivity {
                 timer_create();
             }
         });
+
+
     }
 
     //animates question textview
@@ -169,7 +171,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //clear answer array and upddate it with answer word
-    private void array_answer_fill(String s){
+    private void fill_answer_array(String s){
         ans_arr.clear();
         for(Character ch: s.toCharArray()){
             ans_arr.add(ch);
@@ -177,12 +179,13 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //generate textview for answer chars and fill them in linear layout
-    private void answer_display_hidden(String ans){
+    private void clear_answer(String ans){
         for( Character ch: ans.toCharArray()){
             TextView t = new TextView(this);
             t.setPadding(10,15,10,15);
             t.setTextSize(25);
             t.setTextColor(Color.WHITE);
+
 
             if(ch.compareTo(" ".charAt(0)) == 0){
                 t.setText(" ");
@@ -202,7 +205,7 @@ public class Game_Timer extends ActionBarActivity {
 
         for(int i = 0; i < 8; i++){
             TextView t = new TextView(this);
-            t.setText(buttons.get(i).toString());
+            t.setText(c.get(i).toString());
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
             t.setTextColor(getResources().getColor(R.color.white));
             t.setTypeface(Typeface.MONOSPACE);
@@ -276,18 +279,14 @@ public class Game_Timer extends ActionBarActivity {
         timer.start();
     }
 
-    //function to reset timer and change the time based on answer
-    private void timer_change(final String action){
+    //mareste timpul alocat pentru timer cu 2 secunde
+    private void timer_increase_time(){
 
         timer.cancel();
         timer = new CountDownTimer(milis_timer + milis_add,100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if(action == "increase") {
-                    prog_bar.setProgress((int) millisUntilFinished / 100 * 100 / 30);
-                }else if(action == "decrease"){
-                    prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
-                }
+                prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
                 milis_timer = millisUntilFinished;
             }
 
@@ -299,7 +298,24 @@ public class Game_Timer extends ActionBarActivity {
         timer.start();
     }
 
-    //
+    private void timer_decrease_time(){
+        timer.cancel();
+        timer = new CountDownTimer(milis_timer - milis_sub, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prog_bar.setProgress((int) millisUntilFinished/100 * 100 /30);
+                milis_timer = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
+
+
     private void update_ans_chars(int pressed_id){
 
         ArrayList<Integer> changed = new ArrayList<Integer>();
@@ -322,7 +338,7 @@ public class Game_Timer extends ActionBarActivity {
         while(chars.size() < 4)
         {
             cha = random_letter();
-            if( ans_pressed.contains(cha) == false && buttons.contains(cha) == false && chars.contains(cha) == false){
+            if( ans_pressed.contains(cha) == false && c.contains(cha) == false && chars.contains(cha) == false){
                 chars.add(cha);
             }
         }
@@ -333,7 +349,7 @@ public class Game_Timer extends ActionBarActivity {
             if(ans_arr.contains(t.getText().charAt(0)) == false || i == 0) {
                 Log.e("test", t.getText().toString());
                 t.setText(chars.get(i).toString());
-                buttons.set(changed.get(i) - 100, chars.get(i));
+                c.set(changed.get(i) - 100, chars.get(i));
             }
         }
 
@@ -349,20 +365,19 @@ public class Game_Timer extends ActionBarActivity {
         }
 
         Log.e("Change: id", changed.toString());
-        Log.e("C array", buttons.toString());
+        Log.e("C array", c.toString());
     }
 
     //verifica daca literele afisate sunt in raspuns
     private boolean check_letter_exist(){
         for(int i = 0; i < 8; i++){
-            if(ans_arr.contains(buttons.get(i))){
+            if(ans_arr.contains(c.get(i))){
                 return true;
             }
         }
         return false;
     }
 
-    //generates random letter
     private Character random_letter(){
         Random rnd = new Random();
         Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
@@ -378,9 +393,9 @@ public class Game_Timer extends ActionBarActivity {
         //testeaza daca litera face parte din raspuns
         if(ans_arr.contains(t.getText().charAt(0))){
             ans_pressed.add(t.getText().charAt(0));
-            timer_change("increase");
+            timer_increase_time();
         }else{
-            timer_change("decrease");
+            timer_decrease_time();
         }
 
         test_word_completion(ans_arr,ans_pressed);
@@ -394,7 +409,8 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //verifica daca cuvantul este completat
-    private boolean check_completion(){
+    private boolean check_completion()
+    {
         for( int i = 0; i < ans_arr.size(); i++){
             if( ans_pressed.contains(ans_arr.get(i)) != true){
                 return false;
@@ -418,8 +434,8 @@ public class Game_Timer extends ActionBarActivity {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < randomchars.length(); j++) {
                 cha = randomchars.charAt(rnd.nextInt(randomchars.length()));
-                if (buttons.contains(cha) == false) {
-                    buttons.add(cha);
+                if (c.contains(cha) == false) {
+                    c.add(cha);
                     break;
                 }
             }
@@ -445,16 +461,16 @@ public class Game_Timer extends ActionBarActivity {
 
         //replace three chars
         for(int i = 0; i < max; i++){
-            if(( buttons.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).compareTo(" ".charAt(0)) != 0) )
+            if(( c.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).compareTo(" ".charAt(0)) != 0) )
             {
-                buttons.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
+                c.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
             }
         }
 
         Log.e("Answ Index", rand_index_ans.toString());
         Log.e("8 Index", rand_index_8.toString());
         Log.e("Answer", a.toString());
-        Log.e("Answer Chars:", buttons.toString());
+        Log.e("Answer Chars:", c.toString());
     }
 
     @Override
