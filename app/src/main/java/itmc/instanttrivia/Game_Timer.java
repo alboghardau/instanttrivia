@@ -269,12 +269,12 @@ public class Game_Timer extends ActionBarActivity {
         timer.start();
     }
 
-    private void update_button_chars(int pressed_id){
-
+    private void buttons_update_chars(int pressed_id){
         ArrayList<Integer> changed = new ArrayList<Integer>();
         ArrayList<Integer> buffer = new ArrayList<Integer>();
         ArrayList<Character> chars = new ArrayList<Character>();
         Character cha = null;
+        TextView t = (TextView) findViewById(pressed_id);
         changed.add(pressed_id);
 
         //generate all ids array and shuffle it
@@ -287,37 +287,43 @@ public class Game_Timer extends ActionBarActivity {
             changed.add(buffer.get(i));
         }
 
-        //genereaza 4 caractere la intamplare care nu sunt afisate & in array cu apasate corecte
+        //genereaza 4 caractere la intamplare care nu sunt afisate & in array & apasate corecte
         while(chars.size() < 4)
         {
             cha = random_letter();
-            if( ans_pressed.contains(cha) == false && buttons.contains(cha) == false && chars.contains(cha) == false){
+            if( ans_pressed.contains(cha) == false && buttons.contains(cha) == false && chars.contains(cha) == false && t.getText().charAt(0) != cha){
                 chars.add(cha);
             }
         }
 
-        //updateaza array cu litere afisate clickers si inlocuieste butonul apasat
-        for( int i = 0; i<changed.size(); i++){
-            TextView t = (TextView) findViewById(changed.get(i));
-            if(ans_arr.contains(t.getText().charAt(0)) == false || i == 0) {
-                Log.e("test", t.getText().toString());
-                t.setText(chars.get(i).toString());
-                buttons.set(changed.get(i) - 100, chars.get(i));
-            }
+        Log.e("Chars Generated 1:", chars.toString());
+
+        for ( int i = 0; i < changed.size(); i++){
+
         }
 
-        //verifica daca exista macar o litere ce apartine raspunului
-        if(check_letter_exist() == false){
-            for(int i = 0; i < ans_arr.size(); i++){
-                if(ans_pressed.contains(ans_arr.get(i)) == false){
-                    TextView t = (TextView) findViewById(changed.get(1));
-                    t.setText(ans_arr.get(i).toString());
-                    break;
-                }
-            }
-        }
-        Log.e("Change: id", changed.toString());
-        Log.e("C array", buttons.toString());
+//        //updateaza array cu litere afisate clickers si inlocuieste butonul apasat
+//        for( int i = 0; i < changed.size(); i++){
+//            TextView t = (TextView) findViewById(changed.get(i));
+//            if(ans_arr.contains(t.getText().charAt(0)) == false || i == 0) {
+//                Log.e("test", t.getText().toString());
+//                t.setText(chars.get(i).toString());
+//                buttons.set(changed.get(i) - 100, chars.get(i));
+//            }
+//        }
+
+//        //verifica daca exista macar o litere ce apartine raspunului
+//        if(check_letter_exist() == false){
+//            for(int i = 0; i < ans_arr.size(); i++){
+//                if(ans_pressed.contains(ans_arr.get(i)) == false){
+//                    TextView t = (TextView) findViewById(changed.get(1));
+//                    t.setText(ans_arr.get(i).toString());
+//                    break;
+//                }
+//            }
+//        }
+        //Log.e("Change: id", changed.toString());
+        //Log.e("C array", buttons.toString());
     }
 
     //verifica daca literele afisate sunt in raspuns
@@ -352,7 +358,7 @@ public class Game_Timer extends ActionBarActivity {
 
         //updates answer display
         answer_display_refresh(ans_arr, ans_pressed);
-        update_button_chars(id);
+        buttons_update_chars(id);
 
         //action for word completion
         if(check_completion() == true){
