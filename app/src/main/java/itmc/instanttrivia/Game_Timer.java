@@ -312,26 +312,29 @@ public class Game_Timer extends ActionBarActivity {
             for (int i = 0; i < 2; i++) {
                 if (changed.contains(answer_unused.get(i)) == false && buttons.contains(answer_unused.get(i)) == false ) {
                     chars.add(answer_unused.get(i));
-                    chars.remove(i);
+                    Log.e("added", answer_unused.get(i).toString());
                 }
                 if (answer_unused.size() == 1) break;
             }
         }
 
+        //reverse generated chars to bring the ones from answer foreward
+        Collections.reverse(chars);
 
         Log.e("Chars Generated 2:", chars.toString());
 
+        //updates buttons chars array and displays them
         for (int i = 0; i < changed.size(); i++) {
 
-        }
-
-        //updateaza array cu litere afisate clickers si inlocuieste butonul apasat
-        for (int i = 0; i < 4; i++) {
             TextView text_changer = (TextView) findViewById(changed.get(i));
 
-            text_changer.setText(chars.get(i).toString());
-            buttons.set(changed.get(i) - 100, chars.get(i));
+            if(answer_unused.contains(text_changer.getText().charAt(0)) == false){
+                text_changer.setText(chars.get(i).toString());
+                buttons.set(changed.get(i) - 100, chars.get(i));
+            }
         }
+
+        Log.e("Change: id", changed.toString());
     }
 
 //        //verifica daca exista macar o litere ce apartine raspunului
@@ -344,7 +347,7 @@ public class Game_Timer extends ActionBarActivity {
 //                }
 //            }
 //        }
-    //Log.e("Change: id", changed.toString());
+
     //Log.e("C array", buttons.toString());
 
 
