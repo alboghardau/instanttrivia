@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -78,8 +79,6 @@ public class Game_Timer extends ActionBarActivity {
             public void onClick(View v) {
                 text_start.setOnClickListener(null);
 
-                ViewGroup parent = (ViewGroup) text_start.getParent();
-                parent.removeView(text_start);
 
                 text_question.setText(question);
                 answer_display_hidden();
@@ -120,6 +119,30 @@ public class Game_Timer extends ActionBarActivity {
         });
         val.setDuration(750);
         val.start();
+
+        //animate start button after click to retract back under question
+        Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_top_top);
+        final TextView text_start = (TextView) findViewById(R.id.text_start);
+
+        anim_start_back.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                ViewGroup parent = (ViewGroup) text_start.getParent();
+                parent.removeView(text_start);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        text_start.startAnimation(anim_start_back);
+
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams
@@ -133,31 +156,67 @@ public class Game_Timer extends ActionBarActivity {
         Animation anim_logo = AnimationUtils.loadAnimation(this, R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
 
-        LinearLayout lin = (LinearLayout) findViewById(R.id.linear_answer);
+
+        TextView start = (TextView) findViewById(R.id.text_start);
         ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
 
-        lin.startAnimation(anim);
+        start.startAnimation(anim);
         logo.startAnimation(anim_logo);
         score.startAnimation(anim_score);
     }
 
     //generate textview for answer chars and fill them in linear layout
     private void answer_display_hidden() {
+
         lin_answer.removeAllViews();
+        LinearLayout line = new LinearLayout(this);
+        line.setOrientation(LinearLayout.HORIZONTAL);
+        line.setGravity(Gravity.CENTER);
+        lin_answer.addView(line);
+
         for (Character ch : answer.toCharArray()) {
+            TextView t = new TextView(this);
+            t.setPadding(10, 15, 10, 15);
+            t.setGravity(Gravity.CENTER);
+            t.setTextSize(25);
+            t.setTextColor(Color.WHITE);
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+
+            if (ch.compareTo(" ".charAt(0)) == 0) {
+                line = new LinearLayout(this);
+                line.setOrientation(LinearLayout.HORIZONTAL);
+                line.setGravity(Gravity.CENTER);
+                lin_answer.addView(line);
+            } else {
+                t.setText("_");
+                line.addView(t);
+            }
+        }
+
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+        lin_answer.startAnimation(anim);
+    }
+
+    private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
+
+        int answer_lenght = answer.size();
+
+        //add revealed word to layout
+        for (int i = 0; i < answer_lenght; i++) {
             TextView t = new TextView(this);
             t.setPadding(10, 15, 10, 15);
             t.setTextSize(25);
             t.setTextColor(Color.WHITE);
 
-            if (ch.compareTo(" ".charAt(0)) == 0) {
-                t.setText(" ");
+            if (pressed.contains(answer.get(i)) == true) {
+                t.setText(answer.get(i).toString());
+                //    Log.e("testchar", "contains");
             } else {
                 t.setText("_");
             }
 
-            lin_answer.addView(t);
+
         }
     }
 
@@ -196,29 +255,6 @@ public class Game_Timer extends ActionBarActivity {
             } else {
                 line2.addView(t);
             }
-        }
-    }
-
-    private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
-
-        int answer_lenght = answer.size();
-        lin_answer.removeAllViews();
-
-        //add revealed word to layout
-        for (int i = 0; i < answer_lenght; i++) {
-            TextView t = new TextView(this);
-            t.setPadding(10, 15, 10, 15);
-            t.setTextSize(25);
-            t.setTextColor(Color.WHITE);
-
-            if (pressed.contains(answer.get(i)) == true) {
-                t.setText(answer.get(i).toString());
-                //    Log.e("testchar", "contains");
-            } else {
-                t.setText("_");
-            }
-
-            lin_answer.addView(t);
         }
     }
 
@@ -336,20 +372,6 @@ public class Game_Timer extends ActionBarActivity {
 
         Log.e("Change: id", changed.toString());
     }
-
-//        //verifica daca exista macar o litere ce apartine raspunului
-//        if(check_letter_exist() == false){
-//            for(int i = 0; i < ans_arr.size(); i++){
-//                if(ans_pressed.contains(ans_arr.get(i)) == false){
-//                    TextView t = (TextView) findViewById(changed.get(1));
-//                    t.setText(ans_arr.get(i).toString());
-//                    break;
-//                }
-//            }
-//        }
-
-    //Log.e("C array", buttons.toString());
-
 
     //verifica daca literele afisate sunt in raspuns
     private boolean check_letter_exist(){

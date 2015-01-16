@@ -68,35 +68,22 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="#ffffffff"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="80dp"
         android:enabled="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:longClickable="false" />
+        android:longClickable="false"
+        android:layout_below="@+id/timer_bar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/text_view_mat_red500top"
         android:id="@+id/linear_answer"
         android:layout_below="@+id/text_question"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:gravity="center"
-        android:paddingBottom="15dp" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Start"
-            android:id="@+id/text_start"
-            android:textColor="@color/white"
-            android:textSize="30dp" />
-    </LinearLayout>
+        android:layout_alignParentStart="false"></LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -105,8 +92,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
-        android:layout_below="@+id/linear_answer"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_below="@+id/linear_answer">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -127,5 +114,20 @@
             android:gravity="center"></LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Start"
+        android:id="@+id/text_start"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:layout_below="@+id/text_question"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="@drawable/text_view_mat_red500top"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp" />
 
 </RelativeLayout>
