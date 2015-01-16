@@ -175,12 +175,15 @@ public class Game_Timer extends ActionBarActivity {
         line.setGravity(Gravity.CENTER);
         lin_answer.addView(line);
 
+        Integer cont_id = 200;
+
         for (Character ch : answer.toCharArray()) {
             TextView t = new TextView(this);
             t.setPadding(10, 15, 10, 15);
             t.setGravity(Gravity.CENTER);
             t.setTextSize(25);
             t.setTextColor(Color.WHITE);
+            t.setId(cont_id);
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
@@ -189,8 +192,10 @@ public class Game_Timer extends ActionBarActivity {
                 line.setGravity(Gravity.CENTER);
                 lin_answer.addView(line);
             } else {
-                t.setText("_");
+                //t.setText("_");
+                t.setText(cont_id.toString());
                 line.addView(t);
+                cont_id++;
             }
         }
 
@@ -204,20 +209,32 @@ public class Game_Timer extends ActionBarActivity {
 
         //add revealed word to layout
         for (int i = 0; i < answer_lenght; i++) {
-            TextView t = new TextView(this);
-            t.setPadding(10, 15, 10, 15);
-            t.setTextSize(25);
-            t.setTextColor(Color.WHITE);
-
-            if (pressed.contains(answer.get(i)) == true) {
-                t.setText(answer.get(i).toString());
-                //    Log.e("testchar", "contains");
-            } else {
-                t.setText("_");
+            if (pressed.contains(answer.get(i)) == true && answer.get(i) != " ".charAt(0)) {
+                answer_replace_char(i + 200, answer.get(i));
             }
-
-
         }
+    }
+
+    //function will replace answer chars view from linear layout
+    // with animation
+    public void answer_replace_char(final int char_id, Character change) {
+
+        TextView text = (TextView) findViewById(char_id);
+        LinearLayout lin = (LinearLayout) text.getParent();
+
+        TextView t = new TextView(this);
+        t.setPadding(10, 15, 10, 15);
+        t.setTextSize(25);
+        t.setTextColor(Color.WHITE);
+        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+        t.setId(char_id);
+        t.setText(change.toString());
+
+
+        lin.addView(t,lin.indexOfChild(text));
+        lin.removeView(text);
+        lin = null;
+
     }
 
     //display random chars at start
