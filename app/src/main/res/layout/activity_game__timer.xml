@@ -83,7 +83,8 @@
         android:id="@+id/linear_answer"
         android:layout_below="@+id/text_question"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false"></LinearLayout>
+        android:layout_alignParentStart="false"
+        android:background="@color/indigo_100"></LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"

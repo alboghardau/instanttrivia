@@ -179,12 +179,13 @@ public class Game_Timer extends ActionBarActivity {
 
         for (Character ch : answer.toCharArray()) {
             TextView t = new TextView(this);
-            t.setPadding(10, 15, 10, 15);
+            t.setPadding(30, 18, 30, 18);
             t.setGravity(Gravity.CENTER);
+            t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
             t.setId(cont_id);
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_small_indigo500));
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
                 line = new LinearLayout(this);
@@ -216,22 +217,28 @@ public class Game_Timer extends ActionBarActivity {
     //function will replace answer chars view from linear layout with animation
     public void answer_replace_char(final Integer char_id, Character change) {
 
-        TextView text = (TextView) findViewById(char_id);
-        LinearLayout lin = (LinearLayout) text.getParent();
+        final TextView text = (TextView) findViewById(char_id);
+        final LinearLayout lin = (LinearLayout) text.getParent();
+        final int index = lin.indexOfChild(text);
 
-        TextView t = new TextView(this);
-        t.setPadding(10, 15, 10, 15);
+        Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+        Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
+
+        final TextView t = new TextView(this);
+        t.setPadding(30, 18, 30, 18);
+        t.setTypeface(Typeface.MONOSPACE);
         t.setTextSize(20);
         t.setTextColor(Color.WHITE);
-        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_lightgreen500));
         t.setGravity(Gravity.CENTER);
         t.setId(char_id);
         t.setText(change.toString());
 
 
-        lin.addView(t,lin.indexOfChild(text));
+        text.startAnimation(fade_out);
+        lin.addView(t,index);
         lin.removeView(text);
-        lin = null;
+        //lin = null;
 
     }
 
