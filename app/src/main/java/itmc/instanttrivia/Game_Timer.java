@@ -181,7 +181,7 @@ public class Game_Timer extends ActionBarActivity {
             TextView t = new TextView(this);
             t.setPadding(10, 15, 10, 15);
             t.setGravity(Gravity.CENTER);
-            t.setTextSize(25);
+            t.setTextSize(20);
             t.setTextColor(Color.WHITE);
             t.setId(cont_id);
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
@@ -191,9 +191,9 @@ public class Game_Timer extends ActionBarActivity {
                 line.setOrientation(LinearLayout.HORIZONTAL);
                 line.setGravity(Gravity.CENTER);
                 lin_answer.addView(line);
+                cont_id++;
             } else {
-                //t.setText("_");
-                t.setText(cont_id.toString());
+                t.setText("_");
                 line.addView(t);
                 cont_id++;
             }
@@ -205,28 +205,26 @@ public class Game_Timer extends ActionBarActivity {
 
     private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
 
-        int answer_lenght = answer.size();
-
         //add revealed word to layout
-        for (int i = 0; i < answer_lenght; i++) {
+        for (int i = 0; i < answer.size(); i++) {
             if (pressed.contains(answer.get(i)) == true && answer.get(i) != " ".charAt(0)) {
                 answer_replace_char(i + 200, answer.get(i));
             }
         }
     }
 
-    //function will replace answer chars view from linear layout
-    // with animation
-    public void answer_replace_char(final int char_id, Character change) {
+    //function will replace answer chars view from linear layout with animation
+    public void answer_replace_char(final Integer char_id, Character change) {
 
         TextView text = (TextView) findViewById(char_id);
         LinearLayout lin = (LinearLayout) text.getParent();
 
         TextView t = new TextView(this);
         t.setPadding(10, 15, 10, 15);
-        t.setTextSize(25);
+        t.setTextSize(20);
         t.setTextColor(Color.WHITE);
         t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+        t.setGravity(Gravity.CENTER);
         t.setId(char_id);
         t.setText(change.toString());
 
@@ -440,11 +438,16 @@ public class Game_Timer extends ActionBarActivity {
 
     //reads new questions from database and sets variables
     private void new_question(){
-        String[] questy;
-        questy = db.read_rand_question_difficulty(1);
 
-        question = questy[0];
-        answer = questy[1];
+        answer = "a";
+
+        while(answer.contains(" ") == false) {
+            String[] questy;
+            questy = db.read_rand_question_difficulty(1);
+
+            question = questy[0];
+            answer = questy[1];
+        }
 
         //delete previously pressed chars
         ans_pressed.clear();
