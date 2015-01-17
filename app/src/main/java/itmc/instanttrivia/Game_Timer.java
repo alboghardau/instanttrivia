@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -185,7 +184,7 @@ public class Game_Timer extends ActionBarActivity {
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
             t.setId(cont_id);
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_small_indigo500));
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_small_orange500));
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
                 line = new LinearLayout(this);
@@ -194,7 +193,7 @@ public class Game_Timer extends ActionBarActivity {
                 lin_answer.addView(line);
                 cont_id++;
             } else {
-                t.setText("_");
+                t.setText(" ");
                 line.addView(t);
                 cont_id++;
             }
@@ -253,7 +252,7 @@ public class Game_Timer extends ActionBarActivity {
         for (int i = 0; i < 8; i++) {
             TextView t = new TextView(this);
             t.setText(buttons.get(i).toString());
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_indi500));
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_orange500));
             t.setTextColor(getResources().getColor(R.color.white));
             t.setTypeface(Typeface.MONOSPACE);
             t.setPadding(80, 30, 80, 30);
@@ -446,15 +445,11 @@ public class Game_Timer extends ActionBarActivity {
     //reads new questions from database and sets variables
     private void new_question(){
 
-        answer = "a";
+        String[] questy;
+        questy = db.read_rand_question_difficulty(1);
 
-        while(answer.contains(" ") == false) {
-            String[] questy;
-            questy = db.read_rand_question_difficulty(1);
-
-            question = questy[0];
-            answer = questy[1];
-        }
+        question = questy[0];
+        answer = questy[1];
 
         //delete previously pressed chars
         ans_pressed.clear();

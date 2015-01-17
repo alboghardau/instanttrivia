@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    tools:context="itmc.instanttrivia.Game_Timer">
+    tools:context="itmc.instanttrivia.Game_Timer"
+    android:background="@color/purple_200">
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -9,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/blue_500"
+        android:background="@color/purple_500"
         android:paddingBottom="10dp"
         android:id="@+id/linear_topbar"
         android:paddingRight="20dp"
@@ -61,7 +62,7 @@
         android:id="@+id/text_question"
         android:editable="false"
         android:gravity="center"
-        android:background="@color/blue_500"
+        android:background="@color/purple_500"
         android:textSize="20dp"
         android:paddingTop="150dp"
         android:paddingBottom="190dp"
@@ -84,7 +85,7 @@
         android:layout_below="@+id/text_question"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:background="@color/indigo_100"></LinearLayout>
+        android:background="@color/purple_200"></LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -127,7 +128,7 @@
         android:layout_below="@+id/text_question"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:background="@drawable/text_view_mat_green500top"
+        android:background="@color/orange_500"
         android:paddingBottom="10dp"
         android:paddingTop="5dp" />
 

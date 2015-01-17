@@ -3,6 +3,7 @@
 
     <!-- White -->
 <color name="white">#ffffff</color>
+<color name="text_dark">#212121</color>
 
     <!-- RED -->
 <color name="red_50">#fde0dc</color>
