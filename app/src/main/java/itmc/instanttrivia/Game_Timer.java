@@ -149,6 +149,11 @@ public class Game_Timer extends ActionBarActivity {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    public static int pxToDp(int px)
+    {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
     //animation function for the start of activity
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
@@ -178,13 +183,14 @@ public class Game_Timer extends ActionBarActivity {
 
         for (Character ch : answer.toCharArray()) {
             TextView t = new TextView(this);
-            t.setPadding(30, 18, 30, 18);
+
             t.setGravity(Gravity.CENTER);
             t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
             t.setId(cont_id);
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_small_orange500));
+            t.setPadding(dpToPx(8), dpToPx(3), dpToPx(8), dpToPx(3));
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
                 line = new LinearLayout(this);
@@ -224,11 +230,12 @@ public class Game_Timer extends ActionBarActivity {
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
 
         final TextView t = new TextView(this);
-        t.setPadding(30, 18, 30, 18);
+
         t.setTypeface(Typeface.MONOSPACE);
         t.setTextSize(20);
         t.setTextColor(Color.WHITE);
         t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_lightgreen500));
+        t.setPadding(dpToPx(8), dpToPx(3), dpToPx(8), dpToPx(3));
         t.setGravity(Gravity.CENTER);
         t.setId(char_id);
         t.setText(change.toString());
@@ -255,7 +262,7 @@ public class Game_Timer extends ActionBarActivity {
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_orange500));
             t.setTextColor(getResources().getColor(R.color.white));
             t.setTypeface(Typeface.MONOSPACE);
-            t.setPadding(80, 30, 80, 30);
+            t.setPadding(dpToPx(25), dpToPx(10), dpToPx(25), dpToPx(10));
             t.setTextSize(50);
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
