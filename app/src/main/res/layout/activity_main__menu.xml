@@ -4,17 +4,39 @@
     tools:context=".Main_Menu"
     android:id="@+id/main_menu_layout"
     android:clickable="false"
-    android:focusable="false"
-    android:background="@color/purple_200">
+    android:focusable="false">
 
-    <ImageView
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/main_logo"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/relativeLayout"
+        android:background="@color/purple_500"
+        android:elevation="5dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo_1"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/main_logo1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo_2"
+            android:src="@drawable/main_logo2" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo_3"
+            android:src="@drawable/main_logo3"
+            android:elevation="5dp" />
+
+    </RelativeLayout>
 
     <TextSwitcher
         android:layout_width="wrap_content"
@@ -28,10 +50,11 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
         android:id="@+id/main_menu_linear"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false">
 
         <ViewSwitcher
             android:layout_width="match_parent"
@@ -46,7 +69,7 @@
                 android:text="Play"
                 android:id="@+id/text_play"
                 android:background="@drawable/text_view_mat_orange500"
-                android:layout_below="@+id/imageView"
+                android:layout_below="@+id/logo_1"
                 android:layout_centerHorizontal="true"
                 android:clickable="false"
                 android:padding="25dp"
@@ -74,7 +97,7 @@
                     android:textColor="@color/abc_primary_text_material_dark"
                     android:text="Time Trial"
                     android:id="@+id/text_time"
-                    android:layout_below="@+id/imageView"
+                    android:layout_below="@+id/logo_1"
                     android:layout_centerHorizontal="true"
                     android:clickable="false"
                     android:padding="25dp"

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -34,11 +36,21 @@ public class Main_Menu extends ActionBarActivity {
         text_time = (TextView) findViewById(R.id.text_time);
         play_back = (ImageView) findViewById(R.id.play_back_icon);
 
+        ImageView logo_1 = (ImageView) findViewById(R.id.logo_1);
+        ImageView logo_2 = (ImageView) findViewById(R.id.logo_2);
+        ImageView logo_3 = (ImageView) findViewById(R.id.logo_3);
+
         //set animation for view switcher
         final Animation right_in = AnimationUtils.loadAnimation(this,R.anim.anim_right_in);
         final Animation right_out = AnimationUtils.loadAnimation(this,R.anim.anim_right_out);
         final Animation left_in = AnimationUtils.loadAnimation(this,R.anim.anim_left_in);
         final Animation left_out = AnimationUtils.loadAnimation(this,R.anim.anim_left_out);
+        final Animation left_trans = AnimationUtils.loadAnimation(this,R.anim.anim_left_in_translate);
+        final Animation right_trans = AnimationUtils.loadAnimation(this,R.anim.anim_right_in_translate);
+
+        logo_1.startAnimation(left_trans);
+        logo_2.startAnimation(right_trans);
+        logo_3.startAnimation(right_trans);
 
         //database
         db = new DbOP(this);
@@ -70,6 +82,9 @@ public class Main_Menu extends ActionBarActivity {
                 start_time_game();
             }
         });
+
+
+
 
     }
 
