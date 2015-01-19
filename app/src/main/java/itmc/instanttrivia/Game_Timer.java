@@ -225,7 +225,8 @@ public class Game_Timer extends ActionBarActivity {
 
         //animation definition
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
-        final Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+        fade_out.setStartOffset(500);
+        final Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         //animation action listener on ending fade in new answer
         fade_out.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -236,7 +237,7 @@ public class Game_Timer extends ActionBarActivity {
             public void onAnimationEnd(Animation animation) {
                 lin_answer.removeAllViews();
                 answer_display_hidden2();
-                lin_answer.startAnimation(anim);
+                lin_answer.startAnimation(fade_in);
             }
 
             @Override
@@ -248,7 +249,7 @@ public class Game_Timer extends ActionBarActivity {
         if(question_counter > 1) {
             lin_answer.startAnimation(fade_out);
         }else{
-            lin_answer.startAnimation(anim);
+            lin_answer.startAnimation(fade_in);
             answer_display_hidden2();
         }
     }
