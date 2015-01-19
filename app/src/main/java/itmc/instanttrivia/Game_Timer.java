@@ -2,6 +2,7 @@ package itmc.instanttrivia;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -29,7 +30,7 @@ import java.util.Random;
 
 public class Game_Timer extends ActionBarActivity {
 
-    TextSwitcher text_question;
+    TextView text_question;
     TextView text_score;
     LinearLayout lin_answer;
     ProgressBar prog_bar;
@@ -61,22 +62,9 @@ public class Game_Timer extends ActionBarActivity {
         randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         font_regular = Typeface.createFromAsset(getAssets(),"typeface/RobotoRegular.ttf");
 
-        //define question text_witcher
-        text_question = (TextSwitcher) findViewById(R.id.text_question);
-        text_question.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView myText = new TextView(Game_Timer.this);
-                myText.setTypeface(font_regular);
-                myText.setTextSize(20);
-                myText.setTextColor(Color.WHITE);
-                myText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
-                myText.setGravity(Gravity.CENTER);
-                return myText;
-            }
-        });
-        text_question.setInAnimation(AnimationUtils.loadAnimation(this,R.anim.anim_fade_in));
-        text_question.setOutAnimation(AnimationUtils.loadAnimation(this,R.anim.anim_fade_out));
+        //define question text
+        text_question = (TextView) findViewById(R.id.text_question);
+        text_question.setTypeface(font_regular);
 
         //define variables
         text_score = (TextView) findViewById(R.id.text_score);
@@ -119,7 +107,7 @@ public class Game_Timer extends ActionBarActivity {
     //animates question textview
     private void animate_quest() {
 
-        final TextSwitcher txt2 = (TextSwitcher) findViewById(R.id.text_question);
+        final TextView txt2 = (TextView) findViewById(R.id.text_question);
         final int old_pad = txt2.getPaddingTop();
 
         //animatie padding
@@ -166,6 +154,33 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
         text_start.startAnimation(anim_start_back);
+
+    }
+
+    private void question_update(final String text){
+
+        final View question = findViewById(R.id.text_question);
+        question.setAlpha(1.0f);
+        question.setVisibility(View.VISIBLE);
+
+//        question.animate()
+//                .scaleYBy(-0.5f)
+//
+//                .setDuration(1500)
+//                .setListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        super.onAnimationEnd(animation);
+//                        text_question.setText(text);
+//
+//                        question.animate()
+//                                .scaleYBy(0.5f)
+//                                .setDuration(1500)
+//                                .setListener(null);
+//                    }
+//                });
+
+        ObjectAnimator test = ObjectAnimator.of
 
     }
 
@@ -489,10 +504,10 @@ public class Game_Timer extends ActionBarActivity {
         if(check_completion() == true){
             new_question();
             answer_display_hidden();
-            View old = (View) text_question.getNextView();
+
             
-            text_question.setText(question);
-            text_question.removeView(old);
+            question_update(question);
+
             buttons_generate(answer);
             buttons_display();
         }

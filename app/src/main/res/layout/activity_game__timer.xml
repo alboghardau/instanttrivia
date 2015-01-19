@@ -54,7 +54,7 @@
         android:layout_below="@+id/linear_topbar"
         />
 
-    <TextSwitcher
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_question"
@@ -64,7 +64,11 @@
         android:paddingTop="150dp"
         android:paddingBottom="190dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:paddingRight="10dp"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:elevation="5dp" />
 
     <LinearLayout
         android:orientation="vertical"
