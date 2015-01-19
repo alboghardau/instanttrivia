@@ -7,14 +7,14 @@
     android:focusable="false">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/relativeLayout"
         android:background="@color/purple_500"
         android:elevation="5dp">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/logo_1"
             android:layout_gravity="center_horizontal"
@@ -24,13 +24,13 @@
             android:layout_alignParentStart="true" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/logo_2"
             android:src="@drawable/main_logo2" />
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/logo_3"
             android:src="@drawable/main_logo3"
@@ -74,7 +74,10 @@
                 android:clickable="false"
                 android:padding="25dp"
                 android:textSize="25sp"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:editable="false"
+                android:enabled="true"
+                android:focusable="true" />
 
             <LinearLayout
                 android:orientation="horizontal"

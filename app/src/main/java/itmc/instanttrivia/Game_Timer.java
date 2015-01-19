@@ -18,7 +18,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -26,7 +29,8 @@ import java.util.Random;
 
 public class Game_Timer extends ActionBarActivity {
 
-    TextView text_question;
+    TextSwitcher text_question;
+    TextView text_score;
     LinearLayout lin_answer;
     ProgressBar prog_bar;
 
@@ -37,7 +41,10 @@ public class Game_Timer extends ActionBarActivity {
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
 
+    Typeface font_regular;
+
     //timer options
+    int question_counter = 0;
     long milis_timer = 30000;
     long milis_add = 2000;
     long milis_sub = 1000;
@@ -52,9 +59,28 @@ public class Game_Timer extends ActionBarActivity {
 
         //random chars used to generated buttons
         randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        font_regular = Typeface.createFromAsset(getAssets(),"typeface/RobotoRegular.ttf");
 
-        //define veriables
-        text_question = (TextView) findViewById(R.id.text_question);
+        //define question text_witcher
+        text_question = (TextSwitcher) findViewById(R.id.text_question);
+        text_question.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView myText = new TextView(Game_Timer.this);
+                myText.setTypeface(font_regular);
+                myText.setTextSize(20);
+                myText.setTextColor(Color.WHITE);
+                myText.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                myText.setGravity(Gravity.CENTER);
+                return myText;
+            }
+        });
+        text_question.setInAnimation(AnimationUtils.loadAnimation(this,R.anim.anim_fade_in));
+        text_question.setOutAnimation(AnimationUtils.loadAnimation(this,R.anim.anim_fade_out));
+
+        //define variables
+        text_score = (TextView) findViewById(R.id.text_score);
+        text_score.setTypeface(font_regular);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         final TextView text_start = (TextView) findViewById(R.id.text_start);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
@@ -78,7 +104,6 @@ public class Game_Timer extends ActionBarActivity {
             public void onClick(View v) {
                 text_start.setOnClickListener(null);
 
-
                 text_question.setText(question);
                 answer_display_hidden();
 
@@ -94,7 +119,7 @@ public class Game_Timer extends ActionBarActivity {
     //animates question textview
     private void animate_quest() {
 
-        final TextView txt2 = (TextView) findViewById(R.id.text_question);
+        final TextSwitcher txt2 = (TextSwitcher) findViewById(R.id.text_question);
         final int old_pad = txt2.getPaddingTop();
 
         //animatie padding
@@ -170,10 +195,41 @@ public class Game_Timer extends ActionBarActivity {
         score.startAnimation(anim_score);
     }
 
-    //generate textview for answer chars and fill them in linear layout
+    //function handles animation for answer display connected to answer_display_hidden2();
     private void answer_display_hidden() {
 
-        lin_answer.removeAllViews();
+        //animation definition
+        Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
+        final Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+        //animation action listener on ending fade in new answer
+        fade_out.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                lin_answer.removeAllViews();
+                answer_display_hidden2();
+                lin_answer.startAnimation(anim);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        //check to display only fade in for first question
+        if(question_counter > 1) {
+            lin_answer.startAnimation(fade_out);
+        }else{
+            lin_answer.startAnimation(anim);
+            answer_display_hidden2();
+        }
+    }
+
+    //function handles text view generation for answer letters
+    private void answer_display_hidden2(){
         LinearLayout line = new LinearLayout(this);
         line.setOrientation(LinearLayout.HORIZONTAL);
         line.setGravity(Gravity.CENTER);
@@ -204,9 +260,6 @@ public class Game_Timer extends ActionBarActivity {
                 cont_id++;
             }
         }
-
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        lin_answer.startAnimation(anim);
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
@@ -240,12 +293,9 @@ public class Game_Timer extends ActionBarActivity {
         t.setId(char_id);
         t.setText(change.toString());
 
-
         text.startAnimation(fade_out);
         lin.addView(t,index);
         lin.removeView(text);
-        //lin = null;
-
     }
 
     //display random chars at start
@@ -439,7 +489,10 @@ public class Game_Timer extends ActionBarActivity {
         if(check_completion() == true){
             new_question();
             answer_display_hidden();
+            View old = (View) text_question.getNextView();
+            
             text_question.setText(question);
+            text_question.removeView(old);
             buttons_generate(answer);
             buttons_display();
         }
@@ -447,6 +500,10 @@ public class Game_Timer extends ActionBarActivity {
         if(ans_arr.contains(c_btn) == true ){
            // Log.e("text char press", "TRUE");
         }
+    }
+
+    private void answer_complete_hide(){
+
     }
 
     //reads new questions from database and sets variables
@@ -457,6 +514,7 @@ public class Game_Timer extends ActionBarActivity {
 
         question = questy[0];
         answer = questy[1];
+        question_counter++;
 
         //delete previously pressed chars
         ans_pressed.clear();
@@ -542,5 +600,3 @@ public class Game_Timer extends ActionBarActivity {
         db.close();
     }
 }
-
-
