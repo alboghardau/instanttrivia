@@ -3,6 +3,7 @@ package itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -159,28 +160,37 @@ public class Game_Timer extends ActionBarActivity {
 
     private void question_update(final String text){
 
-        final View question = findViewById(R.id.text_question);
-        question.setAlpha(1.0f);
-        question.setVisibility(View.VISIBLE);
+        final TextView question = (TextView) findViewById(R.id.text_question);
 
-//        question.animate()
-//                .scaleYBy(-0.5f)
-//
-//                .setDuration(1500)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        super.onAnimationEnd(animation);
-//                        text_question.setText(text);
-//
-//                        question.animate()
-//                                .scaleYBy(0.5f)
-//                                .setDuration(1500)
-//                                .setListener(null);
-//                    }
-//                });
+        int init_height = question.getHeight();
+        ValueAnimator val = ValueAnimator.ofInt(init_height,0);
+        final ValueAnimator val2 = ValueAnimator.ofInt(0,500);
+        val.setDuration(1000);
+        val2.setDuration(1000);
 
-        ObjectAnimator test = ObjectAnimator.of
+        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                question.setMaxHeight((Integer) animation.getAnimatedValue());
+            }
+        });
+        val2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation2) {
+                question.setMaxHeight((Integer) animation2.getAnimatedValue());
+            }
+        });
+        val.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                val2.start();
+                question.setText(text);
+            }
+        });
+        val.start();
+
+
 
     }
 
@@ -288,7 +298,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //function will replace answer chars view from linear layout with animation
-    public void answer_replace_char(final Integer char_id, Character change) {
+    private void answer_replace_char(final Integer char_id, Character change) {
 
         final TextView text = (TextView) findViewById(char_id);
         final LinearLayout lin = (LinearLayout) text.getParent();
