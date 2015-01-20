@@ -189,17 +189,14 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
         val.start();
-
-
-
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams
-    public static int dpToPx(int dp) {
+    private static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public static int pxToDp(int px)
+    private static int pxToDp(int px)
     {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
@@ -245,7 +242,7 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
 
-        //check to display only fade in for first question
+        //displays only fade in for first questions , fade in out for other questions
         if(question_counter > 1) {
             lin_answer.startAnimation(fade_out);
         }else{
@@ -261,6 +258,7 @@ public class Game_Timer extends ActionBarActivity {
         line.setGravity(Gravity.CENTER);
         lin_answer.addView(line);
 
+        //contor used for answers id starting with 200
         Integer cont_id = 200;
 
         for (Character ch : answer.toCharArray()) {
@@ -324,9 +322,65 @@ public class Game_Timer extends ActionBarActivity {
         lin.removeView(text);
     }
 
-    //display random chars at start
+    //enabble disables click event for buttons, used for fade in and out animation
+    private void buttons_enabler(boolean enable){
+
+        for ( int i = 0; i < 8; i++){
+            TextView t = (TextView) findViewById(i+100);
+            t.setEnabled(enable);
+        }
+    }
+
+    //display buttons with animation
     private void buttons_display() {
 
+        final LinearLayout line_bot = (LinearLayout) findViewById(R.id.linear_bot);
+        //if is not first questions do fade in fade out else do just fade in
+        if(question_counter > 1){
+            line_bot.setAlpha(1f);
+            line_bot.animate()
+                    .alpha(0f)
+                    .setDuration(1000)
+                    .setStartDelay(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            line_bot.animate()
+                                    .alpha(1f)
+                                    .setDuration(1000)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            super.onAnimationEnd(animation);
+                                            buttons_enabler(true);      //click enables after fade in
+                                        }
+                                    })
+                                    .start();
+                            buttons_display2();
+                            buttons_enabler(false);     //click disabled after generation
+                        }
+                    })
+                    .start();
+        }else {
+            line_bot.setAlpha(0f);
+            line_bot.animate()
+                    .alpha(1f)
+                    .setDuration(1000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            buttons_enabler(true);      //click enabled at animation end
+                        }
+                    })
+                    .start();
+            buttons_display2();
+            buttons_enabler(false);         //click disabled on start
+        }
+    }
+
+    //function to dispaly the generated buttons, connected to buttons_display()
+    private void buttons_display2(){
         LinearLayout line1 = (LinearLayout) findViewById(R.id.linear_ans_first);
         LinearLayout line2 = (LinearLayout) findViewById(R.id.lineage_ans_second);
         line1.removeAllViews();
@@ -513,23 +567,17 @@ public class Game_Timer extends ActionBarActivity {
 
         //action for word completion
         if(check_completion() == true){
-            new_question();
-            answer_display_hidden();
-
-            
-            question_update(question);
-
+            new_question();                 //read new questions form database
+            answer_display_hidden();        //display answer
+            question_update(question);      //update text with animation
             buttons_generate(answer);
             buttons_display();
+            buttons_enabler(false);         //click disables after word completion, reactivated in buttons display animation end
         }
 
         if(ans_arr.contains(c_btn) == true ){
            // Log.e("text char press", "TRUE");
         }
-    }
-
-    private void answer_complete_hide(){
-
     }
 
     //reads new questions from database and sets variables
