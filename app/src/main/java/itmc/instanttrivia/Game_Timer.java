@@ -45,7 +45,8 @@ public class Game_Timer extends ActionBarActivity {
 
     Typeface font_regular;
 
-    //timer options
+    //options and varaibles
+    int score = 0;
     int question_counter = 0;
     long milis_timer = 30000;
     long milis_add = 2000;
@@ -284,6 +285,23 @@ public class Game_Timer extends ActionBarActivity {
                 cont_id++;
             }
         }
+    }
+
+    private void score_update(){
+
+        int bonus = 5;
+        ValueAnimator val = ValueAnimator.ofInt(score,score+bonus);
+        val.setDuration(bonus*100);
+        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                text_score.setText("Score: "+ (Integer) animation.getAnimatedValue());
+            }
+        });
+
+        val.start();
+        score = score + bonus;
+
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
@@ -557,6 +575,7 @@ public class Game_Timer extends ActionBarActivity {
         if(ans_arr.contains(t.getText().charAt(0))){
             ans_pressed.add(t.getText().charAt(0));
             timer_change("increase");
+            score_update();
         }else{
             timer_change("decrease");
         }
