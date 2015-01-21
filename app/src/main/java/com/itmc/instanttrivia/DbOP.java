@@ -1,4 +1,4 @@
-package itmc.instanttrivia;
+package com.itmc.instanttrivia;
 
 import java.io.IOException;
 import java.util.*;
@@ -8,7 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.*;
 import android.util.Log;
 
-import itmc.instanttrivia.DatabaseHandler;
+import com.itmc.instanttrivia.DatabaseHandler;
 
 
 public class DbOP {

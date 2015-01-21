@@ -1,9 +1,7 @@
-package itmc.instanttrivia;
+package com.itmc.instanttrivia;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -20,13 +18,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+
+import com.itmc.instanttrivia.R;
 
 
 public class Game_Timer extends ActionBarActivity {
@@ -140,9 +138,7 @@ public class Game_Timer extends ActionBarActivity {
 
         anim_start_back.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
+            public void onAnimationStart(Animation animation) {            }
 
             @Override
             public void onAnimationEnd(Animation animation) {
@@ -151,12 +147,9 @@ public class Game_Timer extends ActionBarActivity {
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
+            public void onAnimationRepeat(Animation animation) {            }
         });
         text_start.startAnimation(anim_start_back);
-
     }
 
     private void question_update(final String text){
@@ -165,7 +158,7 @@ public class Game_Timer extends ActionBarActivity {
 
         int init_height = question.getHeight();
         ValueAnimator val = ValueAnimator.ofInt(init_height,0);
-        final ValueAnimator val2 = ValueAnimator.ofInt(0,500);
+        final ValueAnimator val2 = ValueAnimator.ofInt(0,dpToPx(112));
         val.setDuration(1000);
         val2.setDuration(1000);
 
@@ -289,7 +282,7 @@ public class Game_Timer extends ActionBarActivity {
 
     private void score_update(){
 
-        int bonus = 5;
+        int bonus = 1;
         ValueAnimator val = ValueAnimator.ofInt(score,score+bonus);
         val.setDuration(bonus*100);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
