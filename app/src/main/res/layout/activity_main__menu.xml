@@ -6,77 +6,93 @@
     android:clickable="false"
     android:focusable="false">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relative_logo"
-        android:background="@color/purple_500">
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/logo_1"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/main_logo1"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/logo_2"
-            android:src="@drawable/main_logo2" />
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/logo_3"
-            android:src="@drawable/main_logo3"
-            android:elevation="5dp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_below="@+id/relative_logo"
-        android:id="@+id/relative_loged"
-        android:elevation="5dp"
-        android:background="@color/purple_500">
-
-        <ImageView
-            android:id="@+id/imgProfilePic"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/text_loged"
-            android:textColor="@color/white"
-            android:layout_alignParentTop="false"
-            android:layout_toRightOf="@+id/imgProfilePic"
-            android:layout_toEndOf="@+id/imgProfilePic" />
-    </RelativeLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@color/purple_500"
+        android:id="@+id/linearLayout"
+        android:elevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relative_logo">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo_1"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/main_logo1"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo_2"
+                android:src="@drawable/main_logo2" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo_3"
+                android:src="@drawable/main_logo3"
+                android:elevation="5dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/relative_logo"
+            android:id="@+id/relative_loged"
+            android:background="@color/purple_800">
+
+            <ImageView
+                android:id="@+id/imgProfilePic"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="true"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/text_loged"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imgProfilePic"
+                android:layout_toEndOf="@+id/imgProfilePic" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:layout_below="@+id/relative_loged">
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <Button
             android:layout_width="match_parent"
@@ -100,6 +116,11 @@
             android:layout_below="@+id/button2"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-    </LinearLayout>
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Out"
+            android:id="@+id/button_signout" />
+    </LinearLayout>
 </RelativeLayout>

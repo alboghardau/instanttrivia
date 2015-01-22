@@ -51,19 +51,15 @@ public class Main_Menu extends Activity implements View.OnClickListener,
      */
     private boolean mIntentInProgress;
 
-    private boolean mSignInClicked;
+    private boolean mSignInClicked = false;
 
     private ConnectionResult mConnectionResult;
 
     private SignInButton btnSignIn;
     private Button btn_play;
+    private Button btn_singout;
     private TextView text_loged;
     private ImageView imgProfilePic;
-
-
-
-
-
 
     private DbOP db;
 
@@ -76,7 +72,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
 
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
         btn_play = (Button) findViewById(R.id.button_play);
-        imgProfilePic = (ImageView) findViewById(R.id.image_logo);
+        btn_singout = (Button)findViewById(R.id.button_signout);
+        imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         text_loged = (TextView) findViewById(R.id.text_loged);
 
         ImageView logo_1 = (ImageView) findViewById(R.id.logo_1);
@@ -96,18 +93,18 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         db.testnewdb();
         db.close();
 
-
-
-
         // Button click listeners
         btnSignIn.setOnClickListener(this);
         btn_play.setOnClickListener(this);
+        btn_singout.setOnClickListener(this);
 
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+
+        if(mSignInClicked == false) updateUI(false);
     }
 
     protected void onStart() {
@@ -184,22 +181,22 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         getProfileInformation();
 
         // Update the UI after signin
-        //updateUI(true);
+        updateUI(true);
 
     }
 
     /**
      * Updating the UI, showing/hiding buttons and profile layout
      * */
-//    private void updateUI(boolean isSignedIn) {
-//        if (isSignedIn) {
-//            btnSignIn.setVisibility(View.GONE);
-//
-//        } else {
-//            btnSignIn.setVisibility(View.VISIBLE);
-//
-//        }
-//    }
+    private void updateUI(boolean isSignedIn) {
+        if (isSignedIn) {
+            btnSignIn.setVisibility(View.GONE);
+            btn_singout.setVisibility(View.VISIBLE);
+        } else {
+            btnSignIn.setVisibility(View.VISIBLE);
+            btn_singout.setVisibility(View.GONE);
+        }
+    }
 
     /**
      * Fetching user's information name, email, profile pic
@@ -218,7 +215,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                         + personGooglePlusProfile + ", email: " + email
                         + ", Image: " + personPhotoUrl);
 
-                text_loged.setText(personName);
+                text_loged.setText("Logged in as "+personName);
                 //txtEmail.setText(email);
 
                 // by default the profile url gives 50x50 px image only
@@ -242,7 +239,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
-        //updateUI(false);
+        updateUI(false);
     }
 
 
@@ -257,14 +254,15 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 // Signin button clicked
                 signInWithGplus();
                 break;
-            case R.id.btn_sign_out:
+            case R.id.button_signout:
                 // Signout button clicked
                 signOutFromGplus();
                 break;
-            case R.id.btn_revoke_access:
-                // Revoke access button clicked
-                revokeGplusAccess();
-                break;
+//            TO KEEP IN CASE OF FUTURE USE
+//            case R.id.btn_revoke_access:
+//                // Revoke access button clicked
+//                revokeGplusAccess();
+//                break;
             case R.id.button_play:
                 // Start Game Activity
                 Intent start = new Intent(this, Game_Timer.class);
@@ -291,7 +289,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
             mGoogleApiClient.disconnect();
             mGoogleApiClient.connect();
-            //updateUI(false);
+            updateUI(false);
         }
     }
 
@@ -307,7 +305,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                         public void onResult(Status arg0) {
                             Log.e(TAG, "User access revoked!");
                             mGoogleApiClient.connect();
-                            //updateUI(false);
+                            updateUI(false);
                         }
 
                     });
@@ -337,10 +335,10 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             return mIcon11;
         }
 
-//        protected void onPostExecute(Bitmap result) {
-//            bmImage.setImageBitmap(result);
-//
-//        }
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+
+        }
     }
 
 }
