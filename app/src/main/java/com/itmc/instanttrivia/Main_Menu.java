@@ -337,9 +337,10 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             return mIcon11;
         }
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+//        protected void onPostExecute(Bitmap result) {
+//            bmImage.setImageBitmap(result);
+//
+//        }
     }
 
 }
