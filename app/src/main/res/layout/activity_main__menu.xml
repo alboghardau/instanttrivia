@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout"
+        android:id="@+id/relative_logo"
         android:background="@color/purple_500">
 
         <ImageView
@@ -37,38 +37,69 @@
 
     </RelativeLayout>
 
-    <TextView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/relative_logo"
+        android:id="@+id/relative_loged"
+        android:elevation="5dp"
+        android:background="@color/purple_500">
+
+        <ImageView
+            android:id="@+id/imgProfilePic"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/text_loged"
+            android:textColor="@color/white"
+            android:layout_alignParentTop="false"
+            android:layout_toRightOf="@+id/imgProfilePic"
+            android:layout_toEndOf="@+id/imgProfilePic" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/abc_primary_text_material_dark"
-        android:text="Time Trial"
-        android:id="@+id/text_time"
-        android:clickable="false"
-        android:padding="25dp"
-        android:textSize="25sp"
         android:gravity="center"
-        android:layout_below="@+id/relativeLayout"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/orange_500" />
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:layout_below="@+id/relative_loged">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button"
-        android:layout_below="@+id/text_time"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
-        android:elevation="5dp" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:id="@+id/button_play" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/button2"
-        android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="High Scores"
+            android:id="@+id/button_high_scores"
+            android:layout_below="@+id/text_time"
+            android:layout_centerHorizontal="true"
+            android:elevation="5dp" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </LinearLayout>
 
 </RelativeLayout>
