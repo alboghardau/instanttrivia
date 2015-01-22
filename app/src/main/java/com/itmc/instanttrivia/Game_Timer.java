@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -70,8 +71,9 @@ public class Game_Timer extends ActionBarActivity {
         text_score = (TextView) findViewById(R.id.text_score);
         text_score.setTypeface(font_regular);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
-        final TextView text_start = (TextView) findViewById(R.id.text_start);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
+
+        final Button btn_start = (Button) findViewById(R.id.btn_start);
 
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
@@ -87,10 +89,10 @@ public class Game_Timer extends ActionBarActivity {
         //dispaly animation on start
         animate_start();
 
-        text_start.setOnClickListener(new View.OnClickListener() {
+        btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                text_start.setOnClickListener(null);
+                btn_start.setOnClickListener(null);
 
                 text_question.setText(question);
                 answer_display_hidden();
@@ -134,7 +136,7 @@ public class Game_Timer extends ActionBarActivity {
 
         //animate start button after click to retract back under question
         Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_top_top);
-        final TextView text_start = (TextView) findViewById(R.id.text_start);
+        final Button btn_start = (Button) findViewById(R.id.btn_start);
 
         anim_start_back.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -142,14 +144,14 @@ public class Game_Timer extends ActionBarActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ViewGroup parent = (ViewGroup) text_start.getParent();
-                parent.removeView(text_start);
+                ViewGroup parent = (ViewGroup) btn_start.getParent();
+                parent.removeView(btn_start);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {            }
         });
-        text_start.startAnimation(anim_start_back);
+        btn_start.startAnimation(anim_start_back);
     }
 
     private void question_update(final String text){
@@ -197,12 +199,12 @@ public class Game_Timer extends ActionBarActivity {
 
     //animation function for the start of activity
     private void animate_start() {
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_top_down);
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         Animation anim_logo = AnimationUtils.loadAnimation(this, R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
 
 
-        TextView start = (TextView) findViewById(R.id.text_start);
+        Button start = (Button) findViewById(R.id.btn_start);
         ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
 
@@ -398,16 +400,35 @@ public class Game_Timer extends ActionBarActivity {
         line2.removeAllViews();
 
         for (int i = 0; i < 8; i++) {
-            TextView t = new TextView(this);
+
+//            TextView t = new TextView(this);
+//            t.setText(buttons.get(i).toString());
+//            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_orange500));
+//            t.setTextColor(getResources().getColor(R.color.white));
+//            t.setTypeface(Typeface.MONOSPACE);
+//            t.setPadding(dpToPx(25), dpToPx(10), dpToPx(25), dpToPx(10));
+//            t.setTextSize(50);
+//            t.setGravity(Gravity.CENTER);
+//            //generate id starting with 100
+//            t.setId(100 + i);
+
+            Button t = new Button(this);
             t.setText(buttons.get(i).toString());
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_orange500));
-            t.setTextColor(getResources().getColor(R.color.white));
-            t.setTypeface(Typeface.MONOSPACE);
-            t.setPadding(dpToPx(25), dpToPx(10), dpToPx(25), dpToPx(10));
-            t.setTextSize(50);
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+            t.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
+
+            ViewGroup.LayoutParams par = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            par.width = dpToPx(70);
+            par.height = dpToPx(70);
+            t.setLayoutParams(par);
+
+            //t.setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
+            t.setTextSize(30);
+
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
             t.setId(100 + i);
+
 
             //set clicker
             final int finalI = i;

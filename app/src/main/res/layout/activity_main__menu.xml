@@ -88,17 +88,22 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:paddingLeft="25dp"
         android:paddingRight="25dp"
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:paddingLeft="25dp"
+        android:showDividers="middle|beginning|end"
+        android:dividerPadding="5dp"
+        android:divider="@drawable/vertical_divider">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Play"
-            android:id="@+id/button_play" />
+            android:id="@+id/button_play"
+            android:background="@drawable/button_lollipop"
+            android:focusable="false" />
 
         <Button
             android:layout_width="match_parent"
@@ -107,7 +112,9 @@
             android:id="@+id/button_high_scores"
             android:layout_below="@+id/text_time"
             android:layout_centerHorizontal="true"
-            android:elevation="5dp" />
+            android:elevation="5dp"
+            android:background="@drawable/button_lollipop"
+            android:paddingTop="5dp" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_sign_in"
@@ -121,6 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign Out"
-            android:id="@+id/button_signout" />
+            android:id="@+id/button_signout"
+            android:background="@drawable/button_lollipop" />
     </LinearLayout>
 </RelativeLayout>

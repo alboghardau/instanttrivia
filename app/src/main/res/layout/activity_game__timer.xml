@@ -79,7 +79,9 @@
         android:layout_alignParentStart="false"
         android:paddingTop="20dp"
         android:layout_centerVertical="true"
-        android:layout_below="@+id/text_question"></LinearLayout>
+        android:layout_below="@+id/text_question">
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -89,7 +91,11 @@
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
         android:gravity="center"
-        android:layout_below="@+id/linear_answer">
+        android:layout_below="@+id/linear_answer"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:showDividers="middle|beginning|end"
+        android:divider="@drawable/vertical_divider">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -98,7 +104,9 @@
             android:layout_below="@+id/linear_answer"
             android:layout_centerHorizontal="true"
             android:id="@+id/linear_ans_first"
-            android:gravity="center"></LinearLayout>
+            android:gravity="center"
+            android:divider="@drawable/vertical_divider"
+            android:showDividers="middle|beginning|end"></LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -107,28 +115,20 @@
             android:layout_below="@+id/linear_ans_first"
             android:layout_centerHorizontal="true"
             android:id="@+id/lineage_ans_second"
-            android:gravity="center"></LinearLayout>
+            android:gravity="center"
+            android:divider="@drawable/vertical_divider"
+            android:showDividers="middle|beginning|end"></LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="fill_parent"
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Start"
-        android:id="@+id/text_start"
-        android:textColor="@color/white"
-        android:textSize="30dp"
+        android:text="Start Game!"
+        android:id="@+id/btn_start"
+        android:background="@drawable/button_lollipop"
+        android:layout_below="@+id/text_question"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:background="@color/orange_500"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp"
-        android:elevation="5dp"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
-        android:layout_centerVertical="true"
-        android:layout_below="@+id/text_question" />
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

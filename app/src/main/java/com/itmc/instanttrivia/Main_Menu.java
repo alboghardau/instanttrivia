@@ -104,6 +104,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
+        //test if app is connected on start
         if(mSignInClicked == false) updateUI(false);
     }
 
