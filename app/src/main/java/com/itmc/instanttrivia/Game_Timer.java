@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class Game_Timer extends ActionBarActivity {
     TextView text_question;
     TextView text_score;
     LinearLayout lin_answer;
+    LinearLayout lin_bot;
     ProgressBar prog_bar;
 
     String question;
@@ -47,7 +49,7 @@ public class Game_Timer extends ActionBarActivity {
     //options and varaibles
     int score = 0;
     int question_counter = 0;
-    long milis_timer = 30000;
+    long milis_timer = 5000;
     long milis_add = 2000;
     long milis_sub = 1000;
     CountDownTimer timer;
@@ -71,6 +73,7 @@ public class Game_Timer extends ActionBarActivity {
         text_score = (TextView) findViewById(R.id.text_score);
         text_score.setTypeface(font_regular);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
+        lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         final Button btn_start = (Button) findViewById(R.id.btn_start);
@@ -401,17 +404,6 @@ public class Game_Timer extends ActionBarActivity {
 
         for (int i = 0; i < 8; i++) {
 
-//            TextView t = new TextView(this);
-//            t.setText(buttons.get(i).toString());
-//            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_orange500));
-//            t.setTextColor(getResources().getColor(R.color.white));
-//            t.setTypeface(Typeface.MONOSPACE);
-//            t.setPadding(dpToPx(25), dpToPx(10), dpToPx(25), dpToPx(10));
-//            t.setTextSize(50);
-//            t.setGravity(Gravity.CENTER);
-//            //generate id starting with 100
-//            t.setId(100 + i);
-
             Button t = new Button(this);
             t.setText(buttons.get(i).toString());
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
@@ -428,7 +420,6 @@ public class Game_Timer extends ActionBarActivity {
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
             t.setId(100 + i);
-
 
             //set clicker
             final int finalI = i;
@@ -450,17 +441,19 @@ public class Game_Timer extends ActionBarActivity {
 
     //genereaza timerul initial
     private void timer_create() {
-
+        prog_bar.setMax(100);
+        final long timer_buffer = milis_timer;
         timer = new CountDownTimer(milis_timer, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                prog_bar.setProgress((int) millisUntilFinished / 100 * 100 / 30);
+                prog_bar.setProgress((int) (((double)millisUntilFinished / timer_buffer) * 100));
                 milis_timer = millisUntilFinished;
+                Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
             }
 
             @Override
             public void onFinish() {
-
+                timer_end();
             }
         };
         timer.start();
@@ -479,19 +472,28 @@ public class Game_Timer extends ActionBarActivity {
         if (action == "decrease") {
             total_time = milis_timer - milis_sub;
         }
-
+        prog_bar.setMax(100);
+        final long timer_buffer = total_time;
         timer = new CountDownTimer(total_time, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                prog_bar.setProgress((int) millisUntilFinished / 100 * 100 / 30);
+                prog_bar.setProgress((int) (((double)millisUntilFinished / timer_buffer) * 100));
                 milis_timer = millisUntilFinished;
+                Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
             }
 
             @Override
             public void onFinish() {
+                timer_end();
             }
         };
         timer.start();
+    }
+
+    private void timer_end(){
+        text_question.setText("Congratulations! Your score is"+score);
+        lin_answer.setVisibility(View.GONE);
+        lin_bot.setVisibility(View.GONE);
     }
 
     private void buttons_update_chars(int pressed_id) {

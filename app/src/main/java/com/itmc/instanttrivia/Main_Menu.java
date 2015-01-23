@@ -98,7 +98,6 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_play.setOnClickListener(this);
         btn_singout.setOnClickListener(this);
 
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
