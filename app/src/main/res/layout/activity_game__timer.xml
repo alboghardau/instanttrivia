@@ -77,47 +77,41 @@
         android:id="@+id/linear_answer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
+        android:layout_weight="3"
         android:paddingTop="20dp"
         android:layout_centerVertical="true"
-        android:layout_below="@+id/text_question">
+        android:layout_below="@+id/text_question"
+        android:divider="@drawable/vertical_divider"
+        android:showDividers="middle|beginning|end">
 
     </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
         android:gravity="center"
+        android:layout_weight="1"
         android:layout_below="@+id/linear_answer"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
         android:showDividers="middle|beginning|end"
         android:divider="@drawable/vertical_divider">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+        <GridLayout
+            android:id="@+id/buttons_grid"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:drawSelectorOnTop="true"
+            android:stretchMode="columnWidth"
             android:layout_below="@+id/linear_answer"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/linear_ans_first"
-            android:gravity="center"
-            android:divider="@drawable/vertical_divider"
-            android:showDividers="middle|beginning|end"></LinearLayout>
+            android:columnCount="4"
+            android:rowCount="4">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/linear_ans_first"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/lineage_ans_second"
-            android:gravity="center"
-            android:divider="@drawable/vertical_divider"
-            android:showDividers="middle|beginning|end"></LinearLayout>
+        </GridLayout>
 
     </LinearLayout>
 

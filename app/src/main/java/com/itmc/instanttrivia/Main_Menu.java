@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Outline;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -337,6 +339,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+
 
         }
     }

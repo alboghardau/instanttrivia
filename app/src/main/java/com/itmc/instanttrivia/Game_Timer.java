@@ -6,10 +6,11 @@ import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.opengl.Visibility;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,8 +27,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
-import com.itmc.instanttrivia.R;
 
 
 public class Game_Timer extends ActionBarActivity {
@@ -49,7 +49,7 @@ public class Game_Timer extends ActionBarActivity {
     //options and varaibles
     int score = 0;
     int question_counter = 0;
-    long milis_timer = 5000;
+    long milis_timer = 30000;
     long milis_add = 2000;
     long milis_sub = 1000;
     CountDownTimer timer;
@@ -200,6 +200,13 @@ public class Game_Timer extends ActionBarActivity {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
+    private float DpWidth(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return dpWidth;
+    }
+
     //animation function for the start of activity
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
@@ -255,6 +262,9 @@ public class Game_Timer extends ActionBarActivity {
         LinearLayout line = new LinearLayout(this);
         line.setOrientation(LinearLayout.HORIZONTAL);
         line.setGravity(Gravity.CENTER);
+        line.setDividerDrawable(getResources().getDrawable(R.drawable.vertical_divider));
+        line.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        line.setMinimumHeight(dpToPx(36)); //SOLVES shadow clipping in 5.0+
         lin_answer.addView(line);
 
         //contor used for answers id starting with 200
@@ -267,14 +277,18 @@ public class Game_Timer extends ActionBarActivity {
             t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
+            t.setElevation(5);
             t.setId(cont_id);
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_small_orange500));
-            t.setPadding(dpToPx(8), dpToPx(3), dpToPx(8), dpToPx(3));
+            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.transition_answer));
+            t.setPadding(dpToPx(6), dpToPx(2), dpToPx(6), dpToPx(2));
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
                 line = new LinearLayout(this);
                 line.setOrientation(LinearLayout.HORIZONTAL);
                 line.setGravity(Gravity.CENTER);
+                line.setDividerDrawable(getResources().getDrawable(R.drawable.vertical_divider));
+                line.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+                line.setMinimumHeight(dpToPx(36));
                 lin_answer.addView(line);
                 cont_id++;
             } else {
@@ -302,11 +316,11 @@ public class Game_Timer extends ActionBarActivity {
 
     }
 
-    private void answer_display_refresh(ArrayList<Character> answer, ArrayList<Character> pressed) {
+    private void answer_display_refresh(ArrayList<Character> answer, Character pressed) {
 
         //add revealed word to layout
         for (int i = 0; i < answer.size(); i++) {
-            if (pressed.contains(answer.get(i)) == true && answer.get(i) != " ".charAt(0)) {
+            if (answer.get(i) == pressed) {
                 answer_replace_char(i + 200, answer.get(i));
             }
         }
@@ -322,20 +336,11 @@ public class Game_Timer extends ActionBarActivity {
         Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
 
-        final TextView t = new TextView(this);
+        TransitionDrawable trans = (TransitionDrawable) text.getBackground();
+        trans.startTransition(1000);
+        text.setText(change.toString());
 
-        t.setTypeface(Typeface.MONOSPACE);
-        t.setTextSize(20);
-        t.setTextColor(Color.WHITE);
-        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.text_view_all_lightgreen500));
-        t.setPadding(dpToPx(8), dpToPx(3), dpToPx(8), dpToPx(3));
-        t.setGravity(Gravity.CENTER);
-        t.setId(char_id);
-        t.setText(change.toString());
 
-        text.startAnimation(fade_out);
-        lin.addView(t,index);
-        lin.removeView(text);
     }
 
     //enabble disables click event for buttons, used for fade in and out animation
@@ -397,26 +402,23 @@ public class Game_Timer extends ActionBarActivity {
 
     //function to dispaly the generated buttons, connected to buttons_display()
     private void buttons_display2(){
-        LinearLayout line1 = (LinearLayout) findViewById(R.id.linear_ans_first);
-        LinearLayout line2 = (LinearLayout) findViewById(R.id.lineage_ans_second);
-        line1.removeAllViews();
-        line2.removeAllViews();
+        GridLayout btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
+        btn_grid.removeAllViews();
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < buttons.size(); i++) {
 
             Button t = new Button(this);
             t.setText(buttons.get(i).toString());
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
             t.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
 
-            ViewGroup.LayoutParams par = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            par.width = dpToPx(70);
-            par.height = dpToPx(70);
+            GridLayout.LayoutParams par = new GridLayout.LayoutParams();
+            par.width = dpToPx((int)DpWidth()/6);
+            par.height = dpToPx((int)DpWidth()/6);
+            par.setMargins(5,5,5,5);
             t.setLayoutParams(par);
 
-            //t.setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(8));
             t.setTextSize(30);
-
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
             t.setId(100 + i);
@@ -430,12 +432,7 @@ public class Game_Timer extends ActionBarActivity {
                 }
             });
 
-            //display text view
-            if (i < 4) {
-                line1.addView(t);
-            } else {
-                line2.addView(t);
-            }
+            btn_grid.addView(t);
         }
     }
 
@@ -448,7 +445,7 @@ public class Game_Timer extends ActionBarActivity {
             public void onTick(long millisUntilFinished) {
                 prog_bar.setProgress((int) (((double)millisUntilFinished / timer_buffer) * 100));
                 milis_timer = millisUntilFinished;
-                Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
+                //Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
             }
 
             @Override
@@ -479,7 +476,7 @@ public class Game_Timer extends ActionBarActivity {
             public void onTick(long millisUntilFinished) {
                 prog_bar.setProgress((int) (((double)millisUntilFinished / timer_buffer) * 100));
                 milis_timer = millisUntilFinished;
-                Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
+                //Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
             }
 
             @Override
@@ -496,73 +493,18 @@ public class Game_Timer extends ActionBarActivity {
         lin_bot.setVisibility(View.GONE);
     }
 
-    private void buttons_update_chars(int pressed_id) {
-        ArrayList<Integer> changed = new ArrayList<Integer>();
-        ArrayList<Integer> buffer = new ArrayList<Integer>();
-        ArrayList<Character> chars = new ArrayList<Character>();
-        ArrayList<Character> answer_unused = new ArrayList<Character>();
-        Character cha = null;
-        TextView t = (TextView) findViewById(pressed_id);
-        changed.add(pressed_id);
+    private void buttons_after_press(int pressed_id, boolean correct) {
 
-        //generate all ids array and shuffle it
-        for (int i = 100; i < 108; i++) {
-            buffer.add(i);
+        Button pressed = (Button) findViewById(pressed_id);
+        pressed.setEnabled(false);
+
+        if(correct == true){
+            pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_true));
+            pressed.setTextColor(getResources().getColor(R.color.white));
+        }else{
+            pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_false));
+            pressed.setTextColor(getResources().getColor(R.color.white));
         }
-        Collections.shuffle(buffer);
-        //add first 3 shuffled to array
-        for (int i = 0; i < 3; i++) {
-            changed.add(buffer.get(i));
-        }
-
-        //genereaza 4 caractere la intamplare care nu sunt afisate & in array & apasate corecte
-        while (chars.size() < 4) {
-            cha = random_letter();
-            if (ans_pressed.contains(cha) == false && buttons.contains(cha) == false && chars.contains(cha) == false && t.getText().charAt(0) != cha) {
-                chars.add(cha);
-            }
-        }
-
-        Log.e("Chars Generated 1:", chars.toString());
-
-        //generates an array with the chars not found from answer
-        for (int i = 0; i < ans_arr.size(); i++) {
-            if (ans_pressed.contains(ans_arr.get(i)) == false && answer_unused.contains(ans_arr.get(i)) == false) {
-                answer_unused.add(ans_arr.get(i));
-            }
-        }
-        //Log.e("Answer Unused:", answer_unused.toString());
-
-        //randomize unused chars
-        Collections.shuffle(answer_unused);
-
-        if (answer_unused.size() > 0) {
-            for (int i = 0; i < 2; i++) {
-                if (changed.contains(answer_unused.get(i)) == false && buttons.contains(answer_unused.get(i)) == false ) {
-                    chars.add(answer_unused.get(i));
-                    Log.e("added", answer_unused.get(i).toString());
-                }
-                if (answer_unused.size() == 1) break;
-            }
-        }
-
-        //reverse generated chars to bring the ones from answer foreward
-        Collections.reverse(chars);
-
-        Log.e("Chars Generated 2:", chars.toString());
-
-        //updates buttons chars array and displays them
-        for (int i = 0; i < changed.size(); i++) {
-
-            TextView text_changer = (TextView) findViewById(changed.get(i));
-
-            if(answer_unused.contains(text_changer.getText().charAt(0)) == false){
-                text_changer.setText(chars.get(i).toString());
-                buttons.set(changed.get(i) - 100, chars.get(i));
-            }
-        }
-
-        Log.e("Change: id", changed.toString());
     }
 
     //verifica daca literele afisate sunt in raspuns
@@ -584,6 +526,7 @@ public class Game_Timer extends ActionBarActivity {
     //functie pentru litere.onclick
     private void click_btn(int id){
 
+        boolean correct_press = false;
         TextView t = (TextView) findViewById(id);
         Character c_btn = t.getText().charAt(0);
 
@@ -592,13 +535,15 @@ public class Game_Timer extends ActionBarActivity {
             ans_pressed.add(t.getText().charAt(0));
             timer_change("increase");
             score_update();
+            correct_press = true;
         }else{
             timer_change("decrease");
         }
 
         //updates answer display
-        answer_display_refresh(ans_arr, ans_pressed);
-        buttons_update_chars(id);
+        answer_display_refresh(ans_arr, c_btn);
+        //update pressed buttons
+        buttons_after_press(id, correct_press);
 
         //action for word completion
         if(check_completion() == true){
@@ -654,50 +599,24 @@ public class Game_Timer extends ActionBarActivity {
         Random rnd = new Random();
 
         buttons.clear();
-        //set answer to array
-        for (Character ch : ans.toCharArray()) {
-            a.add(ch);
-        }
 
-        //generate 8 random chars
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < randomchars.length(); j++) {
-                cha = randomchars.charAt(rnd.nextInt(randomchars.length()));
-                if (buttons.contains(cha) == false) {
-                    buttons.add(cha);
-                    break;
-                }
+        //adds answer letters to array
+        for(Character ch: ans.toCharArray()){
+            if(buttons.contains(ch) == false && ch != " ".charAt(0)){
+                buttons.add(ch);
             }
         }
 
-        //generate three random index
-        ArrayList<Integer> rand_index_ans = new ArrayList<>();
-        for(int i = 0; i < ans.length(); i++){
-            rand_index_ans.add(i);
-        }
-        ArrayList<Integer> rand_index_8 = new ArrayList<>();
-        for( int i = 0; i < 8; i++) {
-            rand_index_8.add(i);
-        }
-
-        //shuffle random numbers
-        Collections.shuffle(rand_index_ans);
-        Collections.shuffle(rand_index_8);
-
-        int max = rand_index_ans.size()/2;
-        if (max > 6) max = 5;
-        if (max < 1) max = 1;
-
-        //replace three chars
-        for(int i = 0; i < max; i++){
-            if(( buttons.contains(a.get(rand_index_ans.get(i))) == false) && (a.get(rand_index_ans.get(i)).compareTo(" ".charAt(0)) != 0) )
-            {
-                buttons.set(rand_index_8.get(i),a.get(rand_index_ans.get(i)));
+        //completes the array with random letters up to 16
+        while(buttons.size() < 16){
+            Character c = random_letter();
+            if(buttons.contains(c) == false){
+                buttons.add(c);
             }
         }
 
-        Log.e("Answ Index", rand_index_ans.toString());
-        Log.e("8 Index", rand_index_8.toString());
+        Collections.shuffle(buttons);
+
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
     }
