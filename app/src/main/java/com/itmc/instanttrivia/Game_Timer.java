@@ -3,6 +3,7 @@ package com.itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -188,6 +189,66 @@ public class Game_Timer extends ActionBarActivity {
             }
         });
         val.start();
+    }
+
+    private void question_hide_end(){
+        //animation to hide the question
+        ValueAnimator val = ValueAnimator.ofInt(text_question.getHeight(),0);
+        val.setDuration(2000);
+        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                text_question.setMaxHeight((Integer) animation.getAnimatedValue());
+            }
+        });
+        val.start();
+
+        //animation definition
+        lin_answer.setAlpha(1f);
+        lin_answer.animate().setDuration(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                lin_answer.setVisibility(View.GONE);
+            }
+        }).start();
+
+        lin_bot.setAlpha(1f);
+        lin_bot.animate().setDuration(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                lin_bot.removeAllViews();
+                score_final_display();
+            }
+        }).start();
+    }
+
+    private void score_final_display(){
+
+        TextView t = new TextView(this);
+        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_purple500));
+        t.setTextColor(getResources().getColor(R.color.white));
+        t.setElevation(5);
+        t.setTextSize(20);
+        t.setTypeface(font_regular);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dpToPx(30),dpToPx(30),dpToPx(30),dpToPx(30));
+        t.setText("Congratulations!\nFinal Score:\n" + score);
+        lin_bot.addView(t);
+
+        Button btn = new Button(this);
+        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+        btn.setText("Back");
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        lin_bot.addView(btn);
+
+        lin_bot.animate().setDuration(1000).alpha(1f).start();
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams
@@ -488,9 +549,18 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     private void timer_end(){
-        text_question.setText("Congratulations! Your score is"+score);
-        lin_answer.setVisibility(View.GONE);
-        lin_bot.setVisibility(View.GONE);
+
+        //start quesiton hide animation
+        question_hide_end();
+
+        //hide any procees on bar
+        prog_bar.setProgress(0);
+
+        //hide answer and questions
+        text_question.setText("");
+
+
+
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {

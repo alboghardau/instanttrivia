@@ -97,7 +97,9 @@
         android:layout_weight="1"
         android:layout_below="@+id/linear_answer"
         android:showDividers="middle|beginning|end"
-        android:divider="@drawable/vertical_divider">
+        android:divider="@drawable/vertical_divider"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
         <GridLayout
             android:id="@+id/buttons_grid"
