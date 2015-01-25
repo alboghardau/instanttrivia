@@ -52,7 +52,7 @@
         android:visibility="visible"
         android:progressDrawable="@drawable/custom_progressbar"
         android:layout_below="@+id/linear_topbar"
-        />
+        android:elevation="5dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -98,8 +98,7 @@
         android:layout_below="@+id/linear_answer"
         android:showDividers="middle|beginning|end"
         android:divider="@drawable/vertical_divider"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:padding="5dp">
 
         <GridLayout
             android:id="@+id/buttons_grid"
@@ -117,22 +116,26 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/linear_finalscore"
             android:gravity="center"
             android:divider="@drawable/vertical_divider"
             android:showDividers="middle"
-            android:visibility="gone"
-            android:elevation="5dp">
+            android:focusable="false"
+            android:padding="5dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="false"
                 android:id="@+id/linear_gratz"
-                android:gravity="center">
+                android:gravity="center"
+                android:elevation="5dp"
+                android:layout_margin="5dp"
+                android:background="@color/blue_800">
 
                 <ImageView
                     android:layout_width="fill_parent"
@@ -187,13 +190,15 @@
     </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start Game!"
         android:id="@+id/btn_start"
         android:background="@drawable/button_lollipop"
         android:layout_below="@+id/text_question"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
 </RelativeLayout>
