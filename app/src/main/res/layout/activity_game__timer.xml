@@ -115,6 +115,75 @@
 
         </GridLayout>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/linear_finalscore"
+            android:gravity="center"
+            android:divider="@drawable/vertical_divider"
+            android:showDividers="middle"
+            android:visibility="gone"
+            android:elevation="5dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:id="@+id/linear_gratz"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/icon_trophy"
+                    android:background="@color/purple_500"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Congratulations!"
+                    android:id="@+id/text_congratulations"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_500"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/text_final_score"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_800"
+                    android:gravity="center"
+                    android:textSize="30dp" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Share on Facebook"
+                android:id="@+id/buttons_facebook"
+                android:background="@drawable/button_lollipop_facebook"
+                android:textColor="@color/white" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:id="@+id/button_back"
+                android:background="@drawable/button_lollipop" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button

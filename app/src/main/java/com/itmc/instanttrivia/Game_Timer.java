@@ -36,6 +36,7 @@ public class Game_Timer extends ActionBarActivity {
     TextView text_score;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
+    GridLayout btn_grid;
     ProgressBar prog_bar;
 
     String question;
@@ -46,6 +47,8 @@ public class Game_Timer extends ActionBarActivity {
     ArrayList<Character> ans_pressed;
 
     Typeface font_regular;
+    Typeface font_thin;
+    Typeface font_bold;
 
     //options and varaibles
     int score = 0;
@@ -65,6 +68,8 @@ public class Game_Timer extends ActionBarActivity {
         //random chars used to generated buttons
         randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         font_regular = Typeface.createFromAsset(getAssets(),"typeface/RobotoRegular.ttf");
+        font_bold = Typeface.createFromAsset(getAssets(),"typeface/RobotoBold.ttf");
+        font_thin = Typeface.createFromAsset(getAssets(),"typeface/RobotoThin.ttf");
 
         //define question text
         text_question = (TextView) findViewById(R.id.text_question);
@@ -75,6 +80,7 @@ public class Game_Timer extends ActionBarActivity {
         text_score.setTypeface(font_regular);
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
+        btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         final Button btn_start = (Button) findViewById(R.id.btn_start);
@@ -218,7 +224,7 @@ public class Game_Timer extends ActionBarActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                lin_bot.removeAllViews();
+                btn_grid.removeAllViews();
                 score_final_display();
             }
         }).start();
@@ -226,27 +232,26 @@ public class Game_Timer extends ActionBarActivity {
 
     private void score_final_display(){
 
-        TextView t = new TextView(this);
-        t.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_purple500));
-        t.setTextColor(getResources().getColor(R.color.white));
-        t.setElevation(5);
-        t.setTextSize(20);
-        t.setTypeface(font_regular);
-        t.setGravity(Gravity.CENTER);
-        t.setPadding(dpToPx(30),dpToPx(30),dpToPx(30),dpToPx(30));
-        t.setText("Congratulations!\nFinal Score:\n" + score);
-        lin_bot.addView(t);
+        LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
+        lin_score.setVisibility(View.VISIBLE);
 
-        Button btn = new Button(this);
-        btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
-        btn.setText("Back");
-        btn.setOnClickListener(new View.OnClickListener() {
+        text_score.setVisibility(View.INVISIBLE);
+
+        TextView text_congratz = (TextView) findViewById(R.id.text_congratulations);
+        text_congratz.setTypeface(font_thin);
+
+        TextView text_final_score = (TextView)findViewById(R.id.text_final_score);
+        text_final_score.setText(score+"");
+        text_final_score.setTypeface(font_bold);
+
+        Button btn_back = (Button) findViewById(R.id.button_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        lin_bot.addView(btn);
+
 
         lin_bot.animate().setDuration(1000).alpha(1f).start();
     }
@@ -338,7 +343,7 @@ public class Game_Timer extends ActionBarActivity {
             t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
             t.setTextColor(Color.WHITE);
-            t.setElevation(5);
+            //t.setElevation(5);
             t.setId(cont_id);
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.transition_answer));
             t.setPadding(dpToPx(6), dpToPx(2), dpToPx(6), dpToPx(2));
@@ -558,9 +563,6 @@ public class Game_Timer extends ActionBarActivity {
 
         //hide answer and questions
         text_question.setText("");
-
-
-
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {
