@@ -3,12 +3,10 @@ package com.itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.TransitionDrawable;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
@@ -17,7 +15,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -40,11 +37,11 @@ public class Game_Timer extends ActionBarActivity {
     LinearLayout lin_bot;
     GridLayout btn_grid;
     ProgressBar prog_bar;
-    Button btn_start;
+    Button btn_start_easy;
 
     String question;
     String answer;
-    String randomchars;
+    String randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
@@ -53,17 +50,25 @@ public class Game_Timer extends ActionBarActivity {
     Typeface font_thin;
     Typeface font_bold;
 
+    Boolean started = false;
+
     //options and varaibles
     int back_pressed = 0;
     int score = 0;
-    int question_counter = 0;
     int pressed_correct = 0;
     int pressed_wrong = 0;
-    long milis_timer = 30000;
-    long milis_add = 2000;
-    long milis_sub = 3000;
-    long total_time = 0;
-    CountDownTimer timer;
+
+    int question_counter = 0;
+    int question_number = 0;
+    int max_wrong = 0;
+    int score_per_question = 0;
+    int question_time = 0;
+
+    //buffer variables for millis left to calc score
+    int millis_buffer = 0;
+
+    int total_time = 0;
+    CountDownTimer timer = null;
 
     private DbOP db;
 
@@ -72,8 +77,7 @@ public class Game_Timer extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
 
-        //random chars used to generated buttons
-        randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        //initialize fonts
         font_regular = Typeface.createFromAsset(getAssets(),"typeface/RobotoRegular.ttf");
         font_bold = Typeface.createFromAsset(getAssets(),"typeface/RobotoBold.ttf");
         font_thin = Typeface.createFromAsset(getAssets(),"typeface/RobotoThin.ttf");
@@ -90,7 +94,7 @@ public class Game_Timer extends ActionBarActivity {
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
-        btn_start = (Button) findViewById(R.id.btn_start);
+        btn_start_easy = (Button) findViewById(R.id.btn_start_easy);
 
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
@@ -101,15 +105,16 @@ public class Game_Timer extends ActionBarActivity {
         db = new DbOP(this);
         db.startdb();
 
-        new_question(); // reads question on game start
-
         //dispaly animation on start
         animate_start();
 
-        btn_start.setOnClickListener(new View.OnClickListener() {
+        btn_start_easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_start.setOnClickListener(null);
+                btn_start_easy.setOnClickListener(null);
+
+                difficulty_set("Easy");
+                question_read_db_rand(); // reads question on game start
 
                 text_question.setText(question);
                 answer_display_hidden();
@@ -119,8 +124,22 @@ public class Game_Timer extends ActionBarActivity {
 
                 //genereza si porneste timer
                 timer_create();
+
+                started = true;
             }
         });
+    }
+
+    private void difficulty_set(String difficulty){
+
+        switch (difficulty){
+            case "Easy":
+                question_number = 10;
+                max_wrong = 5;
+                score_per_question = 50;
+                question_time = 30000;
+                break;
+        }
     }
 
     //animates question textview
@@ -153,7 +172,6 @@ public class Game_Timer extends ActionBarActivity {
 
         //animate start button after click to retract back under question
         Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_top_top);
-        final Button btn_start = (Button) findViewById(R.id.btn_start);
 
         anim_start_back.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -161,14 +179,13 @@ public class Game_Timer extends ActionBarActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                ViewGroup parent = (ViewGroup) btn_start.getParent();
-                parent.removeView(btn_start);
+                btn_start_easy.setVisibility(View.GONE);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {            }
         });
-        btn_start.startAnimation(anim_start_back);
+        btn_start_easy.startAnimation(anim_start_back);
     }
 
     private void question_update(final String text){
@@ -279,8 +296,7 @@ public class Game_Timer extends ActionBarActivity {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-    private static int pxToDp(int px)
-    {
+    private static int pxToDp(int px){
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
@@ -297,8 +313,7 @@ public class Game_Timer extends ActionBarActivity {
         Animation anim_logo = AnimationUtils.loadAnimation(this, R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
 
-
-        Button start = (Button) findViewById(R.id.btn_start);
+        Button start = (Button) findViewById(R.id.btn_start_easy);
         ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
 
@@ -387,13 +402,18 @@ public class Game_Timer extends ActionBarActivity {
 
     private void score_update(){
 
-        int bonus = 1;
+        int time_sub =(int) Math.ceil((1-(millis_buffer)/(float)(question_time)) * score_per_question/2.0);
+        int wrong_sub =(int) Math.ceil((pressed_wrong/(float)max_wrong * 0.5 * score_per_question));
+        int bonus = score_per_question - time_sub - wrong_sub;
+
+        Log.e("time_sub", time_sub+"");
+        Log.e("wrong_Sub", wrong_sub+"");
         ValueAnimator val = ValueAnimator.ofInt(score,score+bonus);
-        val.setDuration(bonus*100);
+        val.setDuration(bonus*50);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                text_score.setText("Score: "+ (Integer) animation.getAnimatedValue());
+                text_score.setText("Score: "+  animation.getAnimatedValue());
             }
         });
 
@@ -503,7 +523,7 @@ public class Game_Timer extends ActionBarActivity {
             t.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    click_btn(100 + finalI);
+                    buttons_click(100 + finalI);
                 }
             });
 
@@ -513,49 +533,26 @@ public class Game_Timer extends ActionBarActivity {
 
     //genereaza timerul initial
     private void timer_create() {
-        prog_bar.setMax(100);
-        final long timer_buffer = milis_timer;
-        timer = new CountDownTimer(milis_timer, 100) {
+
+        if(timer != null) timer.cancel();
+        timer = new CountDownTimer(question_time, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
-                prog_bar.setProgress((int) (((double)millisUntilFinished / timer_buffer) * 100));
-                milis_timer = millisUntilFinished;
-                //Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
+                prog_bar.setProgress((int) (((double)millisUntilFinished / question_time) * 100));
+                millis_buffer = (int)millisUntilFinished;
             }
 
             @Override
             public void onFinish() {
-                timer_end();
+
+                if(question_counter == question_number){
+                    timer_end();
+                }else {
+                    question_next();
+                }
             }
         };
         timer.start();
-    }
-
-    //mareste timpul alocat pentru timer cu 2 secunde
-    private void timer_change() {
-
-        timer.cancel();
-
-        if(total_time > 2000) {
-            prog_bar.setMax(100);
-            final long timer_buffer = total_time;
-            timer = new CountDownTimer(total_time, 100) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    prog_bar.setProgress((int) (((double) millisUntilFinished / timer_buffer) * 100));
-                    milis_timer = millisUntilFinished;
-                    //Log.e("testmil",(int) (((double)millisUntilFinished / timer_buffer) * 100) +"");
-                }
-
-                @Override
-                public void onFinish() {
-                    timer_end();
-                }
-            };
-            timer.start();
-        }else{
-            timer_end();
-        }
     }
 
     private void timer_end(){
@@ -602,7 +599,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //functie pentru litere.onclick
-    private void click_btn(int id){
+    private void buttons_click(int id){
 
         boolean correct_press = false;
         TextView t = (TextView) findViewById(id);
@@ -611,7 +608,6 @@ public class Game_Timer extends ActionBarActivity {
         //testeaza daca litera face parte din raspuns
         if(ans_arr.contains(t.getText().charAt(0))){
             ans_pressed.add(t.getText().charAt(0));
-            score_update();
             pressed_correct++;
             correct_press = true;
         }else{
@@ -620,26 +616,28 @@ public class Game_Timer extends ActionBarActivity {
 
         //updates answer display
         answer_display_refresh(ans_arr, c_btn);
-        //update pressed buttons
+        //update pressed buttons drawable
         buttons_after_press(id, correct_press);
+
+        //next question for pressed wrong
+        if(pressed_wrong == max_wrong) {
+            //reset pressed variables
+            pressed_correct = 0;
+            pressed_wrong = 0;
+            question_next();
+        }
 
         //action for word completion
         if(check_completion() == true){
 
-            //global variables change and reset for timer
-            total_time = milis_timer + milis_add * pressed_correct - milis_sub * pressed_wrong ;
+            score_update();
+            //reset pressed variables
             pressed_correct = 0;
             pressed_wrong = 0;
 
             //test if the timer is gone when change the question
-            if(total_time > 23000){
-            new_question();                 //read new questions form database
-            answer_display_hidden();        //display answer
-            question_update(question);      //update text with animation
-            buttons_generate(answer);
-            buttons_display();
-            buttons_enabler(false);         //click disables after word completion, reactivated in buttons display animation end
-            timer_change();
+            if(question_counter <= question_number){
+                question_next();
             }else{
                 timer.cancel();             //solves some weird animation bug
                 timer_end();
@@ -651,8 +649,18 @@ public class Game_Timer extends ActionBarActivity {
         }
     }
 
+    private void question_next(){
+        question_read_db_rand();                 //read new questions form database
+        answer_display_hidden();        //display answer
+        question_update(question);      //update text with animation
+        buttons_generate(answer);
+        buttons_display();
+        buttons_enabler(false);         //click disables after word completion, reactivated in buttons display animation end
+        timer_create();
+    }
+
     //reads new questions from database and sets variables
-    private void new_question(){
+    private void question_read_db_rand(){
 
         String[] questy;
         questy = db.read_rand_question_difficulty(1);
@@ -672,8 +680,7 @@ public class Game_Timer extends ActionBarActivity {
     }
 
     //verifica daca cuvantul este completat
-    private boolean check_completion()
-    {
+    private boolean check_completion(){
         for( int i = 0; i < ans_arr.size(); i++){
             if( ans_pressed.contains(ans_arr.get(i)) != true){
                 return false;
@@ -718,10 +725,10 @@ public class Game_Timer extends ActionBarActivity {
         back_pressed++;
         if(back_pressed == 1){
             timer_end();
-            if(btn_start.getVisibility() != View.VISIBLE){
+            if(started == true){
                 timer.cancel();                         //prevent timer from exception
             }else{
-                btn_start.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
+                btn_start_easy.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
         }else{
             finish();

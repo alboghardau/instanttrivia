@@ -47,8 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/timer_bar"
-        android:progress="1000"
-        android:max="1000"
+        android:progress="100"
+        android:max="100"
         android:visibility="visible"
         android:progressDrawable="@drawable/custom_progressbar"
         android:layout_below="@+id/linear_topbar"
@@ -61,8 +61,8 @@
         android:layout_below="@+id/timer_bar"
         android:layout_centerHorizontal="true"
         android:background="@color/purple_500"
-        android:paddingTop="150dp"
-        android:paddingBottom="190dp"
+        android:paddingTop="120dp"
+        android:paddingBottom="120dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@color/white"
@@ -173,32 +173,24 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Share on Facebook"
-                android:id="@+id/buttons_facebook"
-                android:background="@drawable/button_lollipop_facebook"
-                android:textColor="@color/white" />
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
                 android:text="Back"
                 android:id="@+id/button_back"
                 android:background="@drawable/button_lollipop" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Easy"
+            android:id="@+id/btn_start_easy"
+            android:background="@drawable/button_lollipop"
+            android:layout_below="@+id/text_question"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start Game!"
-        android:id="@+id/btn_start"
-        android:background="@drawable/button_lollipop"
-        android:layout_below="@+id/text_question"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+    </LinearLayout>
 
 </RelativeLayout>
