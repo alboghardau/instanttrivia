@@ -33,15 +33,22 @@ public class Game_Timer extends ActionBarActivity {
 
     TextView text_question;
     TextView text_score;
+
+    LinearLayout lin_start_btn;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
     GridLayout btn_grid;
+
     ProgressBar prog_bar;
+
     Button btn_start_easy;
+    Button btn_start_med;
+    Button btn_start_hard;
 
     String question;
     String answer;
     String randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
@@ -78,9 +85,9 @@ public class Game_Timer extends ActionBarActivity {
         setContentView(R.layout.activity_game__timer);
 
         //initialize fonts
-        font_regular = Typeface.createFromAsset(getAssets(),"typeface/RobotoRegular.ttf");
-        font_bold = Typeface.createFromAsset(getAssets(),"typeface/RobotoBold.ttf");
-        font_thin = Typeface.createFromAsset(getAssets(),"typeface/RobotoThin.ttf");
+        font_regular = Typeface.createFromAsset(getAssets(), "typeface/RobotoRegular.ttf");
+        font_bold = Typeface.createFromAsset(getAssets(), "typeface/RobotoBold.ttf");
+        font_thin = Typeface.createFromAsset(getAssets(), "typeface/RobotoThin.ttf");
 
         //define question text
         text_question = (TextView) findViewById(R.id.text_question);
@@ -89,12 +96,17 @@ public class Game_Timer extends ActionBarActivity {
         //define variables
         text_score = (TextView) findViewById(R.id.text_score);
         text_score.setTypeface(font_regular);
+
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
+        lin_start_btn = (LinearLayout) findViewById(R.id.linear_start_btn);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
+
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         btn_start_easy = (Button) findViewById(R.id.btn_start_easy);
+        btn_start_med = (Button) findViewById(R.id.btn_start_med);
+        btn_start_hard = (Button) findViewById(R.id.btn_start_hard);
 
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
@@ -112,16 +124,42 @@ public class Game_Timer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 btn_start_easy.setOnClickListener(null);
-
                 difficulty_set("Easy");
                 question_read_db_rand(); // reads question on game start
-
                 text_question.setText(question);
                 answer_display_hidden();
-
                 //porneste animatia pentru questions
                 animate_quest();
+                //genereza si porneste timer
+                timer_create();
 
+                started = true;
+            }
+        });
+        btn_start_med.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                difficulty_set("Medium");
+                question_read_db_rand(); // reads question on game start
+                text_question.setText(question);
+                answer_display_hidden();
+                //porneste animatia pentru questions
+                animate_quest();
+                //genereza si porneste timer
+                timer_create();
+
+                started = true;
+            }
+        });
+        btn_start_hard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                difficulty_set("Medium");
+                question_read_db_rand(); // reads question on game start
+                text_question.setText(question);
+                answer_display_hidden();
+                //porneste animatia pentru questions
+                animate_quest();
                 //genereza si porneste timer
                 timer_create();
 
@@ -130,6 +168,7 @@ public class Game_Timer extends ActionBarActivity {
         });
     }
 
+    //sets difficulty variables
     private void difficulty_set(String difficulty){
 
         switch (difficulty){
@@ -138,6 +177,18 @@ public class Game_Timer extends ActionBarActivity {
                 max_wrong = 5;
                 score_per_question = 50;
                 question_time = 30000;
+                break;
+            case "Medium":
+                question_number = 10;
+                max_wrong = 4;
+                score_per_question = 100;
+                question_time = 25000;
+                break;
+            case "Hard":
+                question_number = 10;
+                max_wrong = 3;
+                score_per_question = 150;
+                question_time = 20000;
                 break;
         }
     }
@@ -179,13 +230,13 @@ public class Game_Timer extends ActionBarActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                btn_start_easy.setVisibility(View.GONE);
+                lin_start_btn.setVisibility(View.GONE);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {            }
         });
-        btn_start_easy.startAnimation(anim_start_back);
+        lin_start_btn.startAnimation(anim_start_back);
     }
 
     private void question_update(final String text){
@@ -313,11 +364,10 @@ public class Game_Timer extends ActionBarActivity {
         Animation anim_logo = AnimationUtils.loadAnimation(this, R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
 
-        Button start = (Button) findViewById(R.id.btn_start_easy);
         ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
 
-        start.startAnimation(anim);
+        lin_start_btn.startAnimation(anim);
         logo.startAnimation(anim_logo);
         score.startAnimation(anim_score);
     }
@@ -727,6 +777,7 @@ public class Game_Timer extends ActionBarActivity {
             timer_end();
             if(started == true){
                 timer.cancel();                         //prevent timer from exception
+                btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
             }else{
                 btn_start_easy.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
