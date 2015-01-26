@@ -33,6 +33,10 @@ public class Game_Timer extends ActionBarActivity {
 
     TextView text_question;
     TextView text_score;
+    TextView text_question_current;
+    TextView text_question_total;
+
+    ImageView icon_question;
 
     LinearLayout lin_start_btn;
     LinearLayout lin_answer;
@@ -92,10 +96,17 @@ public class Game_Timer extends ActionBarActivity {
         //define question text
         text_question = (TextView) findViewById(R.id.text_question);
         text_question.setTypeface(font_regular);
-
-        //define variables
         text_score = (TextView) findViewById(R.id.text_score);
-        text_score.setTypeface(font_regular);
+        text_score.setTypeface(font_bold);
+        text_question_current = (TextView) findViewById(R.id.text_question_current);
+        text_question_current.setTypeface(font_bold);
+        text_question_total = (TextView) findViewById(R.id.text_question_total);
+        text_question_total.setTypeface(font_bold);
+
+        icon_question = (ImageView) findViewById(R.id.image_icon_question);
+        icon_question.setAlpha(0f);
+
+        icon_question = (ImageView) findViewById(R.id.image_icon_question);
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
@@ -154,7 +165,7 @@ public class Game_Timer extends ActionBarActivity {
         btn_start_hard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                difficulty_set("Medium");
+                difficulty_set("Hard");
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(question);
                 answer_display_hidden();
@@ -370,10 +381,16 @@ public class Game_Timer extends ActionBarActivity {
         lin_start_btn.startAnimation(anim);
         logo.startAnimation(anim_logo);
         score.startAnimation(anim_score);
+        icon_question.animate().alpha(1f).setDuration(1000).start();
     }
 
     //function handles animation for answer display connected to answer_display_hidden2();
     private void answer_display_hidden() {
+
+        //display update question number on top
+        text_question_total.setText(question_number+"");
+        text_question_current.setText(question_counter+"");
+        icon_question.setVisibility(View.VISIBLE);
 
         //animation definition
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
@@ -686,7 +703,7 @@ public class Game_Timer extends ActionBarActivity {
             pressed_wrong = 0;
 
             //test if the timer is gone when change the question
-            if(question_counter <= question_number){
+            if(question_counter < question_number){
                 question_next();
             }else{
                 timer.cancel();             //solves some weird animation bug
@@ -779,7 +796,7 @@ public class Game_Timer extends ActionBarActivity {
                 timer.cancel();                         //prevent timer from exception
                 btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
             }else{
-                btn_start_easy.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
+                lin_start_btn.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
         }else{
             finish();
