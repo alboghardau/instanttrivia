@@ -2,43 +2,36 @@ package com.itmc.instanttrivia;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Outline;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.d;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
-import com.itmc.instanttrivia.R;
 
-import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 
-public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
+public class Main_Menu extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private SignInButton btnSignIn;
@@ -48,9 +41,16 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
     private TextView text_loged;
     private ImageView imgProfilePic;
 
-    GameHelper gameHelper;
+    GoogleApiClient mGoogleApiClient;
 
     private DbOP db;
+
+    private static int RC_SIGN_IN = 9001;
+
+    private boolean mResolvingConnectionFailure = false;
+    private boolean mAutoStartSignInFlow = true;
+    private boolean mSignInClicked = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +89,29 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         btn_singout.setOnClickListener(this);
         btn_high_scores.setOnClickListener(this);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
 
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
-        gameHelper.setup(this);
 
-        gameHelper.enableDebugLog(true);   // add this (but only for debug builds)
+
+        display_change_state();
     }
 
+    private void display_change_state(){
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+            btnSignIn.setVisibility(View.GONE);
+            btn_high_scores.setVisibility(View.VISIBLE);
+            btn_singout.setVisibility(View.VISIBLE);
+            Log.e("Connection:", "CONNECTED");
+        }else{
+            btnSignIn.setVisibility(View.VISIBLE);
+            btn_high_scores.setVisibility(View.GONE);
+            btn_singout.setVisibility(View.GONE);
+            Log.e("Connection:", "DISCONNECTED");
+        }
+    }
 
     /**
      * Button on click listener
@@ -105,24 +121,23 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_sign_in:
                 // Signin button clicked
-                beginUserInitiatedSignIn();
+                mGoogleApiClient.connect();
+                display_change_state();
                 break;
             case R.id.button_signout:
                 // Signout button clicked
-                signOut();
+                Games.signOut(mGoogleApiClient);
+                mGoogleApiClient.disconnect();
+                display_change_state();
                 break;
-//            TO KEEP IN CASE OF FUTURE USE
-//            case R.id.btn_revoke_access:
-//                // Revoke access button clicked
-//                revokeGplusAccess();
-//                break;
             case R.id.button_play:
                 // Start Game Activity
                 Intent start = new Intent(this, Game_Timer.class);
                 startActivity(start);
                 break;
             case R.id.button_high_scores:
-                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient() , getString(R.string.leaderboard_test_leaderboard)) , 1);
+
+                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , getString(R.string.leaderboard_time_trial__easy_level)) , 1);
                 Log.e("HS test press","TRUE");
                 break;
         }
@@ -131,30 +146,69 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
 
 
     @Override
-    public void onSignInFailed() {
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-
-    }
-
-    @Override
     public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
+        display_change_state();
+        String name = Games.getCurrentAccountName(mGoogleApiClient);
+        text_loged.setText("Loged in as "+name);
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        
+        if (mResolvingConnectionFailure) {
+            // already resolving
+            return;
+        }
 
+        // if the sign-in button was clicked or if auto sign-in is enabled,
+        // launch the sign-in flow
+        if (mSignInClicked || mAutoStartSignInFlow) {
+            mAutoStartSignInFlow = false;
+            mSignInClicked = false;
+            mResolvingConnectionFailure = true;
+
+            // Attempt to resolve the connection failure using BaseGameUtils.
+            // The R.string.signin_other_error value should reference a generic
+            // error string in your strings.xml file, such as "There was
+            // an issue with sign-in, please try again later."
+            if (!BaseGameUtils.resolveConnectionFailure(this,
+                    mGoogleApiClient, connectionResult,
+                    RC_SIGN_IN, "Can't Sign In")) {
+                mResolvingConnectionFailure = false;
+            }
+        }
+
+        // Put code here to display the sign-in button
+        display_change_state();
     }
 
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent intent) {
+        if (requestCode == RC_SIGN_IN) {
+            mSignInClicked = false;
+            mResolvingConnectionFailure = false;
+            if (resultCode == RESULT_OK) {
+                mGoogleApiClient.connect();
+            } else {
+                // Bring up an error dialog to alert the user that sign-in
+                // failed. The R.string.signin_failure should reference an error
+                // string in your strings.xml file that tells the user they
+                // could not be signed in, such as "Unable to sign in."
+                BaseGameUtils.showActivityResultError(this,
+                        requestCode, resultCode, 1);
+            }
+        }
+    }
+
+
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Attempt to reconnect
+        mGoogleApiClient.connect();
+        display_change_state();
+    }
 }
 
 

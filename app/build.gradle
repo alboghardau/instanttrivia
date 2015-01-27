@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'Instant_Trivia'
             keyPassword 'B18cW93xg'
-            storeFile file('C:/Dropbox/instanttrivia.jks')
+            storeFile file('E:/Dropbox/instanttrivia.jks')
             storePassword 'B18cW93xg'
         }
     }

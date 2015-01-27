@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,12 +23,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 
-public class Game_Timer extends ActionBarActivity {
+public class Game_Timer extends BaseGameActivity {
 
     TextView text_question;
     TextView text_score;
@@ -351,6 +353,12 @@ public class Game_Timer extends ActionBarActivity {
 
 
         lin_bot.animate().setDuration(1000).alpha(1f).start();
+
+        if(getApiClient().isConnected()) {
+            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_time_trial__easy_level), score);
+            Log.e("Score Uploaded", "TRUE");
+
+        }
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams
@@ -808,5 +816,15 @@ public class Game_Timer extends ActionBarActivity {
     {
         super.onDestroy();
         db.close();
+    }
+
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 }
