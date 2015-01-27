@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'Instant_Trivia'
             keyPassword 'B18cW93xg'
-            storeFile file('E:/Dropbox/instanttrivia.jks')
+            storeFile file('C:/Dropbox/instanttrivia.jks')
             storePassword 'B18cW93xg'
         }
     }
@@ -13,7 +13,7 @@ android {
     buildToolsVersion "21.1.2"
     defaultConfig {
         applicationId "com.itmc.instanttrivia"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

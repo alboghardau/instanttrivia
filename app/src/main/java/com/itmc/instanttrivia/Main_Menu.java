@@ -32,6 +32,7 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.example.games.basegameutils.BaseGameActivity;
+import com.google.example.games.basegameutils.GameHelper;
 import com.itmc.instanttrivia.R;
 
 import java.io.InputStream;
@@ -66,6 +67,8 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
     private Button btn_singout;
     private TextView text_loged;
     private ImageView imgProfilePic;
+
+    GameHelper gameHelper;
 
     private DbOP db;
 
@@ -108,90 +111,21 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).addApi(Games.API)
-                .addScope(Games.SCOPE_GAMES).build();
+                .addOnConnectionFailedListener(this)
+                //.addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
 
         //test if app is connected on start
         if(mSignInClicked == false) updateUI(false);
+
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_ALL);
+        gameHelper.setup(this);
+
+        gameHelper.enableDebugLog(true);   // add this (but only for debug builds)
     }
 
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
 
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    /**
-     * Method to resolve any signin errors
-     * */
-    private void resolveSignInError() {
-        if (mConnectionResult.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
-            } catch (IntentSender.SendIntentException e) {
-                mIntentInProgress = false;
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this,
-                    0).show();
-            return;
-        }
-
-        if (!mIntentInProgress) {
-            // Store the ConnectionResult for later usage
-            mConnectionResult = result;
-
-            if (mSignInClicked) {
-                // The user has already clicked 'sign-in' so we attempt to
-                // resolve all
-                // errors until the user is signed in, or they cancel.
-                resolveSignInError();
-            }
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int responseCode,
-                                    Intent intent) {
-        if (requestCode == RC_SIGN_IN) {
-            if (responseCode != RESULT_OK) {
-                mSignInClicked = false;
-            }
-
-            mIntentInProgress = false;
-
-            if (!mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-        mSignInClicked = false;
-        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
-
-        // Get user's information
-        //getProfileInformation();
-
-        // Update the UI after signin
-        updateUI(true);
-
-    }
 
     /**
      * Updating the UI, showing/hiding buttons and profile layout
@@ -244,11 +178,6 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
 //        }
 //    }
 
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        mGoogleApiClient.connect();
-        updateUI(false);
-    }
 
 
 
@@ -260,11 +189,11 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_sign_in:
                 // Signin button clicked
-                signInWithGplus();
+                beginUserInitiatedSignIn();
                 break;
             case R.id.button_signout:
                 // Signout button clicked
-                signOutFromGplus();
+
                 break;
 //            TO KEEP IN CASE OF FUTURE USE
 //            case R.id.btn_revoke_access:
@@ -283,27 +212,7 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         }
     }
 
-    /**
-     * Sign-in into google
-     * */
-    private void signInWithGplus() {
-        if (!mGoogleApiClient.isConnecting()) {
-            mSignInClicked = true;
-            resolveSignInError();
-        }
-    }
 
-    /**
-     * Sign-out from google
-     * */
-    private void signOutFromGplus() {
-        if (mGoogleApiClient.isConnected()) {
-            Games.signOut(mGoogleApiClient);
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient.connect();
-            updateUI(false);
-        }
-    }
 
     @Override
     public void onSignInFailed() {
@@ -312,6 +221,21 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
 
     @Override
     public void onSignInSucceeded() {
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
