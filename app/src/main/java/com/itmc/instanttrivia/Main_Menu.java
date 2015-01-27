@@ -41,26 +41,6 @@ import java.io.InputStream;
 public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final int RC_SIGN_IN = 0;
-    // Logcat tag
-    private static final String TAG = "MainActivity";
-
-    // Profile pic image size in pixels
-    private static final int PROFILE_PIC_SIZE = 400;
-
-    // Google client to interact with Google API
-    private GoogleApiClient mGoogleApiClient;
-
-    /**
-     * A flag indicating that a PendingIntent is in progress and prevents us
-     * from starting further intents.
-     */
-    private boolean mIntentInProgress;
-
-    private boolean mSignInClicked = false;
-
-    private ConnectionResult mConnectionResult;
-
     private SignInButton btnSignIn;
     private Button btn_high_scores;
     private Button btn_play;
@@ -109,76 +89,12 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         btn_singout.setOnClickListener(this);
         btn_high_scores.setOnClickListener(this);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //.addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .build();
 
-        //test if app is connected on start
-        if(mSignInClicked == false) updateUI(false);
-
-        gameHelper = new GameHelper(this, GameHelper.CLIENT_ALL);
+        gameHelper = new GameHelper(this, GameHelper.CLIENT_GAMES);
         gameHelper.setup(this);
 
         gameHelper.enableDebugLog(true);   // add this (but only for debug builds)
     }
-
-
-
-    /**
-     * Updating the UI, showing/hiding buttons and profile layout
-     * */
-    private void updateUI(boolean isSignedIn) {
-        if (isSignedIn) {
-            btnSignIn.setVisibility(View.GONE);
-            btn_singout.setVisibility(View.VISIBLE);
-        } else {
-            btnSignIn.setVisibility(View.VISIBLE);
-            btn_singout.setVisibility(View.GONE);
-        }
-    }
-
-//    /**
-//     * Fetching user's information name, email, profile pic
-//     * */
-//    private void getProfileInformation() {
-//        try {
-//            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-//                Person currentPerson = Plus.PeopleApi
-//                        .getCurrentPerson(mGoogleApiClient);
-//                String personName = currentPerson.getDisplayName();
-//                String personPhotoUrl = currentPerson.getImage().getUrl();
-//                String personGooglePlusProfile = currentPerson.getUrl();
-//                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-//
-//                Log.e(TAG, "Name: " + personName + ", plusProfile: "
-//                        + personGooglePlusProfile + ", email: " + email
-//                        + ", Image: " + personPhotoUrl);
-//
-//                text_loged.setText("Logged in as "+personName);
-//                //txtEmail.setText(email);
-//
-//                // by default the profile url gives 50x50 px image only
-//                // we can replace the value with whatever dimension we want by
-//                // replacing sz=X
-//                personPhotoUrl = personPhotoUrl.substring(0,
-//                        personPhotoUrl.length() - 2)
-//                        + PROFILE_PIC_SIZE;
-//
-//                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-//
-//            } else {
-//                Toast.makeText(getApplicationContext(),
-//                        "Person information is null", Toast.LENGTH_LONG).show();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
 
 
     /**
@@ -193,7 +109,7 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
                 break;
             case R.id.button_signout:
                 // Signout button clicked
-
+                signOut();
                 break;
 //            TO KEEP IN CASE OF FUTURE USE
 //            case R.id.btn_revoke_access:
@@ -206,7 +122,7 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
                 startActivity(start);
                 break;
             case R.id.button_high_scores:
-                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , "CgkIyc6Y-6gaEAIQAQ") , 1);
+                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient() , getString(R.string.leaderboard_test_leaderboard)) , 1);
                 Log.e("HS test press","TRUE");
                 break;
         }
@@ -238,37 +154,6 @@ public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-
-
-    /**
-     * Background Async task to load user profile picture from url
-     * */
-//    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-//        ImageView bmImage;
-//
-//        public LoadProfileImage(ImageView bmImage) {
-//            this.bmImage = bmImage;
-//        }
-//
-//        protected Bitmap doInBackground(String... urls) {
-//            String urldisplay = urls[0];
-//            Bitmap mIcon11 = null;
-//            try {
-//                InputStream in = new java.net.URL(urldisplay).openStream();
-//                mIcon11 = BitmapFactory.decodeStream(in);
-//            } catch (Exception e) {
-//                Log.e("Error", e.getMessage());
-//                e.printStackTrace();
-//            }
-//            return mIcon11;
-//        }
-//
-//        protected void onPostExecute(Bitmap result) {
-//            bmImage.setImageBitmap(result);
-//
-//
-//        }
-//    }
 
 }
 
