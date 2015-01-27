@@ -27,14 +27,17 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.example.games.basegameutils.BaseGameActivity;
 import com.itmc.instanttrivia.R;
 
 import java.io.InputStream;
 
 
-public class Main_Menu extends Activity implements View.OnClickListener,
+public class Main_Menu extends BaseGameActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int RC_SIGN_IN = 0;
@@ -58,6 +61,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     private ConnectionResult mConnectionResult;
 
     private SignInButton btnSignIn;
+    private Button btn_high_scores;
     private Button btn_play;
     private Button btn_singout;
     private TextView text_loged;
@@ -75,6 +79,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
         btn_play = (Button) findViewById(R.id.button_play);
         btn_singout = (Button)findViewById(R.id.button_signout);
+        btn_high_scores = (Button)findViewById(R.id.button_high_scores);
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         text_loged = (TextView) findViewById(R.id.text_loged);
 
@@ -99,11 +104,12 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btnSignIn.setOnClickListener(this);
         btn_play.setOnClickListener(this);
         btn_singout.setOnClickListener(this);
+        btn_high_scores.setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+                .addOnConnectionFailedListener(this).addApi(Games.API)
+                .addScope(Games.SCOPE_GAMES).build();
 
         //test if app is connected on start
         if(mSignInClicked == false) updateUI(false);
@@ -180,7 +186,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
 
         // Get user's information
-        getProfileInformation();
+        //getProfileInformation();
 
         // Update the UI after signin
         updateUI(true);
@@ -200,43 +206,43 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         }
     }
 
-    /**
-     * Fetching user's information name, email, profile pic
-     * */
-    private void getProfileInformation() {
-        try {
-            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-                Person currentPerson = Plus.PeopleApi
-                        .getCurrentPerson(mGoogleApiClient);
-                String personName = currentPerson.getDisplayName();
-                String personPhotoUrl = currentPerson.getImage().getUrl();
-                String personGooglePlusProfile = currentPerson.getUrl();
-                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-
-                Log.e(TAG, "Name: " + personName + ", plusProfile: "
-                        + personGooglePlusProfile + ", email: " + email
-                        + ", Image: " + personPhotoUrl);
-
-                text_loged.setText("Logged in as "+personName);
-                //txtEmail.setText(email);
-
-                // by default the profile url gives 50x50 px image only
-                // we can replace the value with whatever dimension we want by
-                // replacing sz=X
-                personPhotoUrl = personPhotoUrl.substring(0,
-                        personPhotoUrl.length() - 2)
-                        + PROFILE_PIC_SIZE;
-
-                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-
-            } else {
-                Toast.makeText(getApplicationContext(),
-                        "Person information is null", Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    /**
+//     * Fetching user's information name, email, profile pic
+//     * */
+//    private void getProfileInformation() {
+//        try {
+//            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+//                Person currentPerson = Plus.PeopleApi
+//                        .getCurrentPerson(mGoogleApiClient);
+//                String personName = currentPerson.getDisplayName();
+//                String personPhotoUrl = currentPerson.getImage().getUrl();
+//                String personGooglePlusProfile = currentPerson.getUrl();
+//                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+//
+//                Log.e(TAG, "Name: " + personName + ", plusProfile: "
+//                        + personGooglePlusProfile + ", email: " + email
+//                        + ", Image: " + personPhotoUrl);
+//
+//                text_loged.setText("Logged in as "+personName);
+//                //txtEmail.setText(email);
+//
+//                // by default the profile url gives 50x50 px image only
+//                // we can replace the value with whatever dimension we want by
+//                // replacing sz=X
+//                personPhotoUrl = personPhotoUrl.substring(0,
+//                        personPhotoUrl.length() - 2)
+//                        + PROFILE_PIC_SIZE;
+//
+//                new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+//
+//            } else {
+//                Toast.makeText(getApplicationContext(),
+//                        "Person information is null", Toast.LENGTH_LONG).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void onConnectionSuspended(int arg0) {
@@ -270,6 +276,10 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 Intent start = new Intent(this, Game_Timer.class);
                 startActivity(start);
                 break;
+            case R.id.button_high_scores:
+                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , "CgkIyc6Y-6gaEAIQAQ") , 1);
+                Log.e("HS test press","TRUE");
+                break;
         }
     }
 
@@ -288,61 +298,53 @@ public class Main_Menu extends Activity implements View.OnClickListener,
      * */
     private void signOutFromGplus() {
         if (mGoogleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+            Games.signOut(mGoogleApiClient);
             mGoogleApiClient.disconnect();
             mGoogleApiClient.connect();
             updateUI(false);
         }
     }
 
-    /**
-     * Revoking access from google
-     * */
-    private void revokeGplusAccess() {
-        if (mGoogleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-            Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient)
-                    .setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status arg0) {
-                            Log.e(TAG, "User access revoked!");
-                            mGoogleApiClient.connect();
-                            updateUI(false);
-                        }
+    @Override
+    public void onSignInFailed() {
 
-                    });
-        }
     }
+
+    @Override
+    public void onSignInSucceeded() {
+
+    }
+
 
     /**
      * Background Async task to load user profile picture from url
      * */
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-
-
-        }
-    }
+//    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+//        ImageView bmImage;
+//
+//        public LoadProfileImage(ImageView bmImage) {
+//            this.bmImage = bmImage;
+//        }
+//
+//        protected Bitmap doInBackground(String... urls) {
+//            String urldisplay = urls[0];
+//            Bitmap mIcon11 = null;
+//            try {
+//                InputStream in = new java.net.URL(urldisplay).openStream();
+//                mIcon11 = BitmapFactory.decodeStream(in);
+//            } catch (Exception e) {
+//                Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            return mIcon11;
+//        }
+//
+//        protected void onPostExecute(Bitmap result) {
+//            bmImage.setImageBitmap(result);
+//
+//
+//        }
+//    }
 
 }
 
