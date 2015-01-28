@@ -51,6 +51,9 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     private boolean mAutoStartSignInFlow = true;
     private boolean mSignInClicked = false;
 
+    boolean mExplicitSignOut = false;
+    boolean mInSignInFlow = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,13 +97,13 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
 
+        Log.e("OnCreate", "Apelat");
 
 
-        display_change_state();
     }
 
-    private void display_change_state(){
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+    private void display_change_state(Boolean signed){
+        if (signed == true){
             btnSignIn.setVisibility(View.GONE);
             btn_high_scores.setVisibility(View.VISIBLE);
             btn_singout.setVisibility(View.VISIBLE);
@@ -121,14 +124,19 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.btn_sign_in:
                 // Signin button clicked
+                mSignInClicked = true;
                 mGoogleApiClient.connect();
-                display_change_state();
                 break;
             case R.id.button_signout:
-                // Signout button clicked
-                Games.signOut(mGoogleApiClient);
-                mGoogleApiClient.disconnect();
-                display_change_state();
+                // user explicitly signed out, so turn off auto sign in
+                mExplicitSignOut = true;
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                    Games.signOut(mGoogleApiClient);
+                    mGoogleApiClient.disconnect();
+                }
+
+                //show hide buttons
+                display_change_state(false);
                 break;
             case R.id.button_play:
                 // Start Game Activity
@@ -147,10 +155,28 @@ public class Main_Menu extends Activity implements View.OnClickListener,
 
     @Override
     public void onConnected(Bundle bundle) {
-        display_change_state();
+
+        display_change_state(true);
         String name = Games.getCurrentAccountName(mGoogleApiClient);
         text_loged.setText("Loged in as "+name);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mInSignInFlow && !mExplicitSignOut) {
+            // auto sign in
+            mGoogleApiClient.connect();
+            Log.e("Sing in on start","Apelat");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -179,7 +205,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         }
 
         // Put code here to display the sign-in button
-        display_change_state();
+        display_change_state(false);
     }
 
     protected void onActivityResult(int requestCode, int resultCode,
@@ -207,7 +233,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
         mGoogleApiClient.connect();
-        display_change_state();
+
     }
 }
 
