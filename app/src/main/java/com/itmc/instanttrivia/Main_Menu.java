@@ -145,8 +145,9 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 break;
             case R.id.button_high_scores:
 
-                startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , getString(R.string.leaderboard_time_trial__easy_level)) , 1);
-                Log.e("HS test press","TRUE");
+                Intent high = new Intent(this, High_Scores.class);
+                startActivity(high);
+                //startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , getString(R.string.leaderboard_time_trial__easy_level)) , 1);
                 break;
         }
     }
@@ -178,6 +179,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     }
 
 
+    //resolves connection problems
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         
@@ -221,13 +223,10 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 // string in your strings.xml file that tells the user they
                 // could not be signed in, such as "Unable to sign in."
                 BaseGameUtils.showActivityResultError(this,
-                        requestCode, resultCode, 1);
+                        requestCode, resultCode, R.string.connection_problems);
             }
         }
     }
-
-
-
 
     @Override
     public void onConnectionSuspended(int i) {

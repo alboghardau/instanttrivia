@@ -7,9 +7,12 @@
     <string name="title_activity_game__timer">Game_Timer</string>
     <string name="title_activity_test">TestActivity</string>
 
+    <!-- Button text -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
+    <string name="title_activity_high__scores">High_Scores</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 
-
-        <!-- Button text -->
-        <string name="btn_logout_from_google">Logout from Google</string>
-        <string name="btn_revoke_access">Revoke Access</string>
 </resources>
