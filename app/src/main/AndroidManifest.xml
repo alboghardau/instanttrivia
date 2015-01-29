@@ -38,11 +38,6 @@
             android:name=".TestActivity"
             android:label="@string/title_activity_test" >
         </activity>
-        <activity
-            android:name=".High_Scores"
-            android:label="@string/title_activity_high__scores"
-            android:theme="@style/High_Scores_Style">
-        </activity>
     </application>
 
 </manifest>
