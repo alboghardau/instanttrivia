@@ -100,6 +100,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         Log.e("OnCreate", "Apelat");
 
 
+
     }
 
     private void display_change_state(Boolean signed){
@@ -143,11 +144,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 Intent start = new Intent(this, Game_Timer.class);
                 startActivity(start);
                 break;
-            case R.id.button_high_scores:
-
-                Intent high = new Intent(this, High_Scores.class);
-                startActivity(high);
-                //startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient , getString(R.string.leaderboard_time_trial__easy_level)) , 1);
+            case R.id.button_high_scores:;
+                startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient),1);
                 break;
         }
     }

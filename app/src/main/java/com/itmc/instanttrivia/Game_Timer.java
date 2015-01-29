@@ -137,7 +137,7 @@ public class Game_Timer extends BaseGameActivity {
             @Override
             public void onClick(View v) {
                 btn_start_easy.setOnClickListener(null);
-                difficulty_set("Easy");
+                difficulty_set("HS_Frag_Easy");
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(question);
                 answer_display_hidden();
@@ -185,7 +185,7 @@ public class Game_Timer extends BaseGameActivity {
     private void difficulty_set(String difficulty){
 
         switch (difficulty){
-            case "Easy":
+            case "HS_Frag_Easy":
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
