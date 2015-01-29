@@ -67,16 +67,38 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp" />
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/text_loged"
-                android:textColor="@color/white"
-                android:textSize="12dp"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/imgProfilePic"
-                android:layout_toEndOf="@+id/imgProfilePic" />
+                android:layout_toEndOf="@+id/imgProfilePic">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/text_loged"
+                    android:textColor="@color/white"
+                    android:textSize="12dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/imgProfilePic"
+                    android:layout_toEndOf="@+id/imgProfilePic"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/text_id_score"
+                    android:textColor="@color/white"
+                    android:textSize="12dp"
+                    android:layout_below="@+id/text_loged"
+                    android:layout_toEndOf="@+id/imgProfilePic"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
+            </LinearLayout>
 
         </RelativeLayout>
 

@@ -5,6 +5,8 @@ Save this file as res/values/games-ids.xml in your project.
 -->
 <resources>
     <string name="app_id">904348968777</string>
+    <string name="leaderboard_total_score">CgkIyc6Y-6gaEAIQBA</string>
     <string name="leaderboard_time_trial__easy_level">CgkIyc6Y-6gaEAIQAQ</string>
+    <string name="leaderboard_time_trial__medium_level">CgkIyc6Y-6gaEAIQAg</string>
     <string name="connection_problems">Cannot connect to service!</string>
 </resources>

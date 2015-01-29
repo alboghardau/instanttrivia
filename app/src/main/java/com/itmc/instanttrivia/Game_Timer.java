@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.Random;
 
 
-public class Game_Timer extends BaseGameActivity {
+public class Game_Timer extends Main_Menu {
 
     TextView text_question;
     TextView text_score;
@@ -316,6 +316,7 @@ public class Game_Timer extends BaseGameActivity {
                 super.onAnimationEnd(animation);
                 btn_grid.removeAllViews();
                 score_final_display();
+                lin_bot.clearAnimation();
             }
         }).start();
     }
@@ -352,12 +353,19 @@ public class Game_Timer extends BaseGameActivity {
         });
 
 
-        lin_bot.animate().setDuration(1000).alpha(1f).start();
+        lin_bot.animate().setDuration(1000).alpha(1f).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                lin_bot.clearAnimation();
+            }
+        }).start();
 
-        if(getApiClient().isConnected()) {
-            Games.Leaderboards.submitScore(getApiClient(), getString(R.string.leaderboard_time_trial__easy_level), score);
+
+
+        if(mGoogleApiClient.isConnected() == true) {
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__easy_level), score);
             Log.e("Score Uploaded", "TRUE");
-
         }
     }
 
@@ -818,13 +826,13 @@ public class Game_Timer extends BaseGameActivity {
         db.close();
     }
 
-    @Override
-    public void onSignInFailed() {
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-
-    }
+//    @Override
+//    public void onSignInFailed() {
+//
+//    }
+//
+//    @Override
+//    public void onSignInSucceeded() {
+//
+//    }
 }

@@ -2,6 +2,9 @@ package com.itmc.instanttrivia;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
@@ -20,14 +23,24 @@ import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.api.d;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.games.PlayerEntity;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 
+import org.w3c.dom.Text;
+
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 
@@ -39,6 +52,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     private Button btn_play;
     private Button btn_singout;
     private TextView text_loged;
+    private TextView text_id_score;
     private ImageView imgProfilePic;
 
     GoogleApiClient mGoogleApiClient;
@@ -68,6 +82,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_high_scores = (Button)findViewById(R.id.button_high_scores);
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         text_loged = (TextView) findViewById(R.id.text_loged);
+        text_id_score = (TextView) findViewById(R.id.text_id_score);
 
         ImageView logo_1 = (ImageView) findViewById(R.id.logo_1);
         ImageView logo_2 = (ImageView) findViewById(R.id.logo_2);
@@ -145,7 +160,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 startActivity(start);
                 break;
             case R.id.button_high_scores:;
-                startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient),1);
+                startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), 1);
                 break;
         }
     }
@@ -156,7 +171,29 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     public void onConnected(Bundle bundle) {
 
         display_change_state(true);
-        String name = Games.getCurrentAccountName(mGoogleApiClient);
+
+
+        //reads url or player photo
+        Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
+        String personPhotoUrl = p.getIconImageUrl();
+        String name = p.getDisplayName();
+
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+
+                if(scoresBuffer.getRawScore() != null){
+
+                }
+                long score = scoresBuffer.getRawScore();
+                text_id_score.setText(score+"");
+            }
+        };
+        pendingResult.setResultCallback(scoreCallback);
+
+        new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
         text_loged.setText("Loged in as "+name);
     }
 
@@ -231,6 +268,34 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         // Attempt to reconnect
         mGoogleApiClient.connect();
 
+    }
+
+    /**
+     * Background Async task to load user profile picture from url
+     * */
+    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public LoadProfileImage(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 }
 
