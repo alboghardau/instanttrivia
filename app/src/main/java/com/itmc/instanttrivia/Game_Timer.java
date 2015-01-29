@@ -23,7 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.util.ArrayList;
@@ -181,7 +186,7 @@ public class Game_Timer extends Main_Menu {
         });
     }
 
-    //sets difficulty variables
+      //sets difficulty variables
     private void difficulty_set(String difficulty){
 
         switch (difficulty){
@@ -365,8 +370,30 @@ public class Game_Timer extends Main_Menu {
 
         if(mGoogleApiClient.isConnected() == true) {
             Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__easy_level), score);
-            Log.e("Score Uploaded", "TRUE");
+            Log.e("Level Score Uploaded", "TRUE");
+            score_total_update(score);
         }
+    }
+
+    private void score_total_update(final int score){
+        //request data from server
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                //gets player's score from server
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                long score_local = 0;
+                //test if player has any score
+                if(scoresBuffer != null){
+                    score_local = scoresBuffer.getRawScore();
+                    Log.e("Retrieved Total Score:",score_local+"");
+                }
+                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score+score_local);
+                Log.e("Total Score Uploaded", "TRUE");
+            }
+        };
+        pendingResult.setResultCallback(scoreCallback);
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams

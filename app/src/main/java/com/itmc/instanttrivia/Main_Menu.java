@@ -2,6 +2,7 @@ package com.itmc.instanttrivia;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -47,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 public class Main_Menu extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    SharedPreferences settings;
+
     private SignInButton btnSignIn;
     private Button btn_high_scores;
     private Button btn_play;
@@ -73,6 +76,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main__menu);
+
+        settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
 
         //variable declaration
 
@@ -109,13 +114,15 @@ public class Main_Menu extends Activity implements View.OnClickListener,
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addOnConnectionFailedListener(this).setViewForPopups(null)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
 
         Log.e("OnCreate", "Apelat");
-
-
-
+        if(settings.getBoolean("SIGNED_IN", false) == false) {
+            display_change_state(false);
+        }else{
+            display_change_state(true);
+        }
     }
 
     private void display_change_state(Boolean signed){
@@ -142,6 +149,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 // Signin button clicked
                 mSignInClicked = true;
                 mGoogleApiClient.connect();
+                options_signed_out(true);
                 break;
             case R.id.button_signout:
                 // user explicitly signed out, so turn off auto sign in
@@ -150,7 +158,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                     Games.signOut(mGoogleApiClient);
                     mGoogleApiClient.disconnect();
                 }
-
+                //registers signed out option
+                options_signed_out(false);
                 //show hide buttons
                 display_change_state(false);
                 break;
@@ -165,30 +174,33 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         }
     }
 
-
-
     @Override
     public void onConnected(Bundle bundle) {
-
         display_change_state(true);
+        get_pic_result();
 
+    }
+
+    private void get_pic_result(){
 
         //reads url or player photo
         Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
         String personPhotoUrl = p.getIconImageUrl();
         String name = p.getDisplayName();
-
+        //request data from server
         PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
             public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                //gets player's score from server
                 LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-
-                if(scoresBuffer.getRawScore() != null){
-
+                //test if player has any score
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    text_id_score.setText("Total Score: "+score);
+                }else{
+                    text_id_score.setText("Total Score: 0");
                 }
-                long score = scoresBuffer.getRawScore();
-                text_id_score.setText(score+"");
             }
         };
         pendingResult.setResultCallback(scoreCallback);
@@ -197,10 +209,21 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         text_loged.setText("Loged in as "+name);
     }
 
+    private void options_signed_out(boolean state){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("SIGNED_IN",state);
+        editor.commit();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mInSignInFlow && !mExplicitSignOut) {
+
+        Boolean sign_tester = settings.getBoolean("SIGNED_IN",false);
+
+        Log.e("Signed IN onStart", sign_tester+"");
+
+        if (sign_tester == true) {
             // auto sign in
             mGoogleApiClient.connect();
             Log.e("Sing in on start","Apelat");
@@ -240,6 +263,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 mResolvingConnectionFailure = false;
             }
         }
+
 
         // Put code here to display the sign-in button
         display_change_state(false);
