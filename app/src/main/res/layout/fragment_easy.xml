@@ -3,7 +3,6 @@
     android:layout_height="match_parent" tools:context="com.itmc.instanttrivia.HS_Frag_Easy"
     android:id="@+id/frag_easy_frame">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:orientation="vertical"

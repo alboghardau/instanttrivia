@@ -13,7 +13,7 @@ public class HS_Tab_Listener implements ActionBar.TabListener{
     Fragment fragment;
 
     public HS_Tab_Listener(Fragment fragment) {
-        // TODO Auto-generated constructor stub
+
         this.fragment = fragment;
     }
 
