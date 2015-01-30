@@ -60,6 +60,8 @@ public class Game_Timer extends Main_Menu {
     String answer;
     String randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    //int leaderboard_level = null;
+
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
@@ -370,9 +372,20 @@ public class Game_Timer extends Main_Menu {
 
         if(mGoogleApiClient.isConnected() == true) {
             Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__easy_level), score);
+
+            score_api_update();
             Log.e("Level Score Uploaded", "TRUE");
             score_total_update(score);
         }
+    }
+
+    private void score_api_update(int leaderboard_name){
+
+        if(mGoogleApiClient.isConnected() == true){
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name),score);
+            Log.e("Score updated", "TRUE :"+score);
+        }
+
     }
 
     private void score_total_update(final int score){
@@ -465,6 +478,7 @@ public class Game_Timer extends Main_Menu {
             answer_display_hidden2();
         }
     }
+
 
     //function handles text view generation for answer letters
     private void answer_display_hidden2(){
