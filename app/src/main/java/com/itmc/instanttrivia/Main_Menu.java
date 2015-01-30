@@ -54,6 +54,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     private Button btn_high_scores;
     private Button btn_play;
     private Button btn_singout;
+    private Button btn_achievements;
     private TextView text_loged;
     private TextView text_id_score;
     private ImageView imgProfilePic;
@@ -85,6 +86,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_play = (Button) findViewById(R.id.button_play);
         btn_singout = (Button)findViewById(R.id.button_signout);
         btn_high_scores = (Button)findViewById(R.id.button_high_scores);
+        btn_achievements = (Button)findViewById(R.id.button_achievements);
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         text_loged = (TextView) findViewById(R.id.text_loged);
         text_id_score = (TextView) findViewById(R.id.text_id_score);
@@ -111,6 +113,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_play.setOnClickListener(this);
         btn_singout.setOnClickListener(this);
         btn_high_scores.setOnClickListener(this);
+        btn_achievements.setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -130,11 +133,13 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             btnSignIn.setVisibility(View.GONE);
             btn_high_scores.setVisibility(View.VISIBLE);
             btn_singout.setVisibility(View.VISIBLE);
+            btn_achievements.setVisibility(View.VISIBLE);
             Log.e("Connection:", "CONNECTED");
         }else{
             btnSignIn.setVisibility(View.VISIBLE);
             btn_high_scores.setVisibility(View.GONE);
             btn_singout.setVisibility(View.GONE);
+            btn_achievements.setVisibility(View.GONE);
             Log.e("Connection:", "DISCONNECTED");
         }
     }
@@ -168,8 +173,11 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 Intent start = new Intent(this, Game_Timer.class);
                 startActivity(start);
                 break;
-            case R.id.button_high_scores:;
+            case R.id.button_high_scores:
                 startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), 1);
+                break;
+            case R.id.button_achievements:
+                startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),1);
                 break;
         }
     }
@@ -311,8 +319,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+                //Log.e("Error", e.getMessage());
+//                e.printStackTrace();
             }
             return mIcon11;
         }

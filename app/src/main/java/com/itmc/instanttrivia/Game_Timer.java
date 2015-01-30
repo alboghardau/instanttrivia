@@ -84,6 +84,8 @@ public class Game_Timer extends Main_Menu {
     int score_per_question = 0;
     int question_time = 0;
 
+    int leaderboard_name = 0;
+
     //buffer variables for millis left to calc score
     int millis_buffer = 0;
 
@@ -144,7 +146,7 @@ public class Game_Timer extends Main_Menu {
             @Override
             public void onClick(View v) {
                 btn_start_easy.setOnClickListener(null);
-                difficulty_set("HS_Frag_Easy");
+                difficulty_set("Easy");
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(question);
                 answer_display_hidden();
@@ -192,23 +194,26 @@ public class Game_Timer extends Main_Menu {
     private void difficulty_set(String difficulty){
 
         switch (difficulty){
-            case "HS_Frag_Easy":
+            case "Easy":
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
                 question_time = 30000;
+                leaderboard_name = R.string.leaderboard_time_trial__easy_level;
                 break;
             case "Medium":
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
                 question_time = 25000;
+                leaderboard_name = R.string.leaderboard_time_trial__medium_level;
                 break;
             case "Hard":
                 question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
                 question_time = 20000;
+                leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 break;
         }
     }
@@ -371,23 +376,19 @@ public class Game_Timer extends Main_Menu {
 
 
         if(mGoogleApiClient.isConnected() == true) {
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__easy_level), score);
-
             score_api_update();
             Log.e("Level Score Uploaded", "TRUE");
             score_total_update(score);
         }
     }
 
-    private void score_api_update(int leaderboard_name){
-
-        if(mGoogleApiClient.isConnected() == true){
+    //updates leaderboard for difficulty level
+    private void score_api_update(){
             Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name),score);
             Log.e("Score updated", "TRUE :"+score);
-        }
-
     }
 
+    //updates total score leadeboard
     private void score_total_update(final int score){
         //request data from server
         PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);

@@ -9,4 +9,5 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="leaderboard_time_trial__easy_level">CgkIyc6Y-6gaEAIQAQ</string>
     <string name="leaderboard_time_trial__medium_level">CgkIyc6Y-6gaEAIQAg</string>
     <string name="connection_problems">Cannot connect to service!</string>
+    <string name="leaderboard_time_trial__hard_level">CgkIyc6Y-6gaEAIQBQ</string>
 </resources>

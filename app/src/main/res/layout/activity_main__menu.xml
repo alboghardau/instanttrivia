@@ -130,6 +130,17 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Achievements"
+            android:id="@+id/button_achievements"
+            android:layout_below="@+id/text_time"
+            android:layout_centerHorizontal="true"
+            android:elevation="5dp"
+            android:background="@drawable/button_lollipop"
+            android:paddingTop="5dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="High Scores"
             android:id="@+id/button_high_scores"
             android:layout_below="@+id/text_time"
