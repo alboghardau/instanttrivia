@@ -367,9 +367,6 @@ public class Game_Timer extends Main_Menu {
 
         text_score.setVisibility(View.INVISIBLE);
 
-        TextView text_congratz = (TextView) findViewById(R.id.text_congratulations);
-        text_congratz.setTypeface(font_thin);
-
         TextView text_final_score = (TextView)findViewById(R.id.text_final_score);
         text_final_score.setText(score + "");
         text_final_score.setTypeface(font_bold);
@@ -381,6 +378,27 @@ public class Game_Timer extends Main_Menu {
                 finish();
             }
         });
+
+        //set round progress bars
+        TextView text_correct_hits = (TextView) findViewById(R.id.text_correct_hits);
+        TextView text_wrong_hits = (TextView)findViewById(R.id.text_wrong_hits);
+        TextView text_accuracy = (TextView)findViewById(R.id.text_accuracy);
+        ProgressBar prog_correct = (ProgressBar)findViewById(R.id.prog_correct);
+        ProgressBar prog_wrong = (ProgressBar) findViewById(R.id.prog_wrong);
+        ProgressBar prog_acc = (ProgressBar) findViewById(R.id.prog_accuracy);
+
+        text_correct_hits.setText(total_buttons_correct+"");
+        text_wrong_hits.setText(total_buttons_wrong+"");
+        int total_hits = total_buttons_correct+total_buttons_wrong;
+        double accuracy = Math.ceil(((total_buttons_correct+total_buttons_wrong)/(float)total_buttons_correct)*100);
+        text_accuracy.setText(accuracy+"");
+
+        prog_correct.setMax(total_hits);
+        prog_correct.setProgress(total_buttons_correct);
+        prog_wrong.setMax(total_hits);
+        prog_wrong.setProgress(total_buttons_wrong);
+        prog_acc.setProgress((int)accuracy);
+
 
         lin_bot.animate().setDuration(1000).alpha(1f).setListener(new AnimatorListenerAdapter() {
             @Override
@@ -775,6 +793,7 @@ public class Game_Timer extends Main_Menu {
             //reset pressed variables
             pressed_correct = 0;
             pressed_wrong = 0;
+            question_wrong++;
             question_next();
         }
 

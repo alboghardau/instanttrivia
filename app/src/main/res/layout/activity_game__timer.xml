@@ -216,7 +216,7 @@
                 android:gravity="center"
                 android:elevation="5dp"
                 android:layout_margin="5dp"
-                android:background="@color/blue_800">
+                android:background="@color/purple_500">
 
                 <ImageView
                     android:layout_width="fill_parent"
@@ -227,17 +227,151 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp" />
 
-                <TextView
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Congratulations!"
-                    android:id="@+id/text_congratulations"
-                    android:textColor="@color/white"
-                    android:background="@color/purple_500"
+                    android:layout_height="fill_parent"
                     android:gravity="center"
-                    android:paddingBottom="5dp"
-                    android:textSize="30dp" />
+                    android:layout_marginBottom="5dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Correct hits"
+                            android:id="@+id/textView3"
+                            android:textSize="15dp"
+                            android:textColor="@color/white" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center" >
+
+                            <ProgressBar
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:id="@+id/prog_correct"
+                                android:progressDrawable="@drawable/custom_progressbar_circular"
+                                android:progress="70"
+                                android:max="100" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:text="50"
+                                android:id="@+id/text_correct_hits"
+                                android:textSize="13dp"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:layout_alignParentStart="false"
+                                android:layout_alignBottom="@+id/prog_correct"
+                                android:layout_alignParentLeft="false"
+                                android:layout_alignParentRight="false" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Wrong hits"
+                            android:id="@+id/textView5"
+                            android:textSize="15dp"
+                            android:textColor="@color/white" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center" >
+
+                            <ProgressBar
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:id="@+id/prog_wrong"
+                                android:progressDrawable="@drawable/custom_progressbar_circular"
+                                android:progress="70"
+                                android:max="100" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:text="50"
+                                android:id="@+id/text_wrong_hits"
+                                android:textSize="13dp"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:layout_alignParentStart="false"
+                                android:layout_alignBottom="@+id/prog_wrong"
+                                android:layout_alignParentLeft="false"
+                                android:layout_alignParentRight="false" />
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Accuracy"
+                            android:id="@+id/textView2"
+                            android:textSize="15dp"
+                            android:textColor="@color/white" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center">
+
+                            <ProgressBar
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:id="@+id/prog_accuracy"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:progressDrawable="@drawable/custom_progressbar_circular"
+                                android:progress="70"
+                                android:max="100" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:text="50"
+                                android:id="@+id/text_accuracy"
+                                android:textSize="13dp"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:layout_alignParentStart="false"
+                                android:layout_alignBottom="@+id/prog_accuracy"
+                                android:layout_alignParentLeft="false"
+                                android:layout_alignParentRight="false" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
