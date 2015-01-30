@@ -72,12 +72,15 @@ public class Game_Timer extends Main_Menu {
 
     Boolean started = false;
 
+    String game_difficulty = null;
+
     //options and varaibles
     int back_pressed = 0;
     int score = 0;
     int pressed_correct = 0;
     int pressed_wrong = 0;
 
+    //GAME OPTIONS THAT ARE UPDATED WHEN GAME IS SELECTED
     int question_counter = 0;
     int question_number = 0;
     int max_wrong = 0;
@@ -85,6 +88,12 @@ public class Game_Timer extends Main_Menu {
     int question_time = 0;
 
     int leaderboard_name = 0;
+
+    //STATISTICS
+    int question_correct = 0;
+    int question_wrong = 0;
+    int total_buttons_correct = 0;
+    int total_buttons_wrong = 0;
 
     //buffer variables for millis left to calc score
     int millis_buffer = 0;
@@ -192,7 +201,7 @@ public class Game_Timer extends Main_Menu {
 
       //sets difficulty variables
     private void difficulty_set(String difficulty){
-
+        game_difficulty = difficulty;
         switch (difficulty){
             case "Easy":
                 question_number = 10;
@@ -344,6 +353,15 @@ public class Game_Timer extends Main_Menu {
 
     private void score_final_display(){
 
+        //send scores to google server
+        if(mGoogleApiClient.isConnected() == true) {
+            Log.e("CONNECTED PROCEED TO UPLOAD SCORES", "TRUE");
+            //update leaderboards total score
+            score_total_update();
+            //update achievements
+            achievements_questions_update();
+        }
+
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
         lin_score.setVisibility(View.VISIBLE);
 
@@ -364,7 +382,6 @@ public class Game_Timer extends Main_Menu {
             }
         });
 
-
         lin_bot.animate().setDuration(1000).alpha(1f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -372,24 +389,31 @@ public class Game_Timer extends Main_Menu {
                 lin_bot.clearAnimation();
             }
         }).start();
-
-
-
-        if(mGoogleApiClient.isConnected() == true) {
-            score_api_update();
-            Log.e("Level Score Uploaded", "TRUE");
-            score_total_update(score);
-        }
     }
 
-    //updates leaderboard for difficulty level
-    private void score_api_update(){
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name),score);
-            Log.e("Score updated", "TRUE :"+score);
+    private void achievements_questions_update(){
+        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_newbie),question_correct);
+        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_begginer),question_correct);
+        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_enthusiast),question_correct);
+        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_master),question_correct);
+        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_hero),question_correct);
+
+        if(game_difficulty == "Easy" && score > 470) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
+        if(game_difficulty == "Medium" && score > 900) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
+        if(game_difficulty == "Hard" && score > 1350) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
+
+        if(game_difficulty == "Easy" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
+        if(game_difficulty == "Medium" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
+        if(game_difficulty == "Hard" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
     }
 
     //updates total score leadeboard
-    private void score_total_update(final int score){
+    private void score_total_update(){
+
+        //update difficulty leaderboard score
+        Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name),score);
+
+        //update total score
         //request data from server
         PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
@@ -734,9 +758,11 @@ public class Game_Timer extends Main_Menu {
         if(ans_arr.contains(t.getText().charAt(0))){
             ans_pressed.add(t.getText().charAt(0));
             pressed_correct++;
+            total_buttons_correct++;
             correct_press = true;
         }else{
             pressed_wrong++;
+            total_buttons_wrong++;
         }
 
         //updates answer display
@@ -759,6 +785,7 @@ public class Game_Timer extends Main_Menu {
             //reset pressed variables
             pressed_correct = 0;
             pressed_wrong = 0;
+            question_correct++;
 
             //test if the timer is gone when change the question
             if(question_counter < question_number){
@@ -847,6 +874,9 @@ public class Game_Timer extends Main_Menu {
     //overides back buttons pressed not to exit activity
     @Override
     public void onBackPressed(){
+
+        if(game_difficulty == null) finish();
+
         back_pressed++;
         if(back_pressed == 1){
             timer_end();

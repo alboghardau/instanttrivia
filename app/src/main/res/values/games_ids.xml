@@ -5,9 +5,27 @@ Save this file as res/values/games-ids.xml in your project.
 -->
 <resources>
     <string name="app_id">904348968777</string>
+    <string name="connection_problems">Cannot connect to service!</string>
+
+    <!-- ACHIEVEMENTS-->
+    <string name="achievement_trivia_newbie">CgkIyc6Y-6gaEAIQAw</string>
+    <string name="achievement_trivia_begginer">CgkIyc6Y-6gaEAIQBg</string>
+    <string name="achievement_trivia_enthusiast">CgkIyc6Y-6gaEAIQBw</string>
+    <string name="achievement_trivia_master">CgkIyc6Y-6gaEAIQCA</string>
+    <string name="achievement_trivia_hero">CgkIyc6Y-6gaEAIQCQ</string>
+
+    <string name="achievement_easy_level_expert">CgkIyc6Y-6gaEAIQCg</string>
+    <string name="achievement_medium_level_expert">CgkIyc6Y-6gaEAIQCw</string>
+    <string name="achievement_hard_level_expert">CgkIyc6Y-6gaEAIQDA</string>
+
+    <string name="achievement_perfect_play__easy">CgkIyc6Y-6gaEAIQDQ</string>
+    <string name="achievement_perfect_play__medium">CgkIyc6Y-6gaEAIQDg</string>
+    <string name="achievement_perfect_play__hard">CgkIyc6Y-6gaEAIQDw</string>
+
+    <!-- LEADERBOARDS-->
     <string name="leaderboard_total_score">CgkIyc6Y-6gaEAIQBA</string>
     <string name="leaderboard_time_trial__easy_level">CgkIyc6Y-6gaEAIQAQ</string>
     <string name="leaderboard_time_trial__medium_level">CgkIyc6Y-6gaEAIQAg</string>
-    <string name="connection_problems">Cannot connect to service!</string>
+
     <string name="leaderboard_time_trial__hard_level">CgkIyc6Y-6gaEAIQBQ</string>
 </resources>
