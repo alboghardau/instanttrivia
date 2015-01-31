@@ -33,6 +33,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 
@@ -41,7 +42,6 @@ public class Game_Timer extends Main_Menu {
     TextView text_question;
     TextView text_score;
     TextView text_question_current;
-    TextView text_question_total;
 
     ImageView icon_question;
 
@@ -58,6 +58,7 @@ public class Game_Timer extends Main_Menu {
 
     String question;
     String answer;
+    String category;
     String randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     //int leaderboard_level = null;
@@ -86,6 +87,7 @@ public class Game_Timer extends Main_Menu {
     int max_wrong = 0;
     int score_per_question = 0;
     int question_time = 0;
+    boolean buttons_sort_alpha = true;
 
     int leaderboard_name = 0;
 
@@ -120,8 +122,6 @@ public class Game_Timer extends Main_Menu {
         text_score.setTypeface(font_bold);
         text_question_current = (TextView) findViewById(R.id.text_question_current);
         text_question_current.setTypeface(font_bold);
-        text_question_total = (TextView) findViewById(R.id.text_question_total);
-        text_question_total.setTypeface(font_bold);
 
         icon_question = (ImageView) findViewById(R.id.image_icon_question);
         icon_question.setAlpha(0f);
@@ -139,6 +139,10 @@ public class Game_Timer extends Main_Menu {
         btn_start_med = (Button) findViewById(R.id.btn_start_med);
         btn_start_hard = (Button) findViewById(R.id.btn_start_hard);
 
+        //set relative size for questions textview
+        text_question.setTextSize(DpHeight()/38);
+        text_question.setPadding(0,dpToPx((int)DpHeight()/26),0,dpToPx((int)DpHeight()/26));
+
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
         ans_arr = new ArrayList<Character>();
@@ -154,10 +158,11 @@ public class Game_Timer extends Main_Menu {
         btn_start_easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                start_disable();
                 btn_start_easy.setOnClickListener(null);
                 difficulty_set("Easy");
                 question_read_db_rand(); // reads question on game start
-                text_question.setText(question);
+                text_question.setText(category.toUpperCase()+"\n"+question);
                 answer_display_hidden();
                 //porneste animatia pentru questions
                 animate_quest();
@@ -170,6 +175,7 @@ public class Game_Timer extends Main_Menu {
         btn_start_med.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                start_disable();
                 difficulty_set("Medium");
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(question);
@@ -185,6 +191,7 @@ public class Game_Timer extends Main_Menu {
         btn_start_hard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                start_disable();
                 difficulty_set("Hard");
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(question);
@@ -199,6 +206,11 @@ public class Game_Timer extends Main_Menu {
         });
     }
 
+    private void start_disable(){
+        btn_start_easy.setEnabled(false);
+        btn_start_med.setEnabled(false);
+        btn_start_hard.setEnabled(false);
+    }
       //sets difficulty variables
     private void difficulty_set(String difficulty){
         game_difficulty = difficulty;
@@ -223,6 +235,7 @@ public class Game_Timer extends Main_Menu {
                 score_per_question = 150;
                 question_time = 20000;
                 leaderboard_name = R.string.leaderboard_time_trial__hard_level;
+                buttons_sort_alpha = false;
                 break;
         }
     }
@@ -234,7 +247,7 @@ public class Game_Timer extends Main_Menu {
         final int old_pad = txt2.getPaddingTop();
 
         //animatie padding
-        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop(), 50);
+        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop(), dpToPx((int)DpHeight()/26));
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -279,7 +292,7 @@ public class Game_Timer extends Main_Menu {
 
         int init_height = question.getHeight();
         ValueAnimator val = ValueAnimator.ofInt(init_height,0);
-        final ValueAnimator val2 = ValueAnimator.ofInt(0,dpToPx(112));
+        final ValueAnimator val2 = ValueAnimator.ofInt(0,dpToPx((int)DpHeight()/3));
         val.setDuration(1000);
         val2.setDuration(1000);
 
@@ -390,14 +403,14 @@ public class Game_Timer extends Main_Menu {
         text_correct_hits.setText(total_buttons_correct+"");
         text_wrong_hits.setText(total_buttons_wrong+"");
         int total_hits = total_buttons_correct+total_buttons_wrong;
-        double accuracy = Math.ceil(((total_buttons_correct+total_buttons_wrong)/(float)total_buttons_correct)*100);
-        text_accuracy.setText(accuracy+"");
+        double accuracy = Math.ceil(((total_buttons_correct)/(float)total_hits)*100);
+        text_accuracy.setText((int)accuracy+"");
 
         prog_correct.setMax(total_hits);
         prog_correct.setProgress(total_buttons_correct);
         prog_wrong.setMax(total_hits);
         prog_wrong.setProgress(total_buttons_wrong);
-        prog_acc.setProgress((int)accuracy);
+        prog_acc.setProgress(Integer.valueOf((int) accuracy));
 
 
         lin_bot.animate().setDuration(1000).alpha(1f).setListener(new AnimatorListenerAdapter() {
@@ -410,19 +423,21 @@ public class Game_Timer extends Main_Menu {
     }
 
     private void achievements_questions_update(){
-        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_newbie),question_correct);
-        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_begginer),question_correct);
-        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_enthusiast),question_correct);
-        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_master),question_correct);
-        Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_trivia_hero),question_correct);
+        if(question_correct > 0) { //increment must be greater than 0
+            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_newbie), question_correct);
+            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_begginer), question_correct);
+            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_enthusiast), question_correct);
+            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_master), question_correct);
+            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_hero), question_correct);
+        }
 
         if(game_difficulty == "Easy" && score > 470) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
         if(game_difficulty == "Medium" && score > 900) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
         if(game_difficulty == "Hard" && score > 1350) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
 
-        if(game_difficulty == "Easy" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
-        if(game_difficulty == "Medium" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
-        if(game_difficulty == "Hard" && total_buttons_wrong == 0) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
+        if(game_difficulty == "Easy" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
+        if(game_difficulty == "Medium" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
+        if(game_difficulty == "Hard" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
     }
 
     //updates total score leadeboard
@@ -467,6 +482,12 @@ public class Game_Timer extends Main_Menu {
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         return dpWidth;
     }
+    private float DpHeight(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+
+        float dpWidth = displayMetrics.heightPixels / displayMetrics.density;
+        return dpWidth;
+    }
 
     //animation function for the start of activity
     private void animate_start() {
@@ -487,8 +508,7 @@ public class Game_Timer extends Main_Menu {
     private void answer_display_hidden() {
 
         //display update question number on top
-        text_question_total.setText(question_number+"");
-        text_question_current.setText(question_counter+"");
+        text_question_current.setText(question_counter+"/"+question_number);
         icon_question.setVisibility(View.VISIBLE);
 
         //animation definition
@@ -533,6 +553,9 @@ public class Game_Timer extends Main_Menu {
         line.setMinimumHeight(dpToPx(36)); //SOLVES shadow clipping in 5.0+
         lin_answer.addView(line);
 
+        float width =  DpWidth();
+        int max_width = (int) Math.ceil(width/(float)12);
+
         //contor used for answers id starting with 200
         Integer cont_id = 200;
 
@@ -542,13 +565,15 @@ public class Game_Timer extends Main_Menu {
             t.setGravity(Gravity.CENTER);
             t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
+            t.setMaxWidth(dpToPx(max_width));
+            Log.e("dp",dpToPx(max_width)+"");
             t.setTextColor(Color.WHITE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 t.setElevation(5);       //implement elevation for 5.0+
             }
             t.setId(cont_id);
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.transition_answer));
-            t.setPadding(dpToPx(6), dpToPx(2), dpToPx(6), dpToPx(2));
+            t.setPadding(dpToPx(4),0, dpToPx(4),0);
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
                 line = new LinearLayout(this);
@@ -823,7 +848,7 @@ public class Game_Timer extends Main_Menu {
     private void question_next(){
         question_read_db_rand();                 //read new questions form database
         answer_display_hidden();        //display answer
-        question_update(question);      //update text with animation
+        question_update(category.toUpperCase()+"\n"+question);      //update text with animation
         buttons_generate(answer);
         buttons_display();
         buttons_enabler(false);         //click disables after word completion, reactivated in buttons display animation end
@@ -834,10 +859,12 @@ public class Game_Timer extends Main_Menu {
     private void question_read_db_rand(){
 
         String[] questy;
-        questy = db.read_rand_question_difficulty(1);
+        questy = db.read_rand_question_difficulty(5);  // 5 diff for random questions without difficulty
 
+        //0 questions 1 answer 2 categpry 3 difficulty
         question = questy[0];
         answer = questy[1];
+        category = questy[2];
         question_counter++;
 
         //delete previously pressed chars
@@ -884,7 +911,16 @@ public class Game_Timer extends Main_Menu {
             }
         }
 
-        Collections.shuffle(buttons);
+        if(buttons_sort_alpha == true){
+            Collections.sort(buttons, new Comparator<Character>() {
+                @Override
+                public int compare(Character lhs, Character rhs) {
+                    return lhs.compareTo(rhs);
+                }
+            });
+        }else {
+            Collections.shuffle(buttons);
+        }
 
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
@@ -916,14 +952,4 @@ public class Game_Timer extends Main_Menu {
         super.onDestroy();
         db.close();
     }
-
-//    @Override
-//    public void onSignInFailed() {
-//
-//    }
-//
-//    @Override
-//    public void onSignInSucceeded() {
-//
-//    }
 }

@@ -27,57 +27,58 @@
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="true" />
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Score: 0"
-            android:id="@+id/text_score"
-            android:clickable="false"
-            android:textSize="15dp"
-            android:textColor="@color/abc_primary_text_disable_only_material_dark"
-            android:singleLine="false"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/text_question_current"
-            android:layout_toLeftOf="@+id/image_icon_question"
-            android:layout_toStartOf="@+id/image_icon_question"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentRight="false"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:layout_marginRight="3dp"
-            android:layout_centerVertical="true" />
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/image_icon_question"
             android:layout_alignParentTop="false"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentRight="false"
-            android:layout_alignWithParentIfMissing="false"
-            android:src="@drawable/icon_question"
-            android:layout_marginTop="5dp"
-            android:layout_centerInParent="true" />
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:gravity="right">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/text_question_total"
-            android:textColor="@color/white"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/image_icon_question"
-            android:layout_toEndOf="@+id/image_icon_question"
-            android:textSize="20dp"
-            android:layout_marginLeft="3dp" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|right">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:id="@+id/text_question_current"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentRight="false"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_centerVertical="true" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/image_icon_question"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:src="@drawable/icon_question"
+                    android:layout_alignParentTop="true" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Score: 0"
+                android:id="@+id/text_score"
+                android:clickable="false"
+                android:textSize="15dp"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:singleLine="false"
+                android:layout_below="@+id/image_icon_question"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <ProgressBar
@@ -119,7 +120,7 @@
         android:layout_below="@+id/text_question"
         android:divider="@drawable/vertical_divider"
         android:showDividers="middle|beginning|end"
-        android:paddingTop="20dp">
+        android:paddingTop="5dp">
 
     </LinearLayout>
 
@@ -241,13 +242,14 @@
                         android:gravity="center" >
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Correct hits"
+                            android:text="Correct\nhits"
                             android:id="@+id/textView3"
                             android:textSize="15dp"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:gravity="center" />
 
                         <RelativeLayout
                             android:layout_width="fill_parent"
@@ -288,13 +290,14 @@
                         android:layout_marginRight="10dp">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Wrong hits"
+                            android:text="Wrong\nhits"
                             android:id="@+id/textView5"
                             android:textSize="15dp"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:gravity="center" />
 
                         <RelativeLayout
                             android:layout_width="fill_parent"
@@ -333,13 +336,14 @@
                         android:gravity="center">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Accuracy"
+                            android:text="Accuracy\n"
                             android:id="@+id/textView2"
                             android:textSize="15dp"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:gravity="center" />
 
                         <RelativeLayout
                             android:layout_width="fill_parent"

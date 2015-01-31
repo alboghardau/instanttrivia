@@ -10,12 +10,11 @@ import android.util.Log;
 
 import com.itmc.instanttrivia.DatabaseHandler;
 
-
 public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 29; //variable to update when database is updated
+    public int db_version = 28; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -73,7 +72,6 @@ public class DbOP {
                 throw new Error("Unable to create db");
             }
         }
-
     }
 
     //to start and read db
@@ -94,17 +92,13 @@ public class DbOP {
         }
 
         db = mydbhelp.getReadableDatabase();
-
     }
-
-
 
     //returns question
     public String[] read_rand_question_difficulty(int diff){
 
         String[] question = new String[4];
         Cursor cursor = null;
-
 
         String id = "diff = " + diff;
 
@@ -196,16 +190,11 @@ public class DbOP {
                 cats[i][1] = cursor.getString(1);
                 i++;
             }
-
             cursor.moveToNext();
-
         }
-
         cursor.close();
         return cats;
     }
-
-
 
     public String[][] q_test(int test_id)
     {
@@ -227,7 +216,6 @@ public class DbOP {
         cursor.close();
         return test;
     }
-
 
     public void close(){
         if(mydbhelp != null)
