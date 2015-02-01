@@ -87,6 +87,7 @@ public class Game_Timer extends Main_Menu {
     int max_wrong = 0;
     int score_per_question = 0;
     int question_time = 0;
+    int difficulty_setting = 0;
     boolean buttons_sort_alpha = true;
 
     int leaderboard_name = 0;
@@ -221,6 +222,7 @@ public class Game_Timer extends Main_Menu {
                 score_per_question = 50;
                 question_time = 30000;
                 leaderboard_name = R.string.leaderboard_time_trial__easy_level;
+                difficulty_setting = 1;
                 break;
             case "Medium":
                 question_number = 10;
@@ -228,6 +230,7 @@ public class Game_Timer extends Main_Menu {
                 score_per_question = 100;
                 question_time = 25000;
                 leaderboard_name = R.string.leaderboard_time_trial__medium_level;
+                difficulty_setting = 2;
                 break;
             case "Hard":
                 question_number = 10;
@@ -235,6 +238,7 @@ public class Game_Timer extends Main_Menu {
                 score_per_question = 150;
                 question_time = 20000;
                 leaderboard_name = R.string.leaderboard_time_trial__hard_level;
+                difficulty_setting = 3;
                 buttons_sort_alpha = false;
                 break;
         }
@@ -859,7 +863,7 @@ public class Game_Timer extends Main_Menu {
     private void question_read_db_rand(){
 
         String[] questy;
-        questy = db.read_rand_question_difficulty(5);  // 5 diff for random questions without difficulty
+        questy = db.read_rand_question_difficulty(difficulty_setting);  // 5 diff for random questions without difficulty
 
         //0 questions 1 answer 2 categpry 3 difficulty
         question = questy[0];
