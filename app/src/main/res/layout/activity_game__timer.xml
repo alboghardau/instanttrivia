@@ -89,7 +89,7 @@
         android:progress="100"
         android:max="100"
         android:visibility="visible"
-        android:progressDrawable="@drawable/custom_progressbar"
+        android:progressDrawable="@drawable/custom_progressbar_red"
         android:layout_below="@+id/linear_topbar"
         android:elevation="5dp" />
 
@@ -224,7 +224,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/imageView"
                     android:src="@drawable/icon_trophy"
-                    android:background="@color/purple_500"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp" />
 

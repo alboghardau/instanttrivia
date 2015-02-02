@@ -8,11 +8,10 @@
 
     <supports-screens
         android:anyDensity="true"
-        android:smallScreens="false"
-        android:normalScreens="true"
         android:largeScreens="false"
-        android:xlargeScreens="false"
-        />
+        android:normalScreens="true"
+        android:smallScreens="false"
+        android:xlargeScreens="false" />
 
     <application
         android:allowBackup="true"
@@ -45,6 +44,11 @@
         <activity
             android:name=".TestActivity"
             android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name=".Options"
+            android:label="@string/title_activity_options"
+            android:theme="@style/Options_Style_Purple">
         </activity>
     </application>
 

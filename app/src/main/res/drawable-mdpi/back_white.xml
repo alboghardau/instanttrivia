@@ -4,9 +4,8 @@
         android:radius="3dp"
         />
     <solid
-        android:color="@color/grey_400"
+        android:color="#FFFFFF"
         />
-
 
 
 </shape>

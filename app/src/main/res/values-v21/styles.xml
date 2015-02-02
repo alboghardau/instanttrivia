@@ -5,15 +5,39 @@
         <item name="android:colorPrimaryDark">@color/purple_700</item>
     </style>
 
-    <style name="High_Scores_Style" parent="Theme.AppCompat.Light.DarkActionBar">
 
+    <style name="Options_Style_Purple" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+
+    <style name="ActionTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+
+    <style name="ActionTheme.Options_Style_Purple">
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryDark">@color/purple_700</item>
         <item name="colorAccent">@color/purple_300</item>
+    </style>
 
+    <style name="ActionTheme.Options_Style_Red">
+        <item name="colorPrimary">@color/red_500</item>
+        <item name="colorPrimaryDark">@color/red_700</item>
+        <item name="colorAccent">@color/red_300</item>
+    </style>
 
+    <style name="ActionTheme.Options_Style_Blue">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorPrimaryDark">@color/blue_700</item>
+        <item name="colorAccent">@color/blue_300</item>
+    </style>
 
+    <style name="ActionTheme.Options_Style_LGreen">
+        <item name="colorPrimary">@color/light_green_500</item>
+        <item name="colorPrimaryDark">@color/light_green_700</item>
+        <item name="colorAccent">@color/light_green_300</item>
+    </style>
 
+    <style name="ActionTheme.Options_Style_Orange">
+        <item name="colorPrimary">@color/orange_500</item>
+        <item name="colorPrimaryDark">@color/orange_700</item>
+        <item name="colorAccent">@color/orange_300</item>
     </style>
 
 </resources>

@@ -3,6 +3,7 @@ package com.itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -21,6 +22,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.PendingResult;
@@ -42,12 +44,15 @@ public class Game_Timer extends Main_Menu {
     TextView text_question;
     TextView text_score;
     TextView text_question_current;
+    TextView text_final_score;
 
     ImageView icon_question;
 
     LinearLayout lin_start_btn;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
+    LinearLayout lin_gratz;
+    RelativeLayout lin_top;
     GridLayout btn_grid;
 
     ProgressBar prog_bar;
@@ -60,6 +65,8 @@ public class Game_Timer extends Main_Menu {
     String answer;
     String category;
     String randomchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    SharedPreferences settings;
 
     //int leaderboard_level = null;
 
@@ -108,6 +115,9 @@ public class Game_Timer extends Main_Menu {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
 
@@ -123,6 +133,7 @@ public class Game_Timer extends Main_Menu {
         text_score.setTypeface(font_bold);
         text_question_current = (TextView) findViewById(R.id.text_question_current);
         text_question_current.setTypeface(font_bold);
+        text_final_score = (TextView)findViewById(R.id.text_final_score);
 
         icon_question = (ImageView) findViewById(R.id.image_icon_question);
         icon_question.setAlpha(0f);
@@ -132,6 +143,8 @@ public class Game_Timer extends Main_Menu {
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
         lin_start_btn = (LinearLayout) findViewById(R.id.linear_start_btn);
+        lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
+        lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
 
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
@@ -139,6 +152,8 @@ public class Game_Timer extends Main_Menu {
         btn_start_easy = (Button) findViewById(R.id.btn_start_easy);
         btn_start_med = (Button) findViewById(R.id.btn_start_med);
         btn_start_hard = (Button) findViewById(R.id.btn_start_hard);
+
+        Theme_Setter_Views();
 
         //set relative size for questions textview
         text_question.setTextSize(DpHeight()/38);
@@ -205,6 +220,41 @@ public class Game_Timer extends Main_Menu {
                 started = true;
             }
         });
+    }
+
+    //sets colors for internal views of layout
+    private void Theme_Setter_Views(){
+        String tester = settings.getString("Color_Theme","Purple");
+        switch (tester){
+            case "Red":
+                Views_Editor("red");
+                break;
+            case "Purple":
+                Views_Editor("purple");
+                break;
+            case "Blue":
+                Views_Editor("blue");
+                break;
+            case "LGreen":
+                Views_Editor("light_green");
+                break;
+            case "Orange":
+                Views_Editor("orange");
+                break;
+        }
+    }
+
+    private void Views_Editor(String color){
+        int primary_color = getResources().getIdentifier("color/"+color+"_500",null,getPackageName());
+        int darker_color = getResources().getIdentifier("color/"+color+"_700",null,getPackageName());
+        int progress_dwg = getResources().getIdentifier("drawable/custom_progressbar_"+color,null,getPackageName());
+
+        prog_bar.setProgressDrawable(getResources().getDrawable(progress_dwg));
+        text_question.setBackgroundColor(getResources().getColor(primary_color));
+        lin_top.setBackgroundColor((getResources().getColor(darker_color)));
+        lin_gratz.setBackgroundColor(getResources().getColor(primary_color));
+        text_final_score.setBackgroundColor(getResources().getColor(darker_color));
+
     }
 
     private void start_disable(){
@@ -384,7 +434,6 @@ public class Game_Timer extends Main_Menu {
 
         text_score.setVisibility(View.INVISIBLE);
 
-        TextView text_final_score = (TextView)findViewById(R.id.text_final_score);
         text_final_score.setText(score + "");
         text_final_score.setTypeface(font_bold);
 

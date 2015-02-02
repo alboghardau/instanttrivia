@@ -15,6 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -44,7 +46,6 @@ import org.w3c.dom.Text;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-
 public class Main_Menu extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -55,9 +56,12 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     private Button btn_play;
     private Button btn_singout;
     private Button btn_achievements;
+    private Button btn_options;
     private TextView text_loged;
     private TextView text_id_score;
     private ImageView imgProfilePic;
+    private LinearLayout lin_top_logo;
+    private RelativeLayout rel_logged;
 
     GoogleApiClient mGoogleApiClient;
 
@@ -72,13 +76,13 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     boolean mExplicitSignOut = false;
     boolean mInSignInFlow = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main__menu);
 
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
+        Theme_Setter();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main__menu);
 
         //variable declaration
 
@@ -87,13 +91,19 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_singout = (Button)findViewById(R.id.button_signout);
         btn_high_scores = (Button)findViewById(R.id.button_high_scores);
         btn_achievements = (Button)findViewById(R.id.button_achievements);
+        btn_options = (Button)findViewById(R.id.button_options);
         imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
         text_loged = (TextView) findViewById(R.id.text_loged);
         text_id_score = (TextView) findViewById(R.id.text_id_score);
+        lin_top_logo = (LinearLayout)findViewById(R.id.linear_top_logo);
+        rel_logged = (RelativeLayout)findViewById(R.id.relative_loged);
 
         ImageView logo_1 = (ImageView) findViewById(R.id.logo_1);
         ImageView logo_2 = (ImageView) findViewById(R.id.logo_2);
         ImageView logo_3 = (ImageView) findViewById(R.id.logo_3);
+
+        //sets color for views in layout
+        Theme_Setter_Views();
 
         //set animation for view switcher
         final Animation left_trans = AnimationUtils.loadAnimation(this,R.anim.anim_left_in_translate);
@@ -114,6 +124,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         btn_singout.setOnClickListener(this);
         btn_high_scores.setOnClickListener(this);
         btn_achievements.setOnClickListener(this);
+        btn_options.setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -128,18 +139,69 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         }
     }
 
+    //sets colors for internal views of layout
+    private void Theme_Setter_Views(){
+        String tester = settings.getString("Color_Theme","Purple");
+        switch (tester){
+            case "Red":
+                lin_top_logo.setBackgroundColor(getResources().getColor(R.color.red_500));
+                rel_logged.setBackgroundColor(getResources().getColor(R.color.red_800));
+                break;
+            case "Purple":
+                lin_top_logo.setBackgroundColor(getResources().getColor(R.color.purple_500));
+                rel_logged.setBackgroundColor(getResources().getColor(R.color.purple_800));
+                break;
+            case "Blue":
+                lin_top_logo.setBackgroundColor(getResources().getColor(R.color.blue_500));
+                rel_logged.setBackgroundColor(getResources().getColor(R.color.blue_800));
+                break;
+            case "LGreen":
+                lin_top_logo.setBackgroundColor(getResources().getColor(R.color.light_green_500));
+                rel_logged.setBackgroundColor(getResources().getColor(R.color.light_green_800));
+                break;
+            case "Orange":
+                lin_top_logo.setBackgroundColor(getResources().getColor(R.color.orange_500));
+                rel_logged.setBackgroundColor(getResources().getColor(R.color.orange_800));
+                break;
+        }
+    }
+
+    private void Theme_Setter(){
+        String tester = settings.getString("Color_Theme","Purple");
+
+        switch (tester){
+            case "Red":
+                setTheme(R.style.ActionTheme_Options_Style_Red);
+                break;
+            case "Purple":
+                setTheme(R.style.ActionTheme_Options_Style_Purple);
+                break;
+            case "Blue":
+                setTheme(R.style.ActionTheme_Options_Style_Blue);
+                break;
+            case "LGreen":
+                setTheme(R.style.ActionTheme_Options_Style_LGreen);
+                break;
+            case "Orange":
+                setTheme(R.style.ActionTheme_Options_Style_Orange);
+                break;
+        }
+    }
+
     private void display_change_state(Boolean signed){
         if (signed == true){
             btnSignIn.setVisibility(View.GONE);
             btn_high_scores.setVisibility(View.VISIBLE);
             btn_singout.setVisibility(View.VISIBLE);
             btn_achievements.setVisibility(View.VISIBLE);
+            btn_options.setVisibility(View.VISIBLE);
             Log.e("Connection:", "CONNECTED");
         }else{
             btnSignIn.setVisibility(View.VISIBLE);
             btn_high_scores.setVisibility(View.GONE);
             btn_singout.setVisibility(View.GONE);
             btn_achievements.setVisibility(View.GONE);
+            btn_options.setVisibility(View.VISIBLE);
             Log.e("Connection:", "DISCONNECTED");
         }
     }
@@ -179,6 +241,9 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             case R.id.button_achievements:
                 startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),1);
                 break;
+            case R.id.button_options:
+                Intent options = new Intent(this, Options.class);
+                startActivity(options);
         }
     }
 
@@ -271,8 +336,6 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 mResolvingConnectionFailure = false;
             }
         }
-
-
         // Put code here to display the sign-in button
         display_change_state(false);
     }
@@ -299,7 +362,6 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
         mGoogleApiClient.connect();
-
     }
 
     /**

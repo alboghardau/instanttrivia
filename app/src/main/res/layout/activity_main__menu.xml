@@ -13,7 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/purple_500"
-        android:id="@+id/linearLayout"
+        android:id="@+id/linear_top_logo"
         android:elevation="5dp">
 
         <RelativeLayout
@@ -111,7 +111,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:paddingRight="25dp"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/linear_top_logo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="25dp"
@@ -127,27 +127,44 @@
             android:background="@drawable/button_lollipop"
             android:focusable="false" />
 
-        <Button
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Achievements"
-            android:id="@+id/button_achievements"
-            android:layout_below="@+id/text_time"
-            android:layout_centerHorizontal="true"
-            android:elevation="5dp"
-            android:background="@drawable/button_lollipop"
-            android:paddingTop="5dp" />
+            android:weightSum="2"
+            android:divider="@drawable/vertical_divider"
+            android:showDividers="middle">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Achievements"
+                android:id="@+id/button_achievements"
+                android:layout_below="@+id/text_time"
+                android:layout_centerHorizontal="true"
+                android:elevation="5dp"
+                android:background="@drawable/button_lollipop"
+                android:paddingTop="5dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="High Scores"
+                android:id="@+id/button_high_scores"
+                android:layout_below="@+id/text_time"
+                android:layout_centerHorizontal="true"
+                android:elevation="5dp"
+                android:background="@drawable/button_lollipop"
+                android:layout_weight="1" />
+        </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="High Scores"
-            android:id="@+id/button_high_scores"
-            android:layout_below="@+id/text_time"
-            android:layout_centerHorizontal="true"
-            android:elevation="5dp"
-            android:background="@drawable/button_lollipop"
-            android:paddingTop="5dp" />
+            android:text="Options"
+            android:id="@+id/button_options"
+            android:background="@drawable/button_lollipop" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_sign_in"
