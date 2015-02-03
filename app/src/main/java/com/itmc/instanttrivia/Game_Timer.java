@@ -484,9 +484,17 @@ public class Game_Timer extends Main_Menu {
             Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_hero), question_correct);
         }
 
-        if(game_difficulty == "Easy" && score > 470) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
-        if(game_difficulty == "Medium" && score > 900) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
-        if(game_difficulty == "Hard" && score > 1350) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
+        if(game_difficulty == "Easy" && score > 400) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
+        if(game_difficulty == "Medium" && score > 800) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
+        if(game_difficulty == "Hard" && score > 1200) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
+
+        if(game_difficulty == "Easy" && score > 430) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_freak));
+        if(game_difficulty == "Medium" && score > 860) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_freak));
+        if(game_difficulty == "Hard" && score > 1290) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_freak));
+
+        if(game_difficulty == "Easy" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
+        if(game_difficulty == "Medium" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
+        if(game_difficulty == "Hard" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_dont_give_up));
 
         if(game_difficulty == "Easy" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
         if(game_difficulty == "Medium" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));

@@ -18,9 +18,17 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_medium_level_expert">CgkIyc6Y-6gaEAIQCw</string>
     <string name="achievement_hard_level_expert">CgkIyc6Y-6gaEAIQDA</string>
 
+    <string name="achievement_easy_level_freak">CgkIyc6Y-6gaEAIQEA</string>
+    <string name="achievement_medium_level_freak">CgkIyc6Y-6gaEAIQEQ</string>
+    <string name="achievement_hard_level_freak">CgkIyc6Y-6gaEAIQEg</string>
+
     <string name="achievement_perfect_play__easy">CgkIyc6Y-6gaEAIQDQ</string>
     <string name="achievement_perfect_play__medium">CgkIyc6Y-6gaEAIQDg</string>
     <string name="achievement_perfect_play__hard">CgkIyc6Y-6gaEAIQDw</string>
+
+    <string name="achievement_noob_fairy">CgkIyc6Y-6gaEAIQEw</string>
+    <string name="achievement_still_noob">CgkIyc6Y-6gaEAIQFA</string>
+    <string name="achievement_dont_give_up">CgkIyc6Y-6gaEAIQFQ</string>
 
     <!-- LEADERBOARDS-->
     <string name="leaderboard_total_score">CgkIyc6Y-6gaEAIQBA</string>

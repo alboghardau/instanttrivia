@@ -29,10 +29,9 @@
         <activity
             android:name=".Main_Menu"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,12 +41,9 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".TestActivity"
-            android:label="@string/title_activity_test" >
-        </activity>
-        <activity
             android:name=".Options"
             android:label="@string/title_activity_options"
+            android:screenOrientation="portrait"
             android:theme="@style/Options_Style_Purple">
         </activity>
     </application>
