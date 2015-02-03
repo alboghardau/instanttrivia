@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -828,9 +829,13 @@ public class Game_Timer extends Main_Menu {
         //change background for buttons after click
         if(correct == true){
             pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_true));
+            AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
+            ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));
         }else{
             pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_false));
+            AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
+            ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));
         }
     }
