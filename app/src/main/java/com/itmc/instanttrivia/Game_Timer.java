@@ -16,8 +16,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -341,37 +344,33 @@ public class Game_Timer extends Main_Menu {
         lin_start_btn.startAnimation(anim_start_back);
     }
 
+
     private void question_update(final String text){
 
-        final TextView question = (TextView) findViewById(R.id.text_question);
+        ScaleAnimation anim = new ScaleAnimation(1, 1, 0, 1);
+        final ScaleAnimation anim2 = new ScaleAnimation(1, 1, 1, 0);
 
-        int init_height = question.getHeight();
-        ValueAnimator val = ValueAnimator.ofInt(init_height,0);
-        final ValueAnimator val2 = ValueAnimator.ofInt(0,dpToPx((int)DpHeight()/3));
-        val.setDuration(1000);
-        val2.setDuration(1000);
+        anim.setDuration(500);
+        anim2.setDuration(500);
+        anim2.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            }
+
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                question.setMaxHeight((Integer) animation.getAnimatedValue());
+            public void onAnimationEnd(Animation animation) {
+                text_question.setText(text);
+                text_question.startAnimation(anim2);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
             }
         });
-        val2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation2) {
-                question.setMaxHeight((Integer) animation2.getAnimatedValue());
-            }
-        });
-        val.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                val2.start();
-                question.setText(text);
-            }
-        });
-        val.start();
+
+        text_question.startAnimation(anim);
     }
 
     private void question_hide_end(){
@@ -510,7 +509,7 @@ public class Game_Timer extends Main_Menu {
 
         //update total score
         //request data from server
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
             public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
@@ -604,7 +603,6 @@ public class Game_Timer extends Main_Menu {
         }
     }
 
-
     //function handles text view generation for answer letters
     private void answer_display_hidden2(){
         LinearLayout line = new LinearLayout(this);
@@ -657,13 +655,13 @@ public class Game_Timer extends Main_Menu {
     private void score_update(){
 
         int time_sub =(int) Math.ceil((1-(millis_buffer)/(float)(question_time)) * score_per_question/2.0);
-        int wrong_sub =(int) Math.ceil((pressed_wrong/(float)max_wrong * 0.5 * score_per_question));
+        int wrong_sub =(int) Math.ceil((pressed_wrong / (float) max_wrong * 0.5 * score_per_question));
         int bonus = score_per_question - time_sub - wrong_sub;
 
         Log.e("time_sub", time_sub+"");
         Log.e("wrong_Sub", wrong_sub+"");
         ValueAnimator val = ValueAnimator.ofInt(score,score+bonus);
-        val.setDuration(bonus*50);
+        val.setDuration(bonus * 50);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -723,6 +721,7 @@ public class Game_Timer extends Main_Menu {
                                         public void onAnimationEnd(Animator animation) {
                                             super.onAnimationEnd(animation);
                                             buttons_enabler(true);      //click enables after fade in
+                                            line_bot.clearAnimation();
                                         }
                                     })
                                     .start();
@@ -741,6 +740,7 @@ public class Game_Timer extends Main_Menu {
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             buttons_enabler(true);      //click enabled at animation end
+                            line_bot.clearAnimation();
                         }
                     })
                     .start();
