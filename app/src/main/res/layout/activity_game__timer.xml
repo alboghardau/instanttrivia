@@ -10,12 +10,10 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/purple_500"
-        android:paddingBottom="10dp"
         android:id="@+id/linear_topbar"
-        android:paddingRight="20dp"
         android:gravity="center"
-        android:paddingTop="5dp"
-        android:paddingLeft="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
 
         <ImageView
@@ -53,14 +51,6 @@
                     android:textSize="15dp"
                     android:layout_marginRight="3dp"
                     android:layout_centerVertical="true" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:id="@+id/image_icon_question"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:src="@drawable/icon_question"
-                    android:layout_alignParentTop="true" />
 
             </LinearLayout>
 
@@ -100,10 +90,6 @@
         android:layout_below="@+id/timer_bar"
         android:layout_centerHorizontal="true"
         android:background="@color/purple_500"
-        android:paddingTop="50dp"
-        android:paddingBottom="50dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:textColor="@color/white"
         android:textSize="16dp"
         android:gravity="center"

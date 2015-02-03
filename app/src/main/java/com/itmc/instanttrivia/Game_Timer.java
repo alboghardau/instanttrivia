@@ -17,10 +17,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -37,10 +39,13 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 
 public class Game_Timer extends Main_Menu {
@@ -49,8 +54,6 @@ public class Game_Timer extends Main_Menu {
     TextView text_score;
     TextView text_question_current;
     TextView text_final_score;
-
-    ImageView icon_question;
 
     LinearLayout lin_start_btn;
     LinearLayout lin_answer;
@@ -139,11 +142,6 @@ public class Game_Timer extends Main_Menu {
         text_question_current.setTypeface(font_bold);
         text_final_score = (TextView)findViewById(R.id.text_final_score);
 
-        icon_question = (ImageView) findViewById(R.id.image_icon_question);
-        icon_question.setAlpha(0f);
-
-        icon_question = (ImageView) findViewById(R.id.image_icon_question);
-
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
         lin_start_btn = (LinearLayout) findViewById(R.id.linear_start_btn);
@@ -160,8 +158,10 @@ public class Game_Timer extends Main_Menu {
         Theme_Setter_Views();
 
         //set relative size for questions textview
-        text_question.setTextSize(DpHeight()/38);
-        text_question.setPadding(0,dpToPx((int)DpHeight()/26),0,dpToPx((int)DpHeight()/26));
+        text_question.setTextSize((float) (DpHeight()/40.0));
+
+        ViewGroup.LayoutParams p = text_question.getLayoutParams();
+        p.height = dpToPx((int) (DpHeight()/5.0));
 
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
@@ -301,30 +301,8 @@ public class Game_Timer extends Main_Menu {
     //animates question textview
     private void animate_quest() {
 
-        final TextView txt2 = (TextView) findViewById(R.id.text_question);
-        final int old_pad = txt2.getPaddingTop();
-
-        //animatie padding
-        ValueAnimator val = ValueAnimator.ofInt(txt2.getPaddingTop(), dpToPx((int)DpHeight()/26));
-        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                txt2.setPadding(10, (Integer) animation.getAnimatedValue(), 10, (Integer) animation.getAnimatedValue());
-            }
-        });
-
-        val.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                //displays buttons at animation end
-                buttons_generate(answer);
-                buttons_display();
-
-            }
-        });
-        val.setDuration(750);
-        val.start();
+        buttons_generate(answer);
+        buttons_display();
 
         //animate start button after click to retract back under question
         Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_top_top);
@@ -344,15 +322,35 @@ public class Game_Timer extends Main_Menu {
         lin_start_btn.startAnimation(anim_start_back);
     }
 
-
     private void question_update(final String text){
 
-        ScaleAnimation anim = new ScaleAnimation(1, 1, 0, 1);
-        final ScaleAnimation anim2 = new ScaleAnimation(1, 1, 1, 0);
+            TextView txt = new TextView(this);
+            txt.setLayoutParams(text_question.getLayoutParams());
+            txt.setTextSize(text_question.getTextSize());
 
-        anim.setDuration(500);
-        anim2.setDuration(500);
-        anim2.setAnimationListener(new Animation.AnimationListener() {
+            txt.setText(text);
+
+            final int Height = dpToPx((int) (DpHeight()/5.0));
+
+            Animation a = new Animation()
+            {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    if(interpolatedTime == 1){
+                        text_question.setVisibility(View.GONE);
+                    }else{
+                        text_question.getLayoutParams().height = Height - (int)(Height * interpolatedTime);
+                        text_question.requestLayout();
+                    }
+                }
+                @Override
+                public boolean willChangeBounds() {
+                    return true;
+                }
+            };
+            // 1dp/ms
+            a.setDuration(750);
+            a.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -360,8 +358,28 @@ public class Game_Timer extends Main_Menu {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+
                 text_question.setText(text);
-                text_question.startAnimation(anim2);
+
+                text_question.getLayoutParams().height = 0;
+                text_question.setVisibility(View.VISIBLE);
+                Animation a = new Animation()
+                {
+                    @Override
+                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+                        text_question.getLayoutParams().height =  (int)(Height * interpolatedTime);
+                        text_question.requestLayout();
+                    }
+
+                    @Override
+                    public boolean willChangeBounds() {
+                        return true;
+                    }
+                };
+
+                // 1dp/ms
+                a.setDuration((int)(Height / text_question.getContext().getResources().getDisplayMetrics().density)*10);
+                text_question.startAnimation(a);
             }
 
             @Override
@@ -369,25 +387,37 @@ public class Game_Timer extends Main_Menu {
 
             }
         });
+            text_question.startAnimation(a);
 
-        text_question.startAnimation(anim);
+
     }
 
     private void question_hide_end(){
         //animation to hide the question
-        ValueAnimator val = ValueAnimator.ofInt(text_question.getHeight(),0);
-        val.setDuration(2000);
-        val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        final int Height = dpToPx((int) (DpHeight()/5.0));
+        Animation a = new Animation()
+        {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                text_question.setMaxHeight((Integer) animation.getAnimatedValue());
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    text_question.setVisibility(View.GONE);
+                }else{
+                    text_question.getLayoutParams().height = Height - (int)(Height * interpolatedTime);
+                    text_question.requestLayout();
+                }
             }
-        });
-        val.start();
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        // 1dp/ms
+        a.setDuration(750);
+        text_question.startAnimation(a);
 
         //answer fade out
         lin_answer.setAlpha(1f);
-        lin_answer.animate().setDuration(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
+        lin_answer.animate().setDuration(1000).alpha(0f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -398,7 +428,7 @@ public class Game_Timer extends Main_Menu {
         buttons_enabler(false);
         //buttons fade out
         lin_bot.setAlpha(1f);
-        lin_bot.animate().setDuration(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
+        lin_bot.animate().setDuration(1000).alpha(0f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -562,7 +592,6 @@ public class Game_Timer extends Main_Menu {
         lin_start_btn.startAnimation(anim);
         logo.startAnimation(anim_logo);
         score.startAnimation(anim_score);
-        icon_question.animate().alpha(1f).setDuration(1000).start();
     }
 
     //function handles animation for answer display connected to answer_display_hidden2();
@@ -570,7 +599,7 @@ public class Game_Timer extends Main_Menu {
 
         //display update question number on top
         text_question_current.setText(question_counter+"/"+question_number);
-        icon_question.setVisibility(View.VISIBLE);
+
 
         //animation definition
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
@@ -626,7 +655,6 @@ public class Game_Timer extends Main_Menu {
             t.setTypeface(Typeface.MONOSPACE);
             t.setTextSize(20);
             t.setMaxWidth(dpToPx(max_width));
-            Log.e("dp",dpToPx(max_width)+"");
             t.setTextColor(Color.WHITE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 t.setElevation(5);       //implement elevation for 5.0+
@@ -882,20 +910,19 @@ public class Game_Timer extends Main_Menu {
         //next question for pressed wrong
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
-            pressed_correct = 0;
-            pressed_wrong = 0;
             question_wrong++;
-            question_next();
+        }
+        if(check_completion() == true){
+            score_update();
+            question_correct++;
         }
 
         //action for word completion
-        if(check_completion() == true){
+        if(check_completion() == true || (pressed_wrong == max_wrong)){
 
-            score_update();
             //reset pressed variables
             pressed_correct = 0;
             pressed_wrong = 0;
-            question_correct++;
 
             //test if the timer is gone when change the question
             if(question_counter < question_number){
@@ -1019,3 +1046,4 @@ public class Game_Timer extends Main_Menu {
         db.close();
     }
 }
+
