@@ -37,7 +37,11 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/options_ripple"
+            android:clickable="true"
+            android:id="@+id/linear_opt_red"
+            android:onClick="onRadioButtonClicked">
 
             <TextView
                 android:layout_width="25dp"
@@ -66,14 +70,18 @@
                 android:checked="false"
                 android:enabled="true"
                 android:focusable="false"
-                android:onClick="onRadioButtonClicked" />
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" >
+            android:gravity="center"
+            android:background="@drawable/options_ripple"
+            android:clickable="true"
+            android:id="@+id/linear_opt_blue"
+            android:onClick="onRadioButtonClicked">
 
             <TextView
                 android:layout_width="25dp"
@@ -101,14 +109,18 @@
                 android:checked="false"
                 android:enabled="true"
                 android:focusable="false"
-                android:onClick="onRadioButtonClicked" />
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" >
+            android:gravity="center"
+            android:background="@drawable/options_ripple"
+            android:clickable="true"
+            android:id="@+id/linear_opt_lgreen"
+            android:onClick="onRadioButtonClicked">
 
             <TextView
                 android:layout_width="25dp"
@@ -136,7 +148,7 @@
                 android:checked="false"
                 android:enabled="true"
                 android:focusable="false"
-                android:onClick="onRadioButtonClicked" />
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -144,11 +156,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
+            android:background="@drawable/options_ripple"
             android:clickable="true"
-            android:translationZ="5dp"
-            android:longClickable="true">
+            android:id="@+id/linear_opt_purple"
+            android:onClick="onRadioButtonClicked">
 
             <TextView
                 android:layout_width="25dp"
@@ -176,7 +187,7 @@
                 android:checked="false"
                 android:enabled="true"
                 android:focusable="false"
-                android:onClick="onRadioButtonClicked" />
+                android:clickable="false" />
         </LinearLayout>
 
         <LinearLayout
@@ -184,11 +195,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:focusableInTouchMode="true"
-            android:focusable="true"
+            android:background="@drawable/options_ripple"
             android:clickable="true"
-            android:translationZ="5dp"
-            android:longClickable="true" >
+            android:id="@+id/linear_opt_orange"
+            android:onClick="onRadioButtonClicked">
 
             <TextView
                 android:layout_width="25dp"
@@ -217,7 +227,7 @@
                 android:checked="false"
                 android:enabled="true"
                 android:focusable="false"
-                android:onClick="onRadioButtonClicked" />
+                android:clickable="false" />
         </LinearLayout>
 
     </LinearLayout>

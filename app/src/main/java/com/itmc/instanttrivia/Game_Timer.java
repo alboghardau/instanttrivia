@@ -198,7 +198,7 @@ public class Game_Timer extends Main_Menu {
                 start_disable();
                 difficulty_set("Medium");
                 question_read_db_rand(); // reads question on game start
-                text_question.setText(question);
+                text_question.setText(category.toUpperCase()+"\n"+question);
                 answer_display_hidden();
                 //porneste animatia pentru questions
                 animate_quest();
@@ -214,7 +214,7 @@ public class Game_Timer extends Main_Menu {
                 start_disable();
                 difficulty_set("Hard");
                 question_read_db_rand(); // reads question on game start
-                text_question.setText(question);
+                text_question.setText(category.toUpperCase()+"\n"+question);
                 answer_display_hidden();
                 //porneste animatia pentru questions
                 animate_quest();
@@ -274,7 +274,7 @@ public class Game_Timer extends Main_Menu {
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
-                question_time = 30000;
+                question_time = 40000;
                 leaderboard_name = R.string.leaderboard_time_trial__easy_level;
                 difficulty_setting = 1;
                 break;
@@ -282,7 +282,7 @@ public class Game_Timer extends Main_Menu {
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
-                question_time = 25000;
+                question_time = 45000;
                 leaderboard_name = R.string.leaderboard_time_trial__medium_level;
                 difficulty_setting = 2;
                 break;
@@ -290,7 +290,7 @@ public class Game_Timer extends Main_Menu {
                 question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
-                question_time = 20000;
+                question_time = 30000;
                 leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 difficulty_setting = 3;
                 buttons_sort_alpha = false;
@@ -603,7 +603,7 @@ public class Game_Timer extends Main_Menu {
 
         //animation definition
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
-        fade_out.setStartOffset(500);
+        fade_out.setStartOffset(1000);
         final Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         //animation action listener on ending fade in new answer
         fade_out.setAnimationListener(new Animation.AnimationListener() {
@@ -689,7 +689,7 @@ public class Game_Timer extends Main_Menu {
         Log.e("time_sub", time_sub+"");
         Log.e("wrong_Sub", wrong_sub+"");
         ValueAnimator val = ValueAnimator.ofInt(score,score+bonus);
-        val.setDuration(bonus * 50);
+        val.setDuration(bonus * 15);
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -718,13 +718,23 @@ public class Game_Timer extends Main_Menu {
         final LinearLayout lin = (LinearLayout) text.getParent();
         final int index = lin.indexOfChild(text);
 
-        Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
-
         //transition animation for the background drawable
         TransitionDrawable trans = (TransitionDrawable) text.getBackground();
         trans.startTransition(1000);
         text.setText(change.toString());
+    }
+
+    //display answer if mistaken
+    private void answer_replace_lost(){
+
+        int cont_id = 200;
+        for(int i = 0; i < ans_arr.size(); i++){
+            if(ans_arr.get(i) != " ".charAt(0) && ans_pressed.contains(ans_arr.get(i)) == false) {
+                TextView txt = (TextView) findViewById(cont_id + i);
+                txt.setBackgroundDrawable(getResources().getDrawable(R.drawable.answer_red));
+                txt.setText(ans_arr.get(i).toString());
+            }
+        }
     }
 
     //display buttons with animation
@@ -737,7 +747,7 @@ public class Game_Timer extends Main_Menu {
             line_bot.animate()
                     .alpha(0f)
                     .setDuration(1000)
-                    .setStartDelay(500)
+                    .setStartDelay(1000)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -815,7 +825,6 @@ public class Game_Timer extends Main_Menu {
 
     //genereaza timerul initial
     private void timer_create() {
-
         if(timer != null) timer.cancel();
         timer = new CountDownTimer(question_time, 100) {
             @Override
@@ -830,6 +839,7 @@ public class Game_Timer extends Main_Menu {
                 if(question_counter == question_number){
                     timer_end();
                 }else {
+                    answer_replace_lost();  //reveal answer
                     question_next();
                 }
             }
@@ -911,6 +921,7 @@ public class Game_Timer extends Main_Menu {
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
+            answer_replace_lost();
         }
         if(check_completion() == true){
             score_update();
@@ -919,11 +930,6 @@ public class Game_Timer extends Main_Menu {
 
         //action for word completion
         if(check_completion() == true || (pressed_wrong == max_wrong)){
-
-            //reset pressed variables
-            pressed_correct = 0;
-            pressed_wrong = 0;
-
             //test if the timer is gone when change the question
             if(question_counter < question_number){
                 question_next();
@@ -939,6 +945,9 @@ public class Game_Timer extends Main_Menu {
     }
 
     private void question_next(){
+        //reset pressed variables
+        pressed_correct = 0;
+        pressed_wrong = 0;
         question_read_db_rand();                 //read new questions form database
         answer_display_hidden();        //display answer
         question_update(category.toUpperCase()+"\n"+question);      //update text with animation

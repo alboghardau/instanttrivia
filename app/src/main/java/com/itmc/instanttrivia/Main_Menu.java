@@ -1,14 +1,15 @@
 package com.itmc.instanttrivia;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,33 +19,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.BaseImplementation;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.d;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.games.PlayerEntity;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
-import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
-import com.google.example.games.basegameutils.GameHelper;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
 public class Main_Menu extends Activity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -132,6 +121,10 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
 
         Log.e("OnCreate", "Apelat");
+        if(!isNetworkAvailable()){
+            options_signed_in(false);
+        }
+
         if(settings.getBoolean("SIGNED_IN", false) == false) {
             display_change_state(false);
         }else{
@@ -213,10 +206,12 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sign_in:
-                // Signin button clicked
-                mSignInClicked = true;
-                mGoogleApiClient.connect();
-                options_signed_out(true);
+                if(isNetworkAvailable()){
+                    // Signin button clicked
+                    mSignInClicked = true;
+                    mGoogleApiClient.connect();
+                    options_signed_in(true);
+                }
                 break;
             case R.id.button_signout:
                 // user explicitly signed out, so turn off auto sign in
@@ -226,7 +221,7 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                     mGoogleApiClient.disconnect();
                 }
                 //registers signed out option
-                options_signed_out(false);
+                options_signed_in(false);
                 //show hide buttons
                 display_change_state(false);
                 break;
@@ -236,10 +231,22 @@ public class Main_Menu extends Activity implements View.OnClickListener,
                 startActivity(start);
                 break;
             case R.id.button_high_scores:
-                startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), 1);
+                if(mGoogleApiClient.isConnected()) {
+                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), 1);
+                }else{
+                    display_change_state(false);
+                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!",Toast.LENGTH_SHORT);
+                    t.show();
+                }
                 break;
             case R.id.button_achievements:
-                startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),1);
+                if(mGoogleApiClient.isConnected()){
+                    startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),1);
+                }else{
+                    display_change_state(false);
+                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!",Toast.LENGTH_SHORT);
+                    t.show();
+                }
                 break;
             case R.id.button_options:
                 Intent options = new Intent(this, Options.class);
@@ -282,21 +289,26 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         text_loged.setText("Loged in as "+name);
     }
 
-    private void options_signed_out(boolean state){
+    private void options_signed_in(boolean state){
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("SIGNED_IN",state);
         editor.commit();
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-
         Boolean sign_tester = settings.getBoolean("SIGNED_IN",false);
-
         Log.e("Signed IN onStart", sign_tester+"");
 
-        if (sign_tester == true) {
+        if (sign_tester == true && isNetworkAvailable()) {
             // auto sign in
             mGoogleApiClient.connect();
             Log.e("Sing in on start","Apelat");
@@ -308,7 +320,6 @@ public class Main_Menu extends Activity implements View.OnClickListener,
         super.onStop();
         mGoogleApiClient.disconnect();
     }
-
 
     //resolves connection problems
     @Override

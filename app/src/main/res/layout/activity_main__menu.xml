@@ -145,8 +145,8 @@
                 android:layout_centerHorizontal="true"
                 android:elevation="5dp"
                 android:background="@drawable/button_lollipop"
-                android:paddingTop="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="center" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -157,7 +157,8 @@
                 android:layout_centerHorizontal="true"
                 android:elevation="5dp"
                 android:background="@drawable/button_lollipop"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="center" />
 
         </LinearLayout>
 

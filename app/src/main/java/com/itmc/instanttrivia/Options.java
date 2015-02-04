@@ -6,8 +6,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 
@@ -27,15 +29,33 @@ public class Options extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         radio_red = (RadioButton)findViewById(R.id.radio_red);
         radio_blue = (RadioButton)findViewById(R.id.radio_blue);
         radio_purple = (RadioButton)findViewById(R.id.radion_purple);
         radio_lgreen = (RadioButton)findViewById(R.id.radio_lgreen);
         radio_orange = (RadioButton)findViewById(R.id.radio_orange);
         radio_check(settings.getString("Color_Theme", "Purple"));
+    }
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_options, menu);
+//        return true;
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return (super.onOptionsItemSelected(menuItem));
     }
 
     private void radio_check(String tester){
@@ -94,48 +114,55 @@ public class Options extends ActionBarActivity {
     }
 
     public void onRadioButtonClicked(View view){
-        boolean checked = ((RadioButton) view).isChecked();
 
         switch (view.getId()){
 
             //RED BUTTON
-            case R.id.radio_red:
+            case R.id.linear_opt_red:
                 update_options("Red");
+                radio_red.setChecked(true);
                 radio_blue.setChecked(false);
                 radio_lgreen.setChecked(false);
                 radio_purple.setChecked(false);
+                radio_orange.setChecked(false);
                 break;
 
             //BLUE BUTTOn
-            case R.id.radio_blue:
+            case R.id.linear_opt_blue:
                 update_options("Blue");
                 radio_red.setChecked(false);
+                radio_blue.setChecked(true);
                 radio_lgreen.setChecked(false);
                 radio_purple.setChecked(false);
+                radio_orange.setChecked(false);
                 break;
 
             //LGREEN BUTTON
-            case R.id.radio_lgreen:
+            case R.id.linear_opt_lgreen:
                 update_options("LGreen");
                 radio_red.setChecked(false);
                 radio_blue.setChecked(false);
+                radio_lgreen.setChecked(true);
                 radio_purple.setChecked(false);
+                radio_orange.setChecked(false);
                 break;
 
             //PURPLE BUTTON
-            case R.id.radion_purple:
+            case R.id.linear_opt_purple:
                 update_options("Purple");
+                radio_red.setChecked(false);
                 radio_blue.setChecked(false);
                 radio_lgreen.setChecked(false);
-                radio_red.setChecked(false);
-
+                radio_purple.setChecked(true);
+                radio_orange.setChecked(false);
                 break;
-            case R.id.radio_orange:
+            case R.id.linear_opt_orange:
                 update_options("Orange");
-                radio_blue.setChecked(false);
                 radio_red.setChecked(false);
+                radio_blue.setChecked(false);
                 radio_lgreen.setChecked(false);
                 radio_purple.setChecked(false);
+                radio_orange.setChecked(true);
         }
     }
 }
