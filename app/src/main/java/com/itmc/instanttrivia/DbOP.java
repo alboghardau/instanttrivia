@@ -14,7 +14,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 29; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED
+    public int db_version = 31; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 

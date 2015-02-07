@@ -17,15 +17,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
-import android.view.animation.TranslateAnimation;
+
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -37,16 +34,13 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.example.games.basegameutils.BaseGameActivity;
 
-import java.lang.reflect.Method;
+import com.tapfortap.Banner;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
 
 public class Game_Timer extends Main_Menu {
 
@@ -167,6 +161,33 @@ public class Game_Timer extends Main_Menu {
         buttons = new ArrayList<Character>();
         ans_arr = new ArrayList<Character>();
         ans_pressed = new ArrayList<Character>();
+
+        //ads
+        Banner banner = Banner.create(this, new Banner.BannerListener() {
+            @Override
+            public void bannerOnReceive(Banner banner) {
+
+            }
+
+            @Override
+            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
+
+            }
+
+            @Override
+            public void bannerOnTap(Banner banner) {
+
+            }
+        });
+        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        para.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        para.width = (int)dpToPx((int)(DpWidth()*0.75));
+        para.height = (int)(para.width/6.4);
+
+        banner.setLayoutParams(para);
+        lin_top.addView(banner);
 
         //start database operator
         db = new DbOP(this);
@@ -583,14 +604,11 @@ public class Game_Timer extends Main_Menu {
     //animation function for the start of activity
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        Animation anim_logo = AnimationUtils.loadAnimation(this, R.anim.anim_left_in_translate);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
 
-        ImageView logo = (ImageView) findViewById(R.id.image_logo);
         TextView score = (TextView) findViewById(R.id.text_score);
 
         lin_start_btn.startAnimation(anim);
-        logo.startAnimation(anim_logo);
         score.startAnimation(anim_score);
     }
 
@@ -599,7 +617,6 @@ public class Game_Timer extends Main_Menu {
 
         //display update question number on top
         text_question_current.setText(question_counter+"/"+question_number);
-
 
         //animation definition
         Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
