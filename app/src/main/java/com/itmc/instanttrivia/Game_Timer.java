@@ -37,9 +37,13 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import com.tapfortap.Banner;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 public class Game_Timer extends Main_Menu {
@@ -829,12 +833,23 @@ public class Game_Timer extends Main_Menu {
 
             //set clicker
             final int finalI = i;
-            t.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    buttons_click(100 + finalI);
-                }
-            });
+            if(buttons.get(i) == "?".charAt(0)) {
+                t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_hints));
+                t.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        buttons_reveal_help(100+ finalI);
+                        Log.e("CLICK","TRUE");
+                    }
+                });
+            }else{
+                t.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        buttons_click(100 + finalI);
+                    }
+                });
+            }
 
             btn_grid.addView(t);
         }
@@ -909,6 +924,29 @@ public class Game_Timer extends Main_Menu {
         Random rnd = new Random();
         Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
         return cha;
+    }
+
+    private void buttons_reveal_help(int id){
+
+        TextView pressed = (TextView) findViewById(id);
+        pressed.setEnabled(false);
+
+        HashSet uniq_ans = new HashSet();
+        uniq_ans.addAll(ans_arr);
+        ArrayList<Character> uniq = new ArrayList<Character>();
+        uniq.addAll(uniq_ans);
+        Collections.shuffle(uniq);
+
+        int size = uniq_ans.size();
+        for(int i = 0; i < uniq_ans.size()*0.3 ; i++)
+        {
+            for(int j = 100; j < 115; j++){
+                TextView btn = (TextView) findViewById(j);
+                if(btn.getText().charAt(0) == (uniq.get(i))){
+                    btn.performClick();
+                }
+            }
+        }
     }
 
     //functie pentru litere.onclick
@@ -1040,6 +1078,16 @@ public class Game_Timer extends Main_Menu {
         }else {
             Collections.shuffle(buttons);
         }
+
+        boolean tester = false;
+        while(tester == false){
+            int ran = rnd.nextInt(15);
+            if(!ans_arr.contains(buttons.get(ran))){
+                buttons.set(ran,"?".charAt(0));
+                tester = true;
+            }
+        }
+
 
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());

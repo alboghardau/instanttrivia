@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset
+    android:inset="3dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<ripple
+    android:color="@color/amber_400"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/mask">
+        <shape android:shape="oval">
+            <solid android:color="@color/amber_300"/>
+            <padding
+                android:left="5dp"
+                android:top="5dp"
+                android:right="5dp"
+                android:bottom="5dp"
+                />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/button_hints_notpressed">
+    </item>
+</ripple>
+</inset>
