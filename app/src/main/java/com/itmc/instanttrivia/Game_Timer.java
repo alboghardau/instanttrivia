@@ -3,12 +3,15 @@ package com.itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Bundle;
@@ -37,13 +40,10 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import com.tapfortap.Banner;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
 public class Game_Timer extends Main_Menu {
@@ -58,6 +58,7 @@ public class Game_Timer extends Main_Menu {
     LinearLayout lin_bot;
     LinearLayout lin_gratz;
     RelativeLayout lin_top;
+    RelativeLayout rel_base;
     GridLayout btn_grid;
 
     ProgressBar prog_bar;
@@ -73,11 +74,11 @@ public class Game_Timer extends Main_Menu {
 
     SharedPreferences settings;
 
-    //int leaderboard_level = null;
-
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
+
+    int color_extraDark;
 
     Typeface font_regular;
     Typeface font_thin;
@@ -145,6 +146,7 @@ public class Game_Timer extends Main_Menu {
         lin_start_btn = (LinearLayout) findViewById(R.id.linear_start_btn);
         lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
         lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
+        rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
 
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
@@ -153,6 +155,7 @@ public class Game_Timer extends Main_Menu {
         btn_start_med = (Button) findViewById(R.id.btn_start_med);
         btn_start_hard = (Button) findViewById(R.id.btn_start_hard);
 
+        //sets colors for layout
         Theme_Setter_Views();
 
         //set relative size for questions textview
@@ -257,18 +260,23 @@ public class Game_Timer extends Main_Menu {
         switch (tester){
             case "Red":
                 Views_Editor("red");
+                color_extraDark = getResources().getColor(R.color.red_900);
                 break;
             case "Purple":
                 Views_Editor("purple");
+                color_extraDark = getResources().getColor(R.color.purple_900);
                 break;
             case "Blue":
                 Views_Editor("blue");
+                color_extraDark = getResources().getColor(R.color.blue_900);
                 break;
             case "LGreen":
                 Views_Editor("light_green");
+                color_extraDark = getResources().getColor(R.color.light_green_900);
                 break;
             case "Orange":
                 Views_Editor("orange");
+                color_extraDark = getResources().getColor(R.color.orange_900);
                 break;
         }
     }
@@ -473,6 +481,21 @@ public class Game_Timer extends Main_Menu {
         }
     }
 
+    private int hints_left(){
+        return settings.getInt("Hints", 25);
+    }
+
+    private void settings_hints_update(int hints){
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putInt("Hints",hints);
+        edit.commit();
+    }
+    private void settings_rated(boolean set){
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putBoolean("Rated", set);
+        edit.commit();
+    }
+
     private void score_final_display(){
 
         //send scores to google server
@@ -499,6 +522,28 @@ public class Game_Timer extends Main_Menu {
                 finish();
             }
         });
+        final Button btn_rate = (Button) findViewById(R.id.button_rate);
+
+        if(settings.getBoolean("Rated", false) == true){
+            btn_rate.setVisibility(View.GONE);
+        }
+        btn_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                try {
+                    startActivity(goToMarket);
+                    settings_hints_update(hints_left() + 25);
+                    btn_rate.setVisibility(View.GONE);
+                    settings_rated(true);
+                } catch (ActivityNotFoundException e) {
+
+                }
+            }
+        });
+
+
 
         //set round progress bars
         TextView text_correct_hits = (TextView) findViewById(R.id.text_correct_hits);
@@ -926,10 +971,57 @@ public class Game_Timer extends Main_Menu {
         return cha;
     }
 
+    private void display_message(String text){
+        int[] locations = new int[2];
+        lin_top.getLocationOnScreen(locations);
+        int left = locations[0];
+        int top = locations[1];
+        Log.e("Location",left+top+"");
+
+        final TextView message = new TextView(this);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, prog_bar.getId());
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        message.setLayoutParams(params);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            message.setElevation(dpToPx(7));       //implement elevation for 5.0+
+            message.setZ(dpToPx(7));
+        }
+        message.setBackgroundColor(color_extraDark);
+        message.setTextColor(getResources().getColor(R.color.white));
+        message.setTextSize(17);
+        message.setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5));
+        message.setTypeface(font_regular);
+        message.setText(text);
+        message.setGravity(Gravity.CENTER);
+        message.bringToFront();
+        rel_base.addView(message);
+
+
+        message.setAlpha(0.0f);
+        message.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                message.animate().alpha(0.0f).setStartDelay(1000).setDuration(500).start();
+            }
+        }).start();
+    }
+
     private void buttons_reveal_help(int id){
 
         TextView pressed = (TextView) findViewById(id);
+        pressed.setVisibility(View.INVISIBLE);
         pressed.setEnabled(false);
+
+        if(hints_left()-1 == 0){
+            display_message("No more Hints left.");
+        }else {
+            display_message("Hints left: " + (hints_left() - 1));
+        }
+
+        //update hints left
+        settings_hints_update(hints_left() - 1);
 
         HashSet uniq_ans = new HashSet();
         uniq_ans.addAll(ans_arr);
@@ -942,7 +1034,7 @@ public class Game_Timer extends Main_Menu {
         {
             for(int j = 100; j < 115; j++){
                 TextView btn = (TextView) findViewById(j);
-                if(btn.getText().charAt(0) == (uniq.get(i))){
+                if(btn.getText().charAt(0) == (uniq.get(i)) && !ans_pressed.contains(btn.getText().charAt(0))){
                     btn.performClick();
                 }
             }
@@ -1079,15 +1171,17 @@ public class Game_Timer extends Main_Menu {
             Collections.shuffle(buttons);
         }
 
-        boolean tester = false;
-        while(tester == false){
-            int ran = rnd.nextInt(15);
-            if(!ans_arr.contains(buttons.get(ran))){
-                buttons.set(ran,"?".charAt(0));
-                tester = true;
+        //adds the hints button if there are hints left
+        if(hints_left() > 0 && ans_arr.size() > 5) {
+            boolean tester = false;
+            while (tester == false) {
+                int ran = rnd.nextInt(15);
+                if (!ans_arr.contains(buttons.get(ran))) {
+                    buttons.set(ran, "?".charAt(0));
+                    tester = true;
+                }
             }
         }
-
 
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());

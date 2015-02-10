@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    tools:context="com.itmc.instanttrivia.Game_Timer">
+    tools:context="com.itmc.instanttrivia.Game_Timer"
+    android:id="@+id/relative_base">
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -11,7 +12,6 @@
         android:background="@color/purple_500"
         android:id="@+id/linear_topbar"
         android:gravity="center"
-        android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
 
@@ -20,7 +20,8 @@
             android:layout_width="wrap_content"
             android:gravity="right"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:id="@+id/linearLayout">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -370,6 +371,13 @@
                     android:gravity="center"
                     android:textSize="30dp" />
             </LinearLayout>
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Rate Us! Reward: 25 Hints"
+                android:id="@+id/button_rate"
+                android:background="@drawable/button_lollipop" />
 
             <Button
                 android:layout_width="fill_parent"
