@@ -33,6 +33,8 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
+import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
+
 import java.io.InputStream;
 
 public class Main_Menu extends Activity implements View.OnClickListener,
@@ -65,13 +67,13 @@ public class Main_Menu extends Activity implements View.OnClickListener,
     boolean mExplicitSignOut = false;
     boolean mInSignInFlow = false;
 
-    @Override
+//    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main__menu);
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main__menu);
 
         //variable declaration
 
@@ -131,6 +133,8 @@ public class Main_Menu extends Activity implements View.OnClickListener,
             display_change_state(true);
         }
     }
+
+
 
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){

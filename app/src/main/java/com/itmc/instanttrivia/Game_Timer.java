@@ -46,7 +46,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 
-public class Game_Timer extends Main_Menu {
+public class Game_Timer extends StartActivity {
 
     TextView text_question;
     TextView text_score;

@@ -41,5 +41,6 @@ dependencies {
     compile project(':BaseGameUtils')
     compile 'com.android.support:support-v4:21.0.3'
     compile files('libs/TapForTap.jar')
+    compile project(':MaterialNavigationDrawerModule')
 
 }

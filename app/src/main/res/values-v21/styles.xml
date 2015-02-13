@@ -3,13 +3,19 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--   darker variant for the status bar and contextual app bars -->
         <item name="android:colorPrimaryDark">@color/purple_700</item>
+        <item name="windowActionBar">false</item>
     </style>
 
+    <style name="MyNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme.Light.DarkActionBar">
+        <item name="colorPrimary">#8bc34a</item>
+        <item name="colorPrimaryDark">#558b2f</item>
+        <item name="colorAccent">#FFFFFF</item>
+        <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
+    </style>
 
+    <style name="ActionTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 
-    <style name="Options_Style_Purple" parent="Theme.AppCompat.Light.DarkActionBar"></style>
-
-    <style name="ActionTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+    </style>
 
     <style name="ActionTheme.Options_Style_Purple">
         <item name="colorPrimary">@color/purple_500</item>

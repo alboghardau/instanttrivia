@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -31,19 +31,16 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.tapfortap.API_KEY"
-            android:value="@string/tapfortap_api"/>
+            android:value="@string/tapfortap_api" />
         <meta-data
             android:name="com.tapfortap.TEST_MODE"
-            android:value="true"/>
+            android:value="true" />
 
         <activity
             android:name=".Main_Menu"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".Game_Timer"
@@ -54,7 +51,15 @@
             android:name=".Options"
             android:label="@string/title_activity_options"
             android:screenOrientation="portrait"
-            android:theme="@style/Options_Style_Purple">
+            android:theme="@style/Options_Style_Purple" >
+        </activity>
+        <activity
+            android:name=".StartActivity"
+            android:theme="@style/MyNavigationDrawerTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
