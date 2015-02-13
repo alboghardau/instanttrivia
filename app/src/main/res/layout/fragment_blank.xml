@@ -2,16 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context=".Main_Menu"
-    android:id="@+id/main_menu_layout"
+    android:id="@+id/ui_frag_back"
     android:clickable="false"
-    android:focusable="false"
-    android:background="@color/purple_500">
+    android:focusable="false">
 
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relative_logo"
+        android:id="@+id/ui_rel_logo"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
@@ -44,9 +43,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout"
-        android:background="@color/purple_800"
-        android:layout_above="@+id/relative_loged"
+        android:id="@+id/ui_user_details"
+        android:layout_below="@+id/ui_rel_logo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
@@ -99,7 +97,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relative_loged"
+        android:id="@+id/ui_bot_section"
         android:background="@color/purple_800"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -107,7 +105,8 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:clickable="true">
 
         <Button
             android:layout_width="match_parent"

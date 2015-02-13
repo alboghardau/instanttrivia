@@ -3,6 +3,7 @@ package com.itmc.instanttrivia;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -48,9 +49,9 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
      */
     // TODO: Rename and change types and number of parameters
     ImageView logo_1, logo_2, logo_3;
+    RelativeLayout ui_frag_back;
+    RelativeLayout ui_bot_section;
     Button btn_play;
-
-
 
     private LinearLayout lin_top_logo;
     private RelativeLayout rel_logged;
@@ -82,6 +83,8 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         View rootView = inflater.inflate(R.layout.fragment_blank,container,false);
 
         //define variables
@@ -89,6 +92,8 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         logo_2 = (ImageView) rootView.findViewById(R.id.ui_logo_2);
         logo_3 = (ImageView) rootView.findViewById(R.id.ui_logo_3);
         btn_play = (Button) rootView.findViewById(R.id.ui_button_play);
+        ui_frag_back = (RelativeLayout) rootView.findViewById(R.id.ui_frag_back);
+        ui_bot_section = (RelativeLayout) rootView.findViewById(R.id.ui_bot_section);
 
         //set animation for view switcher
         final Animation left_trans = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_left_in_translate);
@@ -98,17 +103,50 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         logo_2.startAnimation(right_trans);
         logo_3.startAnimation(right_trans);
 
-        btn_play.setOnClickListener(this);
+        btn_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),Game_Timer.class);
+                getActivity().startActivity(intent);
+            }
+        });
+        Theme_Setter_Views();
 
         return rootView;
+    }
+
+    //sets colors for internal views of layout
+    private void Theme_Setter_Views(){
+        String tester = StartActivity.settings.getString("Color_Theme","Purple");
+        switch (tester){
+            case "Red":
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.red_500));
+                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.red_800));
+                break;
+            case "Purple":
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.purple_500));
+                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.purple_800));
+                break;
+            case "Blue":
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.blue_500));
+                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.blue_800));
+                break;
+            case "LGreen":
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.light_green_500));
+                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.light_green_800));
+                break;
+            case "Orange":
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.orange_500));
+                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.orange_800));
+                break;
+        }
     }
 
     @Override
     public void onClick(View view){
         switch (view.getId()){
             case R.id.ui_button_play:
-                Intent i = new Intent(getActivity(), Game_Timer.class);
-                ((StartActivity) getActivity()).startActivity(i);
+
                 break;
         }
     }

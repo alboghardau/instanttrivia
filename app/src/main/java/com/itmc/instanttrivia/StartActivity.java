@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.achievement.Achievement;
 import com.google.example.games.basegameutils.BaseGameUtils;
+import com.google.example.games.basegameutils.GameHelper;
 
 import java.util.List;
 
@@ -29,9 +30,11 @@ import it.neokree.materialnavigationdrawer.util.MaterialDrawerLayout;
 
 public class StartActivity extends MaterialNavigationDrawer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    SharedPreferences settings;
+    public static SharedPreferences settings;
 
-    GoogleApiClient mGoogleApiClient;
+    private DbOP db;
+
+    public GoogleApiClient mGoogleApiClient;
 
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInFlow = true;
@@ -45,11 +48,17 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     int colorPrimary;
     int colorDark;
 
+
     @Override
     public void init(Bundle savedInstanceState) {
 
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
+
+        //database
+        db = new DbOP(this);
+        db.testnewdb();
+        db.close();
 
         //add home fragment
         Intent options = new Intent(this, Options.class);
@@ -122,12 +131,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         this.addBottomSection(newSection("Settings", new Intent(this, Options.class)));
 
-        section_hide("Sign In");
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).setViewForPopups(null)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
+
 
         if(!isNetworkAvailable()){
             options_signed_in(false);
@@ -143,6 +151,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         section_hide("");
 
     }
+
 
     private void display_change_state(Boolean signed){
         if (signed == true){

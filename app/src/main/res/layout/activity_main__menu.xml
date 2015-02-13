@@ -19,7 +19,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/relative_logo">
+            android:id="@+id/ui_rel_logo">
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -52,7 +52,7 @@
             android:layout_alignParentTop="false"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
-            android:layout_below="@+id/relative_logo"
+            android:layout_below="@+id/ui_rel_logo"
             android:id="@+id/relative_loged"
             android:background="@color/purple_800">
 

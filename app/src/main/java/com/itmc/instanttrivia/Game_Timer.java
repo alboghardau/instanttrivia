@@ -3,6 +3,7 @@ package com.itmc.instanttrivia;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
@@ -38,6 +40,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 
+import com.google.example.games.basegameutils.GameHelper;
 import com.tapfortap.Banner;
 
 import java.util.ArrayList;
@@ -46,7 +49,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 
-public class Game_Timer extends StartActivity {
+public class Game_Timer extends Activity{
 
     TextView text_question;
     TextView text_score;
@@ -111,6 +114,8 @@ public class Game_Timer extends StartActivity {
     int total_buttons_correct = 0;
     int total_buttons_wrong = 0;
 
+    //private GoogleApiClient mGoogleApiClient;
+
     //buffer variables for millis left to calc score
     int millis_buffer = 0;
 
@@ -118,6 +123,8 @@ public class Game_Timer extends StartActivity {
     CountDownTimer timer = null;
 
     private DbOP db;
+
+    public GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +207,27 @@ public class Game_Timer extends StartActivity {
         db = new DbOP(this);
         db.startdb();
 
+        //temporary fix passing of mGoogleApiClient form start activity to this
+        Log.e("SignIn Status before conection:", settings.getBoolean("SIGNE_IN",false)+"");
+        if(settings.getBoolean("SIGNED_IN",false) == true){
+            GameHelper gameHelper = new GameHelper(this,GameHelper.CLIENT_GAMES);
+            gameHelper.setup(new GameHelper.GameHelperListener() {
+                @Override
+                public void onSignInFailed() {
+
+                }
+
+                @Override
+                public void onSignInSucceeded() {
+
+                }
+            });
+            mGoogleApiClient = gameHelper.getApiClient();
+        }else{
+            mGoogleApiClient = null;
+        }
+
+
         //dispaly animation on start
         animate_start();
 
@@ -261,22 +289,37 @@ public class Game_Timer extends StartActivity {
             case "Red":
                 Views_Editor("red");
                 color_extraDark = getResources().getColor(R.color.red_900);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.red_700));
+                }
                 break;
             case "Purple":
                 Views_Editor("purple");
                 color_extraDark = getResources().getColor(R.color.purple_900);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.purple_700));
+                }
                 break;
             case "Blue":
                 Views_Editor("blue");
                 color_extraDark = getResources().getColor(R.color.blue_900);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.blue_700));
+                }
                 break;
             case "LGreen":
                 Views_Editor("light_green");
                 color_extraDark = getResources().getColor(R.color.light_green_900);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.light_green_700));
+                }
                 break;
             case "Orange":
                 Views_Editor("orange");
                 color_extraDark = getResources().getColor(R.color.orange_900);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.orange_700));
+                }
                 break;
         }
     }
@@ -498,13 +541,16 @@ public class Game_Timer extends StartActivity {
 
     private void score_final_display(){
 
+        //UPDATE SCORES, ACUM CU DUBLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
         //send scores to google server
-        if(mGoogleApiClient.isConnected() == true) {
-            Log.e("CONNECTED PROCEED TO UPLOAD SCORES", "TRUE");
-            //update leaderboards total score
-            score_total_update();
-            //update achievements
-            achievements_questions_update();
+        if(mGoogleApiClient != null){
+            if(mGoogleApiClient.isConnected() == true) {
+                Log.e("API ACTION:", "Uploading Scores!");
+                //update leaderboards total score
+                score_total_update();
+                //update achievements
+                achievements_questions_update();
+            }
         }
 
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
