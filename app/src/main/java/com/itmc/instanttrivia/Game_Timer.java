@@ -208,7 +208,7 @@ public class Game_Timer extends Activity{
         db.startdb();
 
         //temporary fix passing of mGoogleApiClient form start activity to this
-        Log.e("SignIn Status before conection:", settings.getBoolean("SIGNE_IN",false)+"");
+        Log.e("SignIn Status before conection:", settings.getBoolean("SIGNED_IN",false)+"");
         if(settings.getBoolean("SIGNED_IN",false) == true){
             GameHelper gameHelper = new GameHelper(this,GameHelper.CLIENT_GAMES);
             gameHelper.setup(new GameHelper.GameHelperListener() {
@@ -223,6 +223,7 @@ public class Game_Timer extends Activity{
                 }
             });
             mGoogleApiClient = gameHelper.getApiClient();
+            mGoogleApiClient.connect();
         }else{
             mGoogleApiClient = null;
         }
@@ -544,12 +545,15 @@ public class Game_Timer extends Activity{
         //UPDATE SCORES, ACUM CU DUBLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
         //send scores to google server
         if(mGoogleApiClient != null){
+            Log.e("API ACTION:", "Api client is initialized");
             if(mGoogleApiClient.isConnected() == true) {
                 Log.e("API ACTION:", "Uploading Scores!");
                 //update leaderboards total score
                 score_total_update();
                 //update achievements
                 achievements_questions_update();
+            }else{
+                Log.e("API ACTION:", "Can not upload scores, not connected");
             }
         }
 

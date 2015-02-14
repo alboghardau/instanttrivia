@@ -75,7 +75,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addDivisor();
         this.addSection(section);
 
-        this.addSection(newSection("Achievements",new MaterialSectionListener() {
+        //SECTION ACHIEVEMENTS
+        MaterialSection section_achievements = newSection("Achievements",getResources().getDrawable(R.drawable.icon_trophy_award),new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 if(mGoogleApiClient.isConnected()){
@@ -86,9 +87,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     t.show();
                 }
             }
-        }));
+        });
+        section_achievements.useRealColor();
+        section_achievements.setIconColor(getResources().getColor(R.color.orange_500));
+        this.addSection(section_achievements);
 
-        this.addSection(newSection("Leader-Boards",new MaterialSectionListener() {
+        //SECTION LEADERBOARDS
+        MaterialSection section_leader = newSection("Leader-Boards",getResources().getDrawable(R.drawable.icon_trophy_leader),new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 if(mGoogleApiClient.isConnected()) {
@@ -99,9 +104,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     t.show();
                 }
             }
-        }));
+        });
+        section_leader.useRealColor();
+        section_leader.setIconColor(getResources().getColor(R.color.blue_500));
+        this.addSection(section_leader);
 
-        this.addSection(newSection("Sign In",new MaterialSectionListener() {
+        //SECTION GOOGLE SIGN IN
+        MaterialSection sign_in = newSection("Sign In",getResources().getDrawable(R.drawable.icon_gplus_box),new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 if(isNetworkAvailable()){
@@ -111,9 +120,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     options_signed_in(true);
                 }
             }
-        }));
+        });
+        sign_in.useRealColor();
+        sign_in.setIconColor(getResources().getColor(R.color.red_500));
+        this.addSection(sign_in);
 
-        this.addSection(newSection("Sign Out", new MaterialSectionListener() {
+        //SIGN OUT SECTION
+        MaterialSection section_signout = newSection("Sign Out",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 // user explicitly signed out, so turn off auto sign in
@@ -127,15 +140,22 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 //show hide buttons
                 display_change_state(false);
             }
-        }));
+        });
+        section_signout.useRealColor();
+        section_signout.setIconColor(getResources().getColor(R.color.red_500));
+        this.addSection(section_signout);
 
-        this.addBottomSection(newSection("Settings", new Intent(this, Options.class)));
+        //SETTINGS SECTION
+        MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
+        section_settings.useRealColor();
+        section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
+        this.addBottomSection(section_settings);
 
+        //add google api initializer
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).setViewForPopups(null)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
-
 
         if(!isNetworkAvailable()){
             options_signed_in(false);

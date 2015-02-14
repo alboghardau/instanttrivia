@@ -27,6 +27,7 @@ public class Options extends ActionBarActivity {
         setContentView(R.layout.activity_options);
 
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Settings");
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 

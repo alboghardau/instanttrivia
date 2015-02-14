@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -18,7 +19,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import at.markushi.ui.RevealColorView;
+import com.balysv.materialripple.MaterialRippleLayout;
+
 import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionListener;
 import it.neokree.materialnavigationdrawer.R;
 import it.neokree.materialnavigationdrawer.util.Utils;
@@ -28,7 +30,8 @@ import it.neokree.materialnavigationdrawer.util.Utils;
  *
  * Created by neokree on 08/11/14.
  */
-public class MaterialSection<Fragment> implements View.OnTouchListener {
+@SuppressWarnings("unused")
+public class MaterialSection<Fragment> implements View.OnTouchListener, View.OnClickListener {
 
     public static final int TARGET_FRAGMENT = 0;
     public static final int TARGET_ACTIVITY = 1;
@@ -38,15 +41,13 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
     public static final int ICON_24DP = 1;
     public static final int ICON_40DP = 2;
 
-    private static final int REVEAL_DURATION = 250;
-
     private int position;
     private int targetType;
     private View view;
     private TextView text;
     private TextView notifications;
     private ImageView icon;
-    private RevealColorView ripple;
+    private MaterialRippleLayout ripple;
     private MaterialSectionListener listener;
     private boolean isSelected;
     private boolean hasSectionColor;
@@ -54,8 +55,6 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
     private boolean rippleSupport = false;
     private boolean realColor;
     private boolean touchable;
-
-    private Point lastTouchedPoint;
 
     // COLORS
     private int colorPressed;
@@ -85,28 +84,22 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
             switch(iconType) {
                 case ICON_NO_ICON:
                     view = LayoutInflater.from(ctx).inflate(R.layout.layout_material_section_ripple, null);
-
-                    text = (TextView) view.findViewById(R.id.section_text);
-                    notifications = (TextView) view.findViewById(R.id.section_notification);
-                    ripple = (RevealColorView) view.findViewById(R.id.section_ripple);
                     break;
                 case ICON_24DP:
                     view = LayoutInflater.from(ctx).inflate(R.layout.layout_material_section_icon_ripple, null);
 
-                    text = (TextView) view.findViewById(R.id.section_text);
                     icon = (ImageView) view.findViewById(R.id.section_icon);
-                    notifications = (TextView) view.findViewById(R.id.section_notification);
-                    ripple = (RevealColorView) view.findViewById(R.id.section_ripple);
                     break;
                 case ICON_40DP:
                     view = LayoutInflater.from(ctx).inflate(R.layout.layout_material_section_icon_large_ripple, null);
 
-                    text = (TextView) view.findViewById(R.id.section_text);
                     icon = (ImageView) view.findViewById(R.id.section_icon);
-                    notifications = (TextView) view.findViewById(R.id.section_notification);
-                    ripple = (RevealColorView) view.findViewById(R.id.section_ripple);
                     break;
             }
+
+            text = (TextView) view.findViewById(R.id.section_text);
+            notifications = (TextView) view.findViewById(R.id.section_notification);
+            ripple = (MaterialRippleLayout) view.findViewById(R.id.section_ripple);
 
         }
         else {
@@ -136,8 +129,6 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
             }
         }
 
-        view.setOnTouchListener(this);
-
         // resolve attributes from current theme
         Resources.Theme theme = ctx.getTheme();
         TypedValue typedValue = new TypedValue();
@@ -163,13 +154,23 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
             // set background color into the view
             if(!rippleAnimationSupport())
                 view.setBackgroundColor(colorUnpressed);
-            else
-                ripple.reveal(0,0,colorUnpressed,0,0,null);
+            else {
+                ripple.setRippleBackground(colorUnpressed);
+                ripple.setRippleColor(colorPressed);
+            }
 
         }
         finally {
             values.recycle();
         }
+
+        if(rippleAnimationSupport()) {
+            ripple.setOnClickListener(this);
+        }
+        else {
+            view.setOnTouchListener(this);
+        }
+
         isSelected = false;
         hasSectionColor = false;
         hasColorDark = false;
@@ -236,24 +237,23 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
 
     // internal methods
 
+    // touch event without ripple support
     @Override
     @SuppressLint("NewApi")
     public boolean onTouch(View v, MotionEvent event) {
         if(touchable) {
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                view.setBackgroundColor(colorPressed);
 
-                if (!rippleAnimationSupport())
-                    view.setBackgroundColor(colorPressed);
                 return true;
             }
 
             if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-                if (!rippleAnimationSupport())
-                    if (isSelected)
-                        view.setBackgroundColor(colorSelected);
-                    else
-                        view.setBackgroundColor(colorUnpressed);
+                if (isSelected)
+                    view.setBackgroundColor(colorSelected);
+                else
+                    view.setBackgroundColor(colorUnpressed);
 
                 return true;
             }
@@ -261,35 +261,9 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
 
             if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                if (!rippleAnimationSupport()) {
-                    view.setBackgroundColor(colorSelected);
-                    afterClick();
-                } else {
-                    // get the point
-                    lastTouchedPoint = new Point();
-                    lastTouchedPoint.x = (int) event.getX();
-                    lastTouchedPoint.y = (int) event.getY();
+                view.setBackgroundColor(colorSelected);
+                afterClick();
 
-                    this.ripple.reveal(lastTouchedPoint.x, lastTouchedPoint.y, colorPressed, 0, REVEAL_DURATION, new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            ripple.reveal(lastTouchedPoint.x, lastTouchedPoint.y, colorSelected, 0, REVEAL_DURATION, null);
-                            afterClick();
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                        }
-                    });
-                }
                 return true;
             }
         }
@@ -297,12 +271,22 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
         return false;
     }
 
+    //click event with ripple support
+    @Override
+    public void onClick(View v) {
+        if(touchable) {
+            ripple.setRippleBackground(colorSelected);
+
+            afterClick();
+        }
+    }
+
     public void select() {
         isSelected = true;
         if(!rippleAnimationSupport())
             view.setBackgroundColor(colorSelected);
         else
-            ripple.reveal(0,0,colorSelected,0,0,null);
+            ripple.setRippleBackground(colorSelected);
 
         if(hasSectionColor) {
             text.setTextColor(sectionColor);
@@ -320,7 +304,7 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
             view.setBackgroundColor(colorUnpressed);
         }
         else {
-            ripple.hide(0,0,colorUnpressed,0,0,null);
+            ripple.setRippleBackground(colorUnpressed);
         }
 
         if (hasSectionColor) {
@@ -337,24 +321,14 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
         return isSelected;
     }
 
+    // setter
+
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
     public void setOnClickListener(MaterialSectionListener listener) {
         this.listener = listener;
-    }
-
-    public View getView() {
-        return view;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
@@ -389,6 +363,56 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
     public void setTypeface(Typeface typeface) {
         this.text.setTypeface(typeface);
         this.notifications.setTypeface(typeface);
+    }
+
+    public void setTouchable(boolean isTouchable) {
+        touchable = isTouchable;
+    }
+
+    public void setPressingColor(int color) {
+        colorPressed = color;
+
+        if(rippleAnimationSupport())
+            ripple.setRippleColor(colorPressed);
+    }
+
+    // alias of setColorUnpressed
+    public void setBackgroundColor(int color) {
+        colorUnpressed = color;
+
+        if(!isSelected()) {
+            if (rippleAnimationSupport()) {
+                ripple.setRippleBackground(colorUnpressed);
+            }
+            else {
+                view.setBackgroundColor(colorUnpressed);
+            }
+        }
+    }
+
+    public void setColorSelected(int color) {
+        colorSelected = color;
+
+        if(isSelected()) {
+            if(rippleAnimationSupport())
+                ripple.setRippleBackground(colorSelected);
+            else
+                view.setBackgroundColor(colorSelected);
+        }
+    }
+
+    // getter
+
+    public View getView() {
+        return view;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public int getTarget() {
@@ -431,10 +455,6 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
         return this.notifications.getText().toString();
     }
 
-    public void setTouchable(boolean isTouchable) {
-        touchable = isTouchable;
-    }
-
     // private methods
 
     private void afterClick() {
@@ -462,10 +482,16 @@ public class MaterialSection<Fragment> implements View.OnTouchListener {
     }
 
     private boolean rippleAnimationSupport() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && rippleSupport)
-            return true;
-        else
-            return false;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && rippleSupport;
+    }
+
+    //WRITEN BY ME
+    public void setIconColor(int color) {
+        this.icon.setColorFilter(color);
+    }
+
+    public void setTextColor(int color){
+        this.text.setTextColor(color);
     }
 
 }
