@@ -15,8 +15,8 @@ android {
         applicationId "com.itmc.instanttrivia"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 7
-        versionName "1.0.6"
+        versionCode 8
+        versionName "1.1.0"
         signingConfig signingConfigs.config
     }
     buildTypes {

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -138,6 +139,9 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     mSignInClicked = true;
                     mGoogleApiClient.connect();
                     options_signed_in(true);
+                }else{
+                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!", Toast.LENGTH_SHORT);
+                    t.show();
                 }
             }
         });
@@ -202,6 +206,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         String personPhotoUrl = p.getIconImageUrl();
         String name = p.getDisplayName();
 
+        frag.ui_top_scores.setVisibility(View.VISIBLE);
         //request data from server for total score
         PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
@@ -285,6 +290,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //display loged in as textview
         frag.ui_loged_as.setText("Loged in as " + name);
+        frag.ui_loged_as.setPadding(0,dpToPx(5),0,dpToPx(5));
+    }
+
+    private static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     private void display_change_state(Boolean signed){

@@ -27,6 +27,7 @@ import android.view.animation.Transformation;
 
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -114,7 +115,8 @@ public class Game_Timer extends Activity{
     int total_buttons_correct = 0;
     int total_buttons_wrong = 0;
 
-    //private GoogleApiClient mGoogleApiClient;
+    int coin_awarder = 0;
+    int coin_awarder_limit = 0;
 
     //buffer variables for millis left to calc score
     int millis_buffer = 0;
@@ -351,6 +353,7 @@ public class Game_Timer extends Activity{
                 question_time = 40000;
                 leaderboard_name = R.string.leaderboard_time_trial__easy_level;
                 difficulty_setting = 1;
+                coin_awarder_limit = 20;
                 break;
             case "Medium":
                 question_number = 10;
@@ -359,6 +362,7 @@ public class Game_Timer extends Activity{
                 question_time = 45000;
                 leaderboard_name = R.string.leaderboard_time_trial__medium_level;
                 difficulty_setting = 2;
+                coin_awarder_limit = 15;
                 break;
             case "Hard":
                 question_number = 10;
@@ -368,6 +372,7 @@ public class Game_Timer extends Activity{
                 leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 difficulty_setting = 3;
                 buttons_sort_alpha = false;
+                coin_awarder_limit = 10;
                 break;
         }
     }
@@ -519,13 +524,13 @@ public class Game_Timer extends Activity{
         }
     }
 
-    private int hints_left(){
-        return settings.getInt("Hints", 25);
+    private int coins_left(){
+        return settings.getInt("Coins", 25);
     }
 
-    private void settings_hints_update(int hints){
+    private void settings_coins_update(int hints){
         SharedPreferences.Editor edit = settings.edit();
-        edit.putInt("Hints",hints);
+        edit.putInt("Coins",hints);
         edit.commit();
     }
     private void settings_rated(boolean set){
@@ -540,7 +545,7 @@ public class Game_Timer extends Activity{
         //send scores to google server
         if(mGoogleApiClient != null){
             Log.e("API ACTION:", "Api client is initialized");
-            if(mGoogleApiClient.isConnected() == true) {
+            if(mGoogleApiClient.isConnected() == true && difficulty_setting != 0) {
                 Log.e("API ACTION:", "Uploading Scores!");
                 //update leaderboards total score
                 score_total_update();
@@ -578,7 +583,7 @@ public class Game_Timer extends Activity{
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                 try {
                     startActivity(goToMarket);
-                    settings_hints_update(hints_left() + 25);
+                    settings_coins_update(coins_left() + 25);
                     btn_rate.setVisibility(View.GONE);
                     settings_rated(true);
                 } catch (ActivityNotFoundException e) {
@@ -790,6 +795,21 @@ public class Game_Timer extends Activity{
         }
     }
 
+    private void coin_award(boolean pressed){
+
+        if(pressed == true){
+            coin_awarder++;
+        }else{
+            coin_awarder = 0;
+        }
+
+        if(coin_awarder == coin_awarder_limit){
+            display_message(" +1");
+            coin_awarder = 0;
+            settings_coins_update(coins_left() + 1);
+        }
+    }
+
     private void score_update(){
 
         int time_sub =(int) Math.ceil((1-(millis_buffer)/(float)(question_time)) * score_per_question/2.0);
@@ -905,10 +925,10 @@ public class Game_Timer extends Activity{
         for (int i = 0; i < buttons.size(); i++) {
 
             Button t = new Button(this);
+
             t.setText(buttons.get(i).toString());
             t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
             t.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
-
             GridLayout.LayoutParams par = new GridLayout.LayoutParams();
             par.width = dpToPx((int)DpWidth()/6);
             par.height = dpToPx((int)DpWidth()/6);
@@ -1022,7 +1042,8 @@ public class Game_Timer extends Activity{
         int top = locations[1];
         Log.e("Location",left+top+"");
 
-        final TextView message = new TextView(this);
+        final LinearLayout message = new LinearLayout(this);
+        message.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.BELOW, prog_bar.getId());
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -1032,13 +1053,30 @@ public class Game_Timer extends Activity{
             message.setZ(dpToPx(7));
         }
         message.setBackgroundColor(color_extraDark);
-        message.setTextColor(getResources().getColor(R.color.white));
-        message.setTextSize(17);
+
         message.setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5));
-        message.setTypeface(font_regular);
-        message.setText(text);
+
         message.setGravity(Gravity.CENTER);
         message.bringToFront();
+
+        final ImageView img = new ImageView(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.height = dpToPx(24);
+        lp.width = dpToPx(24);
+        img.setLayoutParams(lp);
+        img.setImageResource(R.drawable.icon_coin);
+        img.setColorFilter(getResources().getColor(R.color.white));
+
+        final TextView txt = new TextView(this);
+        txt.setTextColor(getResources().getColor(R.color.white));
+        txt.setTextSize(17);
+        txt.setTypeface(font_regular);
+        txt.setText(text);
+
+        message.addView(img);
+        message.addView(txt);
+
+        //adds message layout
         rel_base.addView(message);
 
 
@@ -1058,14 +1096,14 @@ public class Game_Timer extends Activity{
         pressed.setVisibility(View.INVISIBLE);
         pressed.setEnabled(false);
 
-        if(hints_left()-1 == 0){
-            display_message("No more Hints left.");
+        if(coins_left()-1 == 0){
+            display_message(" 0");
         }else {
-            display_message("Hints left: " + (hints_left() - 1));
+            display_message(" " + (coins_left() - 1));
         }
 
         //update hints left
-        settings_hints_update(hints_left() - 1);
+        settings_coins_update(coins_left() - 1);
 
         HashSet uniq_ans = new HashSet();
         uniq_ans.addAll(ans_arr);
@@ -1107,6 +1145,7 @@ public class Game_Timer extends Activity{
         answer_display_refresh(ans_arr, c_btn);
         //update pressed buttons drawable
         buttons_after_press(id, correct_press);
+        coin_award(correct_press);
 
         //next question for pressed wrong
         if(pressed_wrong == max_wrong) {
@@ -1216,7 +1255,7 @@ public class Game_Timer extends Activity{
         }
 
         //adds the hints button if there are hints left
-        if(hints_left() > 0 && ans_arr.size() > 5) {
+        if(coins_left() > 0 && ans_arr.size() > 5) {
             boolean tester = false;
             while (tester == false) {
                 int ran = rnd.nextInt(15);

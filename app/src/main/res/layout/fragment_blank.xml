@@ -79,7 +79,8 @@
                 android:layout_toEndOf="@+id/ui_profile_img"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:text="Offline mode" />
+                android:text="Offline mode"
+                android:paddingLeft="44dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -136,11 +137,25 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Top Scores"
+        android:id="@+id/ui_top_scores"
+        android:layout_below="@+id/ui_user_details"
+        android:textColor="@color/white"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="12dp"
+        android:visibility="invisible"
+        android:gravity="center" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ui_user_details"
+        android:layout_below="@+id/ui_top_scores"
         android:layout_centerHorizontal="true"
         android:id="@+id/ui_linear_score_icons">
 
@@ -225,7 +240,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ui_bot_section"
-        android:background="@color/purple_800"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

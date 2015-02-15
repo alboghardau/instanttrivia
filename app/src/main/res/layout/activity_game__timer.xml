@@ -151,11 +151,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
-        android:gravity="center"
         android:layout_weight="1"
         android:layout_below="@+id/linear_answer"
         android:showDividers="middle|beginning|end"
-        android:divider="@drawable/vertical_divider">
+        android:divider="@drawable/vertical_divider"
+        android:gravity="center">
 
         <GridLayout
             android:id="@+id/buttons_grid"
@@ -181,7 +181,7 @@
             android:showDividers="middle"
             android:focusable="false"
             android:padding="5dp"
-            android:visibility="invisible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -375,7 +375,7 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Rate Us! Reward: 25 Hints"
+                android:text="Rate Us! +25 Coins"
                 android:id="@+id/button_rate"
                 android:background="@drawable/button_lollipop" />
 

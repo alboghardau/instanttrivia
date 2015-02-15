@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -291,7 +290,7 @@ public class MaterialSection<Fragment> implements View.OnTouchListener, View.OnC
         if(hasSectionColor) {
             text.setTextColor(sectionColor);
 
-            if(icon != null) {
+            if(icon != null && !realColor) {
                 icon.setColorFilter(sectionColor);
                 Utils.setAlpha(icon, 1f);
             }
@@ -310,7 +309,7 @@ public class MaterialSection<Fragment> implements View.OnTouchListener, View.OnC
         if (hasSectionColor) {
             text.setTextColor(textColor);
 
-            if (icon != null) {
+            if (icon != null && !realColor) {
                 icon.setColorFilter(iconColor);
                 Utils.setAlpha(icon, 0.54f);
             }
@@ -463,7 +462,7 @@ public class MaterialSection<Fragment> implements View.OnTouchListener, View.OnC
         if (hasSectionColor) {
             text.setTextColor(sectionColor);
 
-            if (icon != null) {
+            if (icon != null && !realColor) {
                 icon.setColorFilter(sectionColor);
                 Utils.setAlpha(icon, 1f);
             }
@@ -493,5 +492,4 @@ public class MaterialSection<Fragment> implements View.OnTouchListener, View.OnC
     public void setTextColor(int color){
         this.text.setTextColor(color);
     }
-
 }

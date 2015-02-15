@@ -34,7 +34,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     private OnFragmentInteractionListener mListener;
 
     ImageView logo_1, logo_2, logo_3, ui_profile, ui_total_trophy, ui_dice_1, ui_dice_2, ui_dice_3, ui_coins;
-    TextView ui_loged_as, ui_total_score, ui_score_easy, ui_score_med, ui_score_hard, ui_total_coins;
+    TextView ui_loged_as, ui_total_score, ui_score_easy, ui_score_med, ui_score_hard, ui_total_coins, ui_top_scores;
     RelativeLayout ui_frag_back;
     RelativeLayout ui_bot_section;
     Button btn_play;
@@ -88,6 +88,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         ui_score_med = (TextView) rootView.findViewById(R.id.ui_score_med);
         ui_score_hard = (TextView) rootView.findViewById(R.id.ui_score_hard);
         ui_total_coins = (TextView) rootView.findViewById(R.id.ui_total_coins);
+        ui_top_scores = (TextView) rootView.findViewById(R.id.ui_top_scores);
         btn_play = (Button) rootView.findViewById(R.id.ui_button_play);
         ui_frag_back = (RelativeLayout) rootView.findViewById(R.id.ui_frag_back);
         ui_bot_section = (RelativeLayout) rootView.findViewById(R.id.ui_bot_section);
@@ -130,30 +131,30 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         switch (tester){
             case "Red":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.red_500));
-                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.red_700));
+                //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.purple_500));
-                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.purple_700));
+                //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.purple_700));
                 break;
             case "Blue":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.blue_500));
-                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.blue_700));
+                //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.blue_700));
                 break;
             case "LGreen":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.light_green_500));
-                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.light_green_700));
+                //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.light_green_700));
                 break;
             case "Orange":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.orange_500));
-                ui_bot_section.setBackgroundColor(getResources().getColor(R.color.orange_700));
+                //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.orange_700));
                 break;
         }
     }
 
     private void show_coins(){
         ui_coins.setVisibility(View.VISIBLE);
-        ui_total_coins.setText(""+ StartActivity.settings.getInt("Hints", 25));
+        ui_total_coins.setText(""+ StartActivity.settings.getInt("Coins", 25));
     }
 
     @Override
