@@ -214,12 +214,10 @@ public class Game_Timer extends Activity{
             gameHelper.setup(new GameHelper.GameHelperListener() {
                 @Override
                 public void onSignInFailed() {
-
                 }
 
                 @Override
                 public void onSignInSucceeded() {
-
                 }
             });
             mGoogleApiClient = gameHelper.getApiClient();
@@ -227,7 +225,6 @@ public class Game_Timer extends Activity{
         }else{
             mGoogleApiClient = null;
         }
-
 
         //dispaly animation on start
         animate_start();
@@ -430,7 +427,6 @@ public class Game_Timer extends Activity{
             a.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
             }
 
             @Override
@@ -465,8 +461,6 @@ public class Game_Timer extends Activity{
             }
         });
             text_question.startAnimation(a);
-
-
     }
 
     private void question_hide_end(){

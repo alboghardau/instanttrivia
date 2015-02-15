@@ -181,7 +181,7 @@
             android:showDividers="middle"
             android:focusable="false"
             android:padding="5dp"
-            android:visibility="gone">
+            android:visibility="invisible">
 
             <LinearLayout
                 android:orientation="vertical"

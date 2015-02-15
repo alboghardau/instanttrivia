@@ -1,25 +1,43 @@
 package com.itmc.instanttrivia;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.games.achievement.Achievement;
+import com.google.android.gms.games.leaderboard.Leaderboard;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 
+import java.io.InputStream;
 import java.util.List;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -31,6 +49,8 @@ import it.neokree.materialnavigationdrawer.util.MaterialDrawerLayout;
 public class StartActivity extends MaterialNavigationDrawer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static SharedPreferences settings;
+
+    private BlankFragment frag;
 
     private DbOP db;
 
@@ -62,7 +82,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //add home fragment
         Intent options = new Intent(this, Options.class);
-        BlankFragment frag = new BlankFragment();
+        frag = new BlankFragment();
 
         setTitle("TEST");
         MaterialSection section = newSection("Home",frag);
@@ -170,8 +190,102 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //hide first fragment
         section_hide("");
 
+
     }
 
+
+
+    private void get_pic_result(){
+
+        //reads url or player photo
+        Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
+        String personPhotoUrl = p.getIconImageUrl();
+        String name = p.getDisplayName();
+
+        //request data from server for total score
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                //gets player's score from server
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                //test if player has any score
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    frag.ui_total_trophy.setVisibility(View.VISIBLE);
+                    frag.ui_total_score.setText("" + score);
+                }else{
+                    frag.ui_total_trophy.setVisibility(View.VISIBLE);
+                    frag.ui_total_score.setText("0");
+                }
+            }
+        };
+        pendingResult.setResultCallback(scoreCallback);
+        //get from server scores for easy level
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_easy = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> easy_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    frag.ui_dice_1.setVisibility(View.VISIBLE);
+                    frag.ui_score_easy.setText("" + score);
+                }else{
+                    frag.ui_dice_1.setVisibility(View.VISIBLE);
+                    frag.ui_score_easy.setText("0");
+                }
+            }
+        };
+        pending_easy.setResultCallback(easy_callback);
+
+        //get from server scores for medium level
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_medium = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__medium_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> medium_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    frag.ui_dice_2.setVisibility(View.VISIBLE);
+                    frag.ui_score_med.setText("" + score);
+                }else{
+                    frag.ui_dice_2.setVisibility(View.VISIBLE);
+                    frag.ui_score_med.setText("0");
+                }
+            }
+        };
+        pending_medium.setResultCallback(medium_callback);
+
+        //get from server scores for easy level
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_hard = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__hard_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> hard_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    frag.ui_dice_3.setVisibility(View.VISIBLE);
+                    frag.ui_score_hard.setText("" + score);
+                }else{
+                    frag.ui_dice_3.setVisibility(View.VISIBLE);
+                    frag.ui_score_hard.setText("0");
+                }
+            }
+        };
+        pending_hard.setResultCallback(hard_callback);
+
+        //loads profile picture
+        if(personPhotoUrl != null) {
+            new LoadProfileImage(frag.ui_profile).execute(personPhotoUrl);
+        }else
+        {
+            frag.ui_profile.setImageResource(R.drawable.unknown_profile);
+        }
+
+        //display loged in as textview
+        frag.ui_loged_as.setText("Loged in as " + name);
+    }
 
     private void display_change_state(Boolean signed){
         if (signed == true){
@@ -266,6 +380,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     @Override
     public void onConnected(Bundle bundle) {
         display_change_state(true);
+        get_pic_result();
     }
 
     //resolves connection problems
@@ -320,5 +435,56 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
         mGoogleApiClient.connect();
+    }
+
+    /**
+     * Background Async task to load user profile picture from url
+     * */
+    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public LoadProfileImage(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                //Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+
+            bmImage.setImageBitmap(getCroppedBitmap(result));
+        }
+    }
+
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
+                bitmap.getWidth() / 2, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
+        //return _bmp;
+        return output;
     }
 }

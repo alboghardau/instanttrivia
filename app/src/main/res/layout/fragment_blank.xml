@@ -49,50 +49,177 @@
         android:layout_alignParentStart="true">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ui_profile_img"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_weight="1"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="true"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginLeft="10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/ui_profile_img">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/ui_loged_as"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/ui_profile_img"
+                android:layout_toEndOf="@+id/ui_profile_img"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="Offline mode" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_total_trophy"
+                    android:src="@drawable/icon_trophy_leader"
+                    android:tint="@color/white"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_total_score"
+                    android:textColor="@color/white"
+                    android:textSize="12dp"
+                    android:layout_below="@+id/ui_loged_as"
+                    android:layout_toEndOf="@+id/ui_profile_img"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_coins"
+                    android:src="@drawable/icon_coin"
+                    android:tint="@color/white"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_total_coins"
+                    android:textColor="@color/white"
+                    android:textSize="12dp"
+                    android:layout_below="@+id/ui_loged_as"
+                    android:layout_toEndOf="@+id/ui_profile_img"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ui_user_details"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ui_linear_score_icons">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/imageView2" >
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:id="@+id/ui_dice_1"
+                android:src="@drawable/icon_dice_1"
+                android:tint="@color/white"
+                android:visibility="invisible" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView16"
+                android:id="@+id/ui_score_easy"
+                android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="12dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/imageView2"
-                android:layout_toEndOf="@+id/imageView2"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView18"
-                android:textColor="@color/white"
-                android:textSize="12dp"
-                android:layout_below="@+id/textView16"
-                android:layout_toEndOf="@+id/imageView2"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp" />
+                android:textSize="12dp" />
         </LinearLayout>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:id="@+id/ui_dice_2"
+                android:src="@drawable/icon_dice_2"
+                android:tint="@color/white"
+                android:visibility="invisible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/ui_score_med"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:id="@+id/ui_dice_3"
+                android:src="@drawable/icon_dice_3"
+                android:tint="@color/white"
+                android:visibility="invisible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/ui_score_hard"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
