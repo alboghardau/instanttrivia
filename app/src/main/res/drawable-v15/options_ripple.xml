@@ -4,6 +4,6 @@
         android:drawable="@drawable/button_lollipop_pressed" />
     <item android:state_focused="false" android:state_pressed="true"
         android:drawable="@drawable/button_lollipop_pressed" />
-    <item android:drawable="@drawable/button_lollipop_notpressed" />
+    <item android:drawable="@drawable/button_lollipop_tansparent" />
 </selector>
     
