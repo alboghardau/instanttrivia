@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="com.itmc.instanttrivia.Options"
-    android:paddingTop="15dp"
     android:focusableInTouchMode="false"
     android:focusable="false">
 
@@ -13,221 +12,345 @@
         android:focusable="false"
         android:layoutMode="clipBounds"
         android:outlineProvider="background"
-        android:background="@drawable/back_white"
-        android:layout_margin="10dp"
-        android:elevation="3dp">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Question Difficulty"
+            android:id="@+id/opt_question_diff"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView3"
+                android:src="@drawable/icon_dice_1"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/grey_500" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Easy"
+                android:id="@+id/opt_text_easy"
+                android:textSize="15dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView3"
+                android:layout_toEndOf="@+id/imageView3" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_radio_easy"
+                android:checked="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView4"
+                android:src="@drawable/icon_dice_2"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/grey_500" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium"
+                android:id="@+id/opt_text_medium"
+                android:textSize="15dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView4"
+                android:layout_toEndOf="@+id/imageView4" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_radio_mediu"
+                android:checked="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView5"
+                android:src="@drawable/icon_dice_3"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/grey_500" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Hard"
+                android:id="@+id/opt_text_hard"
+                android:textSize="15dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView5"
+                android:layout_toEndOf="@+id/imageView5" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_radio_hard"
+                android:checked="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView6"
+                android:src="@drawable/icon_shuffle"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/grey_500" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Random"
+                android:id="@+id/opt_text_random"
+                android:textSize="15dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView6"
+                android:layout_toEndOf="@+id/imageView6" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/opt_radio_random"
+                android:checked="false"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:id="@+id/imageView2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/grey_500" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Color Style"
-            android:id="@+id/textView8"
-            android:padding="10dp" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/textView15"
-            android:singleLine="false"
-            android:background="@color/grey_500" />
+            android:id="@+id/opt_color_header"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@drawable/options_ripple"
-            android:clickable="true"
-            android:id="@+id/linear_opt_red"
-            android:onClick="onRadioButtonClicked">
+            android:layout_height="fill_parent"
+            android:gravity="center">
 
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView12"
-                android:background="@color/red_500"
-                android:autoText="false"
-                android:layout_margin="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView6"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="5dp"
-                android:layout_margin="10dp"
-                android:text="Red" />
-
-            <RadioButton
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radio_red"
-                android:checked="false"
-                android:enabled="true"
-                android:focusable="false"
-                android:clickable="false" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@drawable/options_ripple"
-            android:clickable="true"
-            android:id="@+id/linear_opt_blue"
-            android:onClick="onRadioButtonClicked">
-
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView11"
-                android:background="@color/blue_500"
-                android:layout_margin="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Blue"
-                android:id="@+id/textView"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="5dp"
-                android:layout_margin="10dp" />
+                android:background="@drawable/options_ripple"
+                android:clickable="true"
+                android:id="@+id/linear_opt_red"
+                android:onClick="onRadioButtonClicked">
 
-            <RadioButton
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView12"
+                    android:background="@color/red_500"
+                    android:autoText="false"
+                    android:layout_margin="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_red"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radio_blue"
-                android:checked="false"
-                android:enabled="true"
-                android:focusable="false"
-                android:clickable="false" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@drawable/options_ripple"
-            android:clickable="true"
-            android:id="@+id/linear_opt_lgreen"
-            android:onClick="onRadioButtonClicked">
-
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView10"
-                android:background="@color/light_green_500"
-                android:layout_margin="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Light Green"
-                android:id="@+id/textView4"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="5dp"
-                android:layout_margin="10dp" />
+                android:background="@drawable/options_ripple"
+                android:clickable="true"
+                android:id="@+id/linear_opt_blue"
+                android:onClick="onRadioButtonClicked">
 
-            <RadioButton
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView11"
+                    android:background="@color/blue_500"
+                    android:layout_margin="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_blue"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radio_lgreen"
-                android:checked="false"
-                android:enabled="true"
-                android:focusable="false"
-                android:clickable="false" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@drawable/options_ripple"
-            android:clickable="true"
-            android:id="@+id/linear_opt_purple"
-            android:onClick="onRadioButtonClicked">
-
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView13"
-                android:background="@color/purple_500"
-                android:layout_margin="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Purple"
-                android:id="@+id/textView7"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="5dp"
-                android:layout_margin="10dp" />
+                android:background="@drawable/options_ripple"
+                android:clickable="true"
+                android:id="@+id/linear_opt_lgreen"
+                android:onClick="onRadioButtonClicked">
 
-            <RadioButton
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView10"
+                    android:background="@color/light_green_500"
+                    android:layout_margin="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_lgreen"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radion_purple"
-                android:checked="false"
-                android:enabled="true"
-                android:focusable="false"
-                android:clickable="false" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:background="@drawable/options_ripple"
-            android:clickable="true"
-            android:id="@+id/linear_opt_orange"
-            android:onClick="onRadioButtonClicked">
-
-            <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView14"
-                android:background="@color/orange_500"
-                android:layout_margin="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/textView9"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="5dp"
-                android:layout_margin="10dp"
-                android:text="Orange"
-                android:autoText="false" />
+                android:background="@drawable/options_ripple"
+                android:clickable="true"
+                android:id="@+id/linear_opt_purple"
+                android:onClick="onRadioButtonClicked">
 
-            <RadioButton
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView13"
+                    android:background="@color/purple_500"
+                    android:layout_margin="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radion_purple"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radio_orange"
-                android:checked="false"
-                android:enabled="true"
-                android:focusable="false"
-                android:clickable="false" />
+                android:gravity="center"
+                android:background="@drawable/options_ripple"
+                android:clickable="true"
+                android:id="@+id/linear_opt_orange"
+                android:onClick="onRadioButtonClicked">
+
+                <TextView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView14"
+                    android:background="@color/orange_500"
+                    android:layout_margin="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radio_orange"
+                    android:checked="false"
+                    android:enabled="true"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

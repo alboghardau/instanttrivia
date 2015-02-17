@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 
 public class Options extends ActionBarActivity {
@@ -15,11 +16,13 @@ public class Options extends ActionBarActivity {
     SharedPreferences settings;
 
     RadioButton radio_red, radio_blue, radio_purple, radio_lgreen, radio_orange;
+    TextView opt_color_header, opt_question_diff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //set theme based on prefferences
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
+        //sets action bar theme
         Theme_Setter();
 
         //create layout
@@ -36,15 +39,13 @@ public class Options extends ActionBarActivity {
         radio_purple = (RadioButton)findViewById(R.id.radion_purple);
         radio_lgreen = (RadioButton)findViewById(R.id.radio_lgreen);
         radio_orange = (RadioButton)findViewById(R.id.radio_orange);
+        opt_color_header = (TextView) findViewById(R.id.opt_color_header);
+        opt_question_diff = (TextView) findViewById(R.id.opt_question_diff);
         radio_check(settings.getString("Color_Theme", "Purple"));
-    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_options, menu);
-//        return true;
-//    }
+        //sets rest of theme settings
+        Theme_Setter2();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -56,6 +57,7 @@ public class Options extends ActionBarActivity {
         return (super.onOptionsItemSelected(menuItem));
     }
 
+    //sets checking of the radios buttons
     private void radio_check(String tester){
         switch (tester){
             case "Red":
@@ -76,9 +78,9 @@ public class Options extends ActionBarActivity {
         }
     }
 
+    //has to be called before inflating the layout
     private void Theme_Setter(){
         String tester = settings.getString("Color_Theme","Purple");
-
         switch (tester){
             case "Red":
                 setTheme(R.style.ActionTheme_Options_Style_Red);
@@ -98,6 +100,32 @@ public class Options extends ActionBarActivity {
         }
     }
 
+    //has to be called after inflating the layout
+    private void Theme_Setter2(){
+        String tester = settings.getString("Color_Theme","Purple");
+        switch (tester){
+            case "Red":
+                opt_color_header.setTextColor(getResources().getColor(R.color.red_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.red_700));
+                break;
+            case "Purple":
+                opt_color_header.setTextColor(getResources().getColor(R.color.purple_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.purple_700));
+                break;
+            case "Blue":
+                opt_color_header.setTextColor(getResources().getColor(R.color.blue_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.blue_700));
+                break;
+            case "LGreen":
+                opt_color_header.setTextColor(getResources().getColor(R.color.light_green_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.light_green_700));
+                break;
+            case "Orange":
+                opt_color_header.setTextColor(getResources().getColor(R.color.orange_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.orange_700));
+                break;
+        }
+    }
 
 
     private void update_options(String option){
