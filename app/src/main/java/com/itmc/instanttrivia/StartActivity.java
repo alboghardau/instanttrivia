@@ -390,7 +390,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     @Override
     public void onConnected(Bundle bundle) {
         display_change_state(true);
-        get_pic_result();
+        get_pic_result();           //display picture and stats
+        scores_late_upload();       //uploads saved scores
     }
 
     //resolves connection problems
@@ -445,6 +446,46 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
         mGoogleApiClient.connect();
+    }
+
+    private void scores_late_upload(){
+        final SharedPreferences.Editor edit = settings.edit();
+        if(settings.getInt("saved_score_easy", 0) > 0){
+            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),settings.getInt("saved_score_easy", 0));
+            edit.putInt("saved_score_easy", 0);
+        }
+        if(settings.getInt("saved_score_medium", 0) > 0){
+            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__medium_level),settings.getInt("saved_score_medium", 0));
+            edit.putInt("saved_score_medium", 0);
+        }
+        if(settings.getInt("saved_score_hard", 0) > 0){
+            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__hard_level),settings.getInt("saved_score_hard", 0));
+            edit.putInt("saved_score_hard", 0);
+        }
+        if(settings.getInt("saved_total_score", 0) > 0){
+            Log.e("SAVED TOTAL SCORE:", settings.getInt("saved_total_score",0)+"");
+            //update total score
+            //request data from server
+            PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL);
+            ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+                @Override
+                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                    //gets player's score from server
+                    LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                    long score_local = 0;
+                    //test if player has any score
+                    if(scoresBuffer != null){
+                        score_local = scoresBuffer.getRawScore();
+                        Log.e("Retrieved Total Score:",score_local+"");
+                    }
+                    Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), settings.getInt("saved_total_score", 0)+score_local);
+                    Log.e("Total Score Uploaded", "TRUE");
+                    edit.putInt("saved_total_score", 0);
+                }
+            };
+            pendingResult.setResultCallback(scoreCallback);
+        }
+        edit.commit();
     }
 
     /**

@@ -554,6 +554,9 @@ public class Game_Timer extends Activity{
             }else{
                 Log.e("API ACTION:", "Can not upload scores, not connected");
             }
+        }else{
+            score_save_later(); //saves scores in settings for later upload
+            Log.e("API ACTION:", "Scores saved for later upload");
         }
 
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
@@ -675,6 +678,24 @@ public class Game_Timer extends Activity{
             }
         };
         pendingResult.setResultCallback(scoreCallback);
+    }
+
+    //will save the scores for future upload
+    private void score_save_later(){
+        SharedPreferences.Editor edit = settings.edit();
+        switch (difficulty_setting){
+            case 1:
+                edit.putInt("saved_score_easy",score);
+                break;
+            case 2:
+                edit.putInt("saved_score_medium",score);
+                break;
+            case 3:
+                edit.putInt("saved_score_hard",score);
+                break;
+        }
+        edit.putInt("saved_total_score", score+settings.getInt("saved_total_score",0));
+        edit.commit();
     }
 
     //conversie dp to pixels, util pentru animatii cu layoutparams
@@ -810,6 +831,7 @@ public class Game_Timer extends Activity{
         }
     }
 
+    //generates the scores number
     private void score_update(){
 
         int time_sub =(int) Math.ceil((1-(millis_buffer)/(float)(question_time)) * score_per_question/2.0);
