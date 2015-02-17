@@ -95,12 +95,12 @@ public class DbOP {
     }
 
     //returns question
-    public String[] read_rand_question_difficulty(int diff){
+    public String[] read_rand_question_difficulty(int diff, int cat){
 
         String[] question = new String[4];
         Cursor cursor = null;
 
-        String id = "diff = " + diff;
+        String id = "diff = " + diff+" AND cat_id = "+ cat;
 
         if(diff == 5) id = null;
         int result;
@@ -121,7 +121,7 @@ public class DbOP {
         seen.add((Integer)i);
 
         //prevents repeating questions
-        if(seen.size() > 50)
+        if(seen.size() > 10)
         {
             seen.clear();
         }
@@ -181,15 +181,9 @@ public class DbOP {
         while(cursor.isAfterLast() == false)
         {
             int id = cursor.getInt(0);
-            Cursor cur = null;
-            cur = db.rawQuery("SELECT * FROM tests WHERE cat_id="+id, null);
-
-            if(cur.getCount() > 0)
-            {
-                cats[i][0] = Integer.toString(cursor.getInt(0));
-                cats[i][1] = cursor.getString(1);
-                i++;
-            }
+            cats[i][0] = Integer.toString(cursor.getInt(0));
+            cats[i][1] = cursor.getString(1);
+            i++;
             cursor.moveToNext();
         }
         cursor.close();

@@ -57,7 +57,7 @@ public class Game_Timer extends Activity{
     TextView text_question_current;
     TextView text_final_score;
 
-    LinearLayout lin_start_btn;
+    LinearLayout lin_cats;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
     LinearLayout lin_gratz;
@@ -66,10 +66,6 @@ public class Game_Timer extends Activity{
     GridLayout btn_grid;
 
     ProgressBar prog_bar;
-
-    Button btn_start_easy;
-    Button btn_start_med;
-    Button btn_start_hard;
 
     String question;
     String answer;
@@ -90,7 +86,7 @@ public class Game_Timer extends Activity{
 
     Boolean started = false;
 
-    String game_difficulty = null;
+    int game_difficulty = 0;
 
     //options and varaibles
     int back_pressed = 0;
@@ -104,7 +100,10 @@ public class Game_Timer extends Activity{
     int max_wrong = 0;
     int score_per_question = 0;
     int question_time = 0;
+
     int difficulty_setting = 0;
+    int question_category = 0;
+
     boolean buttons_sort_alpha = true;
 
     int leaderboard_name = 0;
@@ -152,17 +151,13 @@ public class Game_Timer extends Activity{
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
-        lin_start_btn = (LinearLayout) findViewById(R.id.linear_start_btn);
+        lin_cats = (LinearLayout) findViewById(R.id.linear_cats);
         lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
         lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
         rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
 
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
-
-        btn_start_easy = (Button) findViewById(R.id.btn_start_easy);
-        btn_start_med = (Button) findViewById(R.id.btn_start_med);
-        btn_start_hard = (Button) findViewById(R.id.btn_start_hard);
 
         //sets colors for layout
         Theme_Setter_Views();
@@ -228,58 +223,30 @@ public class Game_Timer extends Activity{
             mGoogleApiClient = null;
         }
 
+        //populate list of categories
+        categories_generate_list();
+
         //dispaly animation on start
         animate_start();
 
-        btn_start_easy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start_disable();
-                btn_start_easy.setOnClickListener(null);
-                difficulty_set("Easy");
-                question_read_db_rand(); // reads question on game start
-                text_question.setText(category.toUpperCase()+"\n"+question);
-                answer_display_hidden();
-                //porneste animatia pentru questions
-                animate_quest();
-                //genereza si porneste timer
-                timer_create();
+//        btn_start_easy.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                start_disable();
+//                btn_start_easy.setOnClickListener(null);
+//                difficulty_set("Easy");
+//                question_read_db_rand(); // reads question on game start
+//                text_question.setText(category.toUpperCase()+"\n"+question);
+//                answer_display_hidden();
+//                //porneste animatia pentru questions
+//                animate_quest();
+//                //genereza si porneste timer
+//                timer_create();
+//
+//                started = true;
+//            }
+//        });
 
-                started = true;
-            }
-        });
-        btn_start_med.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start_disable();
-                difficulty_set("Medium");
-                question_read_db_rand(); // reads question on game start
-                text_question.setText(category.toUpperCase()+"\n"+question);
-                answer_display_hidden();
-                //porneste animatia pentru questions
-                animate_quest();
-                //genereza si porneste timer
-                timer_create();
-
-                started = true;
-            }
-        });
-        btn_start_hard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start_disable();
-                difficulty_set("Hard");
-                question_read_db_rand(); // reads question on game start
-                text_question.setText(category.toUpperCase()+"\n"+question);
-                answer_display_hidden();
-                //porneste animatia pentru questions
-                animate_quest();
-                //genereza si porneste timer
-                timer_create();
-
-                started = true;
-            }
-        });
     }
 
     //sets colors for internal views of layout
@@ -334,19 +301,63 @@ public class Game_Timer extends Activity{
         lin_top.setBackgroundColor((getResources().getColor(darker_color)));
         lin_gratz.setBackgroundColor(getResources().getColor(primary_color));
         text_final_score.setBackgroundColor(getResources().getColor(darker_color));
-
     }
 
-    private void start_disable(){
-        btn_start_easy.setEnabled(false);
-        btn_start_med.setEnabled(false);
-        btn_start_hard.setEnabled(false);
+    private void categories_generate_list(){
+        final String[][] categories = db.read_cats();
+        Log.e("Categories", categories.toString());
+
+        for( int i = 1; i < categories.length-1; i++){
+
+            LinearLayout lin = new LinearLayout(this);
+            lin.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            lin.setLayoutParams(params);
+            lin.setGravity(Gravity.CENTER_VERTICAL);
+            lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.options_ripple));
+
+            ImageView img = new ImageView(this);
+            img.setImageResource(R.drawable.icon_dice_1);
+            img.setPadding(dpToPx(20),0,dpToPx(20),0);
+            img.setColorFilter(getResources().getColor(R.color.grey_700));
+
+            TextView text = new TextView(this);
+
+            text.setText(categories[i][1]);
+            text.setTextSize(15);
+            text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
+
+            final int i2 = i;
+
+            lin.addView(img);
+            lin.addView(text);
+            lin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                question_category = Integer.parseInt(categories[i2][0]);
+                difficulty_set(settings.getInt("question_diff",5));
+                question_read_db_rand(); // reads question on game start
+                text_question.setText(category.toUpperCase()+"\n"+question);
+                answer_display_hidden();
+                //porneste animatia pentru questions
+                animate_quest();
+                //genereza si porneste timer
+                timer_create();
+                started = true;
+                }
+            });
+
+            lin_cats.addView(lin);
+        }
     }
+
+
       //sets difficulty variables
-    private void difficulty_set(String difficulty){
+    private void difficulty_set(int difficulty){
         game_difficulty = difficulty;
         switch (difficulty){
-            case "Easy":
+            case 1:
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
@@ -355,7 +366,7 @@ public class Game_Timer extends Activity{
                 difficulty_setting = 1;
                 coin_awarder_limit = 20;
                 break;
-            case "Medium":
+            case 2:
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
@@ -364,12 +375,22 @@ public class Game_Timer extends Activity{
                 difficulty_setting = 2;
                 coin_awarder_limit = 15;
                 break;
-            case "Hard":
+            case 3:
                 question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
                 question_time = 30000;
                 leaderboard_name = R.string.leaderboard_time_trial__hard_level;
+                difficulty_setting = 3;
+                buttons_sort_alpha = false;
+                coin_awarder_limit = 10;
+                break;
+            case 5:
+                question_number = 10;
+                max_wrong = 4;
+                score_per_question = 150;
+                question_time = 35000;
+                //leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 difficulty_setting = 3;
                 buttons_sort_alpha = false;
                 coin_awarder_limit = 10;
@@ -392,13 +413,13 @@ public class Game_Timer extends Activity{
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                lin_start_btn.setVisibility(View.GONE);
+                lin_cats.setVisibility(View.GONE);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {            }
         });
-        lin_start_btn.startAnimation(anim_start_back);
+        lin_cats.startAnimation(anim_start_back);
     }
 
     private void question_update(final String text){
@@ -636,21 +657,21 @@ public class Game_Timer extends Activity{
             Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_hero), question_correct);
         }
 
-        if(game_difficulty == "Easy" && score > 400) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
-        if(game_difficulty == "Medium" && score > 800) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
-        if(game_difficulty == "Hard" && score > 1200) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
+        if(game_difficulty == 1 && score > 400) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
+        if(game_difficulty == 2 && score > 800) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
+        if(game_difficulty == 3 && score > 1200) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
 
-        if(game_difficulty == "Easy" && score > 430) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_freak));
-        if(game_difficulty == "Medium" && score > 860) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_freak));
-        if(game_difficulty == "Hard" && score > 1290) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_freak));
+        if(game_difficulty == 1 && score > 430) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_freak));
+        if(game_difficulty == 2 && score > 860) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_freak));
+        if(game_difficulty == 3 && score > 1290) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_freak));
 
-        if(game_difficulty == "Easy" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
-        if(game_difficulty == "Medium" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
-        if(game_difficulty == "Hard" && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_dont_give_up));
+        if(game_difficulty == 1 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
+        if(game_difficulty == 2 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
+        if(game_difficulty == 3 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_dont_give_up));
 
-        if(game_difficulty == "Easy" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
-        if(game_difficulty == "Medium" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
-        if(game_difficulty == "Hard" && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
+        if(game_difficulty == 1 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
+        if(game_difficulty == 2 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
+        if(game_difficulty == 3 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
     }
 
     //updates total score leadeboard
@@ -727,7 +748,7 @@ public class Game_Timer extends Activity{
 
         TextView score = (TextView) findViewById(R.id.text_score);
 
-        lin_start_btn.startAnimation(anim);
+        lin_cats.startAnimation(anim);
         score.startAnimation(anim_score);
     }
 
@@ -1213,7 +1234,7 @@ public class Game_Timer extends Activity{
     private void question_read_db_rand(){
 
         String[] questy;
-        questy = db.read_rand_question_difficulty(difficulty_setting);  // 5 diff for random questions without difficulty
+        questy = db.read_rand_question_difficulty(difficulty_setting,question_category);  // 5 diff for random questions without difficulty
 
         //0 questions 1 answer 2 categpry 3 difficulty
         question = questy[0];
@@ -1296,7 +1317,7 @@ public class Game_Timer extends Activity{
     @Override
     public void onBackPressed(){
 
-        if(game_difficulty == null) finish();
+        if(game_difficulty == 0) finish();
 
         back_pressed++;
         if(back_pressed == 1){
@@ -1305,7 +1326,7 @@ public class Game_Timer extends Activity{
                 timer.cancel();                         //prevent timer from exception
                 btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
             }else{
-                lin_start_btn.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
+                lin_cats.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
         }else{
             finish();

@@ -83,7 +83,7 @@
         android:textSize="16dp"
         android:gravity="center"
         android:elevation="5dp"
-        android:text="Chose Difficulty Level" />
+        android:text="Chose Category" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -99,50 +99,22 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/linear_start_btn"
-        android:layout_below="@+id/linear_answer"
-        android:gravity="center">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/cats_scroll"
+        android:layout_below="@+id/linear_answer">
 
-        <Button
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Easy"
-            android:id="@+id/btn_start_easy"
-            android:background="@drawable/button_lollipop"
-            android:layout_below="@+id/text_question"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
+            android:layout_height="match_parent"
+            android:id="@+id/linear_cats"
+            android:layout_below="@+id/linear_answer"
+            android:gravity="center">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Medium"
-            android:id="@+id/btn_start_med"
-            android:background="@drawable/button_lollipop"
-            android:layout_below="@+id/text_question"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hard"
-            android:id="@+id/btn_start_hard"
-            android:background="@drawable/button_lollipop"
-            android:layout_below="@+id/text_question"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:orientation="vertical"

@@ -194,10 +194,18 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //hide first fragment
         section_hide("");
 
-
+        //onGameFirstRun will initialize the difficulty
+        initialize_question_diff();
     }
 
-
+    //initialize first run question diff setting
+    private void initialize_question_diff(){
+        if(settings.getInt("questions_diff",0) == 0){
+            SharedPreferences.Editor edit = settings.edit();
+            edit.putInt("question_diff",5);
+            edit.commit();
+        }
+    }
 
     private void get_pic_result(){
 
@@ -226,6 +234,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             }
         };
         pendingResult.setResultCallback(scoreCallback);
+
         //get from server scores for easy level
         PendingResult<Leaderboards.LoadPlayerScoreResult> pending_easy = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> easy_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
