@@ -29,7 +29,10 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:id="@+id/opt_rel_easy"
+            android:onClick="onDifficultyClicked"
+            android:background="@drawable/options_ripple">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -52,8 +55,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView3"
-                android:layout_toEndOf="@+id/imageView3" />
+                android:layout_toRightOf="@+id/imageView3" />
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -62,12 +64,16 @@
                 android:checked="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:clickable="false" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:id="@+id/opt_rel_medium"
+            android:onClick="onDifficultyClicked"
+            android:background="@drawable/options_ripple">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -90,22 +96,25 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView4"
-                android:layout_toEndOf="@+id/imageView4" />
+                android:layout_toRightOf="@+id/imageView4" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/opt_radio_mediu"
+                android:id="@+id/opt_radio_medium"
                 android:checked="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:clickable="false" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:id="@+id/opt_rel_hard"
+            android:onClick="onDifficultyClicked"
+            android:background="@drawable/options_ripple">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -128,8 +137,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView5"
-                android:layout_toEndOf="@+id/imageView5" />
+                android:layout_toRightOf="@+id/imageView5" />
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -138,12 +146,16 @@
                 android:checked="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:clickable="false" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:id="@+id/opt_rel_random"
+            android:onClick="onDifficultyClicked"
+            android:background="@drawable/options_ripple">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -166,8 +178,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView6"
-                android:layout_toEndOf="@+id/imageView6" />
+                android:layout_toRightOf="@+id/imageView6" />
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -176,7 +187,8 @@
                 android:checked="false"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="20dp" />
+                android:layout_marginRight="20dp"
+                android:clickable="false" />
         </RelativeLayout>
 
         <LinearLayout
