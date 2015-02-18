@@ -15,7 +15,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 33; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 34; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -104,8 +104,8 @@ public class DbOP {
         String id = "diff = " + diff+" AND cat_id = "+ cat;
 
         if(diff == 5) id = "cat_id = "+ cat;
-        if(cat == 0) id = "diff = "+ diff;
-        if(diff == 5 && cat == 0) id = null;
+        if(cat == 1) id = "diff = "+ diff;
+        if(diff == 5 && cat == 1) id = null;
         int result;
 
         cursor = db.query("quest", null, id, null, null, null, null);

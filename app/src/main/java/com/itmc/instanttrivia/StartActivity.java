@@ -200,7 +200,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     //initialize first run question diff setting
     private void initialize_question_diff(){
-        if(settings.getInt("questions_diff",0) == 0){
+        if(settings.getInt("question_diff",0) == 0){
             SharedPreferences.Editor edit = settings.edit();
             edit.putInt("question_diff",5);
             edit.commit();

@@ -305,7 +305,7 @@ public class Game_Timer extends Activity{
             lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.options_ripple));
 
             ImageView img = new ImageView(this);
-            img.setImageResource(R.drawable.icon_dice_1);
+            img.setImageResource(getResources().getIdentifier("icon_cat_"+categories.get(i+1),"drawable","com.itmc.instanttrivia"));
             img.setPadding(dpToPx(20),0,dpToPx(20),0);
             img.setColorFilter(getResources().getColor(R.color.grey_700));
 
@@ -665,7 +665,9 @@ public class Game_Timer extends Activity{
     private void score_total_update(){
 
         //update difficulty leaderboard score
-        Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name),score);
+        if(difficulty_setting != 5) {   //temporary will not post score for random difficulty
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
+        }
 
         //update total score
         //request data from server
