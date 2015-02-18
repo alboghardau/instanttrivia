@@ -86,6 +86,7 @@ public class Game_Timer extends Activity{
 
     Boolean started = false;
 
+    //TO DO INSPECT IF CAN DELETE THIS VARIABLE
     int game_difficulty = 0;
 
     //options and varaibles
@@ -101,6 +102,7 @@ public class Game_Timer extends Activity{
     int score_per_question = 0;
     int question_time = 0;
 
+    //settings for difficulty and category
     int difficulty_setting = 0;
     int question_category = 0;
 
@@ -223,30 +225,15 @@ public class Game_Timer extends Activity{
             mGoogleApiClient = null;
         }
 
+        //sets difficulty
+        difficulty_set(settings.getInt("question_diff",5));
+        Log.e("GET DIFFICULTY", settings.getInt("question_diff",5)+"");
+
         //populate list of categories
         categories_generate_list();
 
         //dispaly animation on start
         animate_start();
-
-//        btn_start_easy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                start_disable();
-//                btn_start_easy.setOnClickListener(null);
-//                difficulty_set("Easy");
-//                question_read_db_rand(); // reads question on game start
-//                text_question.setText(category.toUpperCase()+"\n"+question);
-//                answer_display_hidden();
-//                //porneste animatia pentru questions
-//                animate_quest();
-//                //genereza si porneste timer
-//                timer_create();
-//
-//                started = true;
-//            }
-//        });
-
     }
 
     //sets colors for internal views of layout
@@ -304,10 +291,10 @@ public class Game_Timer extends Activity{
     }
 
     private void categories_generate_list(){
-        final String[][] categories = db.read_cats();
+        final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
 
-        for( int i = 1; i < categories.length-1; i++){
+        for( int i = 0; i < categories.size(); i=i+2){
 
             LinearLayout lin = new LinearLayout(this);
             lin.setOrientation(LinearLayout.HORIZONTAL);
@@ -324,7 +311,7 @@ public class Game_Timer extends Activity{
 
             TextView text = new TextView(this);
 
-            text.setText(categories[i][1]);
+            text.setText(categories.get(i));
             text.setTextSize(15);
             text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
 
@@ -335,8 +322,8 @@ public class Game_Timer extends Activity{
             lin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                question_category = Integer.parseInt(categories[i2][0]);
-                difficulty_set(settings.getInt("question_diff",5));
+                question_category = Integer.parseInt(categories.get(i2+1));
+
                 question_read_db_rand(); // reads question on game start
                 text_question.setText(category.toUpperCase()+"\n"+question);
                 answer_display_hidden();
@@ -370,7 +357,7 @@ public class Game_Timer extends Activity{
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
-                question_time = 45000;
+                question_time = 35000;
                 leaderboard_name = R.string.leaderboard_time_trial__medium_level;
                 difficulty_setting = 2;
                 coin_awarder_limit = 15;
@@ -388,12 +375,12 @@ public class Game_Timer extends Activity{
             case 5:
                 question_number = 10;
                 max_wrong = 4;
-                score_per_question = 150;
+                score_per_question = 75;
                 question_time = 35000;
                 //leaderboard_name = R.string.leaderboard_time_trial__hard_level;
-                difficulty_setting = 3;
+                difficulty_setting = 5;
                 buttons_sort_alpha = false;
-                coin_awarder_limit = 10;
+                coin_awarder_limit = 15;
                 break;
         }
     }
@@ -562,11 +549,11 @@ public class Game_Timer extends Activity{
 
     private void score_final_display(){
 
-        //UPDATE SCORES, ACUM CU DUBLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
+        //UPDATE SCORES, ACUM CU TRIPLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
         //send scores to google server
         if(mGoogleApiClient != null){
             Log.e("API ACTION:", "Api client is initialized");
-            if(mGoogleApiClient.isConnected() == true && difficulty_setting != 0) {
+            if(mGoogleApiClient.isConnected() == true && difficulty_setting != 0 && question_category!=0) {
                 Log.e("API ACTION:", "Uploading Scores!");
                 //update leaderboards total score
                 score_total_update();

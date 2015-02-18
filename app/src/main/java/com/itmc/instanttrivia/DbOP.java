@@ -1,6 +1,7 @@
 package com.itmc.instanttrivia;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +15,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 32; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 33; //TO DO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -102,7 +103,9 @@ public class DbOP {
 
         String id = "diff = " + diff+" AND cat_id = "+ cat;
 
-        if(diff == 5) id = null;
+        if(diff == 5) id = "cat_id = "+ cat;
+        if(cat == 0) id = "diff = "+ diff;
+        if(diff == 5 && cat == 0) id = null;
         int result;
 
         cursor = db.query("quest", null, id, null, null, null, null);
@@ -170,24 +173,47 @@ public class DbOP {
     }
 
     //reads categories that have tests
-    public String[][] read_cats()
+    public ArrayList<String> read_cats(int diff)
     {
         Cursor cursor = null;
 
         cursor = db.rawQuery("SELECT * FROM cats", null);
         cursor.moveToFirst();
-        String[][] cats = new String[cursor.getCount()+1][2];
+       // String[][] cats = new String[][];
+
+        ArrayList<String> cat = new ArrayList<String>();
+        ArrayList<Integer> cat_id = new ArrayList<Integer>();
+
         int i = 0;
         while(cursor.isAfterLast() == false)
         {
             int id = cursor.getInt(0);
-            cats[i][0] = Integer.toString(cursor.getInt(0));
-            cats[i][1] = cursor.getString(1);
-            i++;
+            if(diff == 5 && cursor.getInt(2) > 25){
+                  Log.e("Total_No", cursor.getInt(2)+"");
+
+                  cat.add(cursor.getString(1));
+                  cat.add(cursor.getInt(0)+"");
+            }
+            if(diff == 1 && cursor.getInt(3) > 25){
+                Log.e("Easy_No", cursor.getInt(3)+"");
+                cat.add(cursor.getString(1));
+                cat.add(cursor.getInt(0)+"");
+            }
+            if(diff == 2 && cursor.getInt(4) > 25){
+                Log.e("Med_No", cursor.getInt(4)+"");
+                cat.add(cursor.getString(1));
+                cat.add(cursor.getInt(0)+"");
+            }
+            if(diff == 3 && cursor.getInt(5) > 25){
+                Log.e("Hard_No", cursor.getInt(5)+"");
+                cat.add(cursor.getString(1));
+                cat.add(cursor.getInt(0)+"");
+            }
+
             cursor.moveToNext();
         }
         cursor.close();
-        return cats;
+        return cat;
     }
 
     public String[][] q_test(int test_id)

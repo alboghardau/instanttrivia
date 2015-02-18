@@ -490,6 +490,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), settings.getInt("saved_total_score", 0)+score_local);
                     Log.e("Total Score Uploaded", "TRUE");
                     edit.putInt("saved_total_score", 0);
+                    edit.commit();
                 }
             };
             pendingResult.setResultCallback(scoreCallback);
