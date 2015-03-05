@@ -2,9 +2,17 @@ package com.itmc.instanttrivia;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
@@ -19,7 +27,10 @@ public class Options extends ActionBarActivity {
     RadioButton radio_red, radio_blue, radio_purple, radio_lgreen, radio_orange;
     RadioButton opt_radio_easy, opt_radio_medium, opt_radio_hard, opt_radio_random;
     TextView opt_color_header, opt_question_diff;
+    TextView opt_text_easy, opt_text_med, opt_text_hard, opt_text_random;
     RelativeLayout opt_rel_easy, opt_rel_medium, opt_rel_hard, opt_rel_random;
+
+    Typeface font;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +43,9 @@ public class Options extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Settings");
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
+
+
 
         radio_red = (RadioButton)findViewById(R.id.radio_red);
         radio_blue = (RadioButton)findViewById(R.id.radio_blue);
@@ -50,10 +60,23 @@ public class Options extends ActionBarActivity {
 
         opt_color_header = (TextView) findViewById(R.id.opt_color_header);
         opt_question_diff = (TextView) findViewById(R.id.opt_question_diff);
+        opt_text_easy = (TextView) findViewById(R.id.opt_text_easy);
+        opt_text_med = (TextView) findViewById(R.id.opt_text_medium);
+        opt_text_hard = (TextView) findViewById(R.id.opt_text_hard);
+        opt_text_random = (TextView) findViewById(R.id.opt_text_random);
+
         opt_rel_easy = (RelativeLayout) findViewById(R.id.opt_rel_easy);
         opt_rel_medium = (RelativeLayout) findViewById(R.id.opt_rel_medium);
         opt_rel_hard = (RelativeLayout) findViewById(R.id.opt_rel_hard);
         opt_rel_random = (RelativeLayout) findViewById(R.id.opt_rel_random);
+
+        //set fonts
+        opt_color_header.setTypeface(font);
+        opt_question_diff.setTypeface(font);
+        opt_text_easy.setTypeface(font);
+        opt_text_med.setTypeface(font);
+        opt_text_hard.setTypeface(font);
+        opt_text_random.setTypeface(font);
 
         radio_check(settings.getString("Color_Theme", "Purple"));
         diff_check(settings.getInt("question_diff", 5));
@@ -61,6 +84,7 @@ public class Options extends ActionBarActivity {
         //sets rest of theme settings
         Theme_Setter2();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -111,6 +135,7 @@ public class Options extends ActionBarActivity {
         }
     }
 
+    //function NOT USED FOR NOW / CAN NOT CHANGE FONT ON ACTION BAR
     //has to be called before inflating the layout
     private void Theme_Setter(){
         String tester = settings.getString("Color_Theme","Purple");
@@ -142,8 +167,8 @@ public class Options extends ActionBarActivity {
                 opt_question_diff.setTextColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
-                opt_color_header.setTextColor(getResources().getColor(R.color.purple_700));
-                opt_question_diff.setTextColor(getResources().getColor(R.color.purple_700));
+                opt_color_header.setTextColor(getResources().getColor(R.color.deep_purple_700));
+                opt_question_diff.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 break;
             case "Blue":
                 opt_color_header.setTextColor(getResources().getColor(R.color.blue_700));

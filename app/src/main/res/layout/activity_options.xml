@@ -323,7 +323,7 @@
                     android:layout_height="25dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/textView13"
-                    android:background="@color/purple_500"
+                    android:background="@color/deep_purple_500"
                     android:layout_margin="10dp" />
 
                 <RadioButton

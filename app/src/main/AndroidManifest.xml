@@ -32,9 +32,9 @@
         <meta-data
             android:name="com.tapfortap.API_KEY"
             android:value="@string/tapfortap_api" />
-        <meta-data
-            android:name="com.tapfortap.TEST_MODE"
-            android:value="true" />
+        <!--<meta-data-->
+            <!--android:name="com.tapfortap.TEST_MODE"-->
+            <!--android:value="true" />-->
 
         <activity
             android:name=".Game_Timer"
@@ -44,8 +44,7 @@
         <activity
             android:name=".Options"
             android:label="@string/title_activity_options"
-            android:screenOrientation="portrait"
-            android:theme="@style/Options_Style_Purple" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".StartActivity"

@@ -7,56 +7,43 @@
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_centerHorizontal="true"
         android:background="@color/purple_500"
         android:id="@+id/linear_topbar"
         android:gravity="center"
+        android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
 
-        <LinearLayout
-            android:orientation="vertical"
+        <TextView
             android:layout_width="wrap_content"
-            android:gravity="right"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/text_question_current"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Score\n0"
+            android:id="@+id/text_score"
+            android:clickable="false"
+            android:textSize="16dp"
+            android:textColor="@color/abc_primary_text_disable_only_material_dark"
+            android:singleLine="false"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/linearLayout">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center|right">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:id="@+id/text_question_current"
-                    android:layout_alignParentBottom="false"
-                    android:layout_alignParentRight="false"
-                    android:textColor="@color/white"
-                    android:textSize="15dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_centerVertical="true" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Score: 0"
-                android:id="@+id/text_score"
-                android:clickable="false"
-                android:textSize="15dp"
-                android:textColor="@color/abc_primary_text_disable_only_material_dark"
-                android:singleLine="false"
-                android:layout_below="@+id/image_icon_question"
-                android:layout_alignParentEnd="true" />
-
-        </LinearLayout>
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center" />
 
     </RelativeLayout>
 
@@ -83,7 +70,9 @@
         android:textSize="16dp"
         android:gravity="center"
         android:elevation="5dp"
-        android:text="Chose Category" />
+        android:text="Chose Category"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
 
     <LinearLayout
         android:orientation="vertical"

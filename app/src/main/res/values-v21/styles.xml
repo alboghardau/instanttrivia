@@ -13,7 +13,7 @@
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
     </style>
 
-    <style name="ActionTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="ActionTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
     </style>
 

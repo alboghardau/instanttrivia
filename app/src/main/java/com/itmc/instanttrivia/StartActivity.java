@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -57,6 +58,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     public GoogleApiClient mGoogleApiClient;
 
+    Typeface font;
+
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInFlow = true;
     private boolean mSignInClicked = false;
@@ -80,6 +83,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         db = new DbOP(this);
         db.testnewdb();
         db.close();
+
+        font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
         //add home fragment
         Intent options = new Intent(this, Options.class);
@@ -109,6 +114,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 }
             }
         });
+        section_achievements.setTypeface(font);
         section_achievements.useRealColor();
         section_achievements.setIconColor(getResources().getColor(R.color.orange_500));
         this.addSection(section_achievements);
@@ -126,6 +132,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 }
             }
         });
+        section_leader.setTypeface(font);
         section_leader.useRealColor();
         section_leader.setIconColor(getResources().getColor(R.color.blue_500));
         this.addSection(section_leader);
@@ -145,6 +152,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 }
             }
         });
+        sign_in.setTypeface(font);
         sign_in.useRealColor();
         sign_in.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(sign_in);
@@ -165,12 +173,14 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 display_change_state(false);
             }
         });
+        section_signout.setTypeface(font);
         section_signout.useRealColor();
         section_signout.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(section_signout);
 
         //SETTINGS SECTION
         MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
+        section_settings.setTypeface(font);
         section_settings.useRealColor();
         section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
         this.addBottomSection(section_settings);
@@ -360,8 +370,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 colorDark = getResources().getColor(R.color.red_700);
                 break;
             case "Purple":
-                colorPrimary = getResources().getColor(R.color.purple_500);
-                colorDark = getResources().getColor(R.color.purple_700);
+                colorPrimary = getResources().getColor(R.color.deep_purple_500);
+                colorDark = getResources().getColor(R.color.deep_purple_700);
                 break;
             case "Blue":
                 colorPrimary = getResources().getColor(R.color.blue_500);

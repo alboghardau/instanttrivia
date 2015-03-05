@@ -6,6 +6,8 @@
 <color name="white">#ffffff</color>
 <color name="text_dark">#212121</color>
 
+<color name="shadow">#33000000</color>
+
     <!-- RED -->
 <color name="red_50">#fde0dc</color>
 <color name="red_100">#f9bdbb</color>

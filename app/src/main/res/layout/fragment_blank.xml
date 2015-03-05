@@ -73,7 +73,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:id="@+id/ui_loged_as"
                 android:textColor="@color/white"
-                android:textSize="12dp"
+                android:textSize="15dp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/ui_profile_img"
                 android:layout_toEndOf="@+id/ui_profile_img"
@@ -101,7 +101,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/ui_total_score"
                     android:textColor="@color/white"
-                    android:textSize="12dp"
+                    android:textSize="15dp"
                     android:layout_below="@+id/ui_loged_as"
                     android:layout_toEndOf="@+id/ui_profile_img"
                     android:paddingBottom="5dp"
@@ -123,7 +123,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/ui_total_coins"
                     android:textColor="@color/white"
-                    android:textSize="12dp"
+                    android:textSize="15dp"
                     android:layout_below="@+id/ui_loged_as"
                     android:layout_toEndOf="@+id/ui_profile_img"
                     android:paddingBottom="5dp"
@@ -147,7 +147,7 @@
         android:textColor="@color/white"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:textSize="12dp"
+        android:textSize="15dp"
         android:visibility="invisible"
         android:gravity="center" />
 
@@ -181,7 +181,7 @@
                 android:id="@+id/ui_score_easy"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="12dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -206,7 +206,7 @@
                 android:id="@+id/ui_score_med"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="12dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -231,7 +231,7 @@
                 android:id="@+id/ui_score_hard"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="12dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -252,11 +252,12 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Play"
+            android:text="PLAY"
             android:id="@+id/ui_button_play"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/button_lollipop" />
+            android:background="@drawable/button_lollipop"
+            android:textSize="18dp" />
 
     </RelativeLayout>
 

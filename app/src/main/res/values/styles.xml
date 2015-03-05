@@ -14,9 +14,7 @@
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
     </style>
 
-    <style name="Options_Style_Purple" parent="Theme.AppCompat.Light.DarkActionBar"></style>
-
-    <style name="ActionTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
+    <style name="ActionTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
 
     <style name="ActionTheme.Options_Style_Purple">
         <item name="colorPrimary">@color/purple_500</item>

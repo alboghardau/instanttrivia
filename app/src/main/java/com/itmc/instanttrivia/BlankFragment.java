@@ -3,12 +3,10 @@ package com.itmc.instanttrivia;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +36,6 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     RelativeLayout ui_frag_back;
     RelativeLayout ui_bot_section;
     Button btn_play;
-
-    Typeface font_regular;
-    Typeface font_thin;
-    Typeface font_bold;
 
     private LinearLayout lin_top_logo;
     private RelativeLayout rel_logged;
@@ -93,15 +87,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         ui_frag_back = (RelativeLayout) rootView.findViewById(R.id.ui_frag_back);
         ui_bot_section = (RelativeLayout) rootView.findViewById(R.id.ui_bot_section);
 
-        font_regular = Typeface.createFromAsset(getActivity().getAssets(), "typeface/RobotoRegular.ttf");
-        font_bold = Typeface.createFromAsset(getActivity().getAssets(), "typeface/RobotoBold.ttf");
-        font_thin = Typeface.createFromAsset(getActivity().getAssets(), "typeface/RobotoThin.ttf");
-
-        ui_total_score.setTypeface(font_bold);
-        ui_score_easy.setTypeface(font_bold);
-        ui_score_med.setTypeface(font_bold);
-        ui_score_hard.setTypeface(font_bold);
-        ui_total_coins.setTypeface(font_bold);
+        overrideFonts(getActivity(),ui_frag_back);
 
         //set animation for view switcher
         final Animation left_trans = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_left_in_translate);
@@ -125,6 +111,23 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         return rootView;
     }
 
+    //overrides all fonts at start , later generated need recall the method or static setting of typeface
+    private void overrideFonts(final Context context, final View v) {
+        Typeface new_font = Typeface.createFromAsset(context.getAssets(), "typeface/bubblegum.otf");
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else if (v instanceof TextView ) {
+                ((TextView) v).setTypeface(new_font);
+            }
+        } catch (Exception e) {
+        }
+    }
+
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){
         String tester = StartActivity.settings.getString("Color_Theme","Purple");
@@ -134,7 +137,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
-                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.purple_500));
+                ui_frag_back.setBackgroundColor(getResources().getColor(R.color.deep_purple_500));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.purple_700));
                 break;
             case "Blue":

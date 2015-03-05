@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -12,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -31,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,6 +61,8 @@ public class Game_Timer extends Activity{
     TextView text_question_current;
     TextView text_final_score;
 
+    ScrollView cats_scroll;
+
     LinearLayout lin_cats;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
@@ -80,9 +86,8 @@ public class Game_Timer extends Activity{
 
     int color_extraDark;
 
-    Typeface font_regular;
-    Typeface font_thin;
-    Typeface font_bold;
+    Typeface font;
+
 
     Boolean started = false;
 
@@ -138,17 +143,15 @@ public class Game_Timer extends Activity{
         setContentView(R.layout.activity_game__timer);
 
         //initialize fonts
-        font_regular = Typeface.createFromAsset(getAssets(), "typeface/RobotoRegular.ttf");
-        font_bold = Typeface.createFromAsset(getAssets(), "typeface/RobotoBold.ttf");
-        font_thin = Typeface.createFromAsset(getAssets(), "typeface/RobotoThin.ttf");
+        font = Typeface.createFromAsset(getAssets(), "typeface/bubblegum.otf");
 
         //define question text
         text_question = (TextView) findViewById(R.id.text_question);
-        text_question.setTypeface(font_regular);
+        //text_question.setTypeface(font);
         text_score = (TextView) findViewById(R.id.text_score);
-        text_score.setTypeface(font_bold);
+        //text_score.setTypeface(font);
         text_question_current = (TextView) findViewById(R.id.text_question_current);
-        text_question_current.setTypeface(font_bold);
+        //text_question_current.setTypeface(font);
         text_final_score = (TextView)findViewById(R.id.text_final_score);
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
@@ -159,52 +162,34 @@ public class Game_Timer extends Activity{
         rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
 
+        cats_scroll = (ScrollView) findViewById(R.id.cats_scroll);
+
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
+
+        overrideFonts(this,rel_base);
 
         //sets colors for layout
         Theme_Setter_Views();
 
         //set relative size for questions textview
-        text_question.setTextSize((float) (DpHeight()/40.0));
+        text_question.setTextSize((float) (DpHeight()/35.0));
 
         ViewGroup.LayoutParams p = text_question.getLayoutParams();
-        p.height = dpToPx((int) (DpHeight()/5.0));
+        p.height = dpToPx((int) (DpHeight()/6.0));
 
         //declare answer chars store , and store answer in array
         buttons = new ArrayList<Character>();
         ans_arr = new ArrayList<Character>();
         ans_pressed = new ArrayList<Character>();
 
-        //ads
-        Banner banner = Banner.create(this, new Banner.BannerListener() {
-            @Override
-            public void bannerOnReceive(Banner banner) {
-
-            }
-
-            @Override
-            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
-
-            }
-
-            @Override
-            public void bannerOnTap(Banner banner) {
-
-            }
-        });
-        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        para.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        para.width = (int)dpToPx((int)(DpWidth()*0.75));
-        para.height = (int)(para.width/6.4);
-
-        banner.setLayoutParams(para);
-        lin_top.addView(banner);
-
         //start database operator
         db = new DbOP(this);
         db.startdb();
+
+        //display ads
+        if(isNetworkAvailable()){
+            top_ads();
+        }
 
         //temporary fix passing of mGoogleApiClient form start activity to this
         Log.e("SignIn Status before conection:", settings.getBoolean("SIGNED_IN",false)+"");
@@ -236,6 +221,23 @@ public class Game_Timer extends Activity{
         animate_start();
     }
 
+    //overrides all fonts at start , later generated need recall the method or static setting of typeface
+    private void overrideFonts(final Context context, final View v) {
+        Typeface new_font = Typeface.createFromAsset(context.getAssets(), "typeface/bubblegum.otf");
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else if (v instanceof TextView ) {
+                ((TextView) v).setTypeface(new_font);
+            }
+        } catch (Exception e) {
+        }
+    }
+
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){
         String tester = settings.getString("Color_Theme","Purple");
@@ -248,10 +250,10 @@ public class Game_Timer extends Activity{
                 }
                 break;
             case "Purple":
-                Views_Editor("purple");
-                color_extraDark = getResources().getColor(R.color.purple_900);
+                Views_Editor("deep_purple");
+                color_extraDark = getResources().getColor(R.color.deep_purple_900);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                    getWindow().setStatusBarColor(getResources().getColor(R.color.purple_700));
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.deep_purple_700));
                 }
                 break;
             case "Blue":
@@ -290,6 +292,36 @@ public class Game_Timer extends Activity{
         text_final_score.setBackgroundColor(getResources().getColor(darker_color));
     }
 
+    private void top_ads(){
+
+        Banner banner = Banner.create(this, new Banner.BannerListener() {
+            @Override
+            public void bannerOnReceive(Banner banner) {
+
+            }
+
+            @Override
+            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
+
+            }
+
+            @Override
+            public void bannerOnTap(Banner banner) {
+
+            }
+        });
+        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        para.addRule(RelativeLayout.CENTER_IN_PARENT);
+        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        para.width = (int)dpToPx((int)(DpWidth()*0.65));
+        para.height = (int)(para.width/6.4);
+
+        banner.setLayoutParams(para);
+        lin_top.addView(banner);
+    }
+
+
     private void categories_generate_list(){
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
@@ -313,6 +345,7 @@ public class Game_Timer extends Activity{
 
             text.setText(categories.get(i));
             text.setTextSize(15);
+            text.setTypeface(font);
             text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
 
             final int i2 = i;
@@ -324,21 +357,19 @@ public class Game_Timer extends Activity{
                 public void onClick(View v) {
                 question_category = Integer.parseInt(categories.get(i2+1));
 
+
+
                 question_read_db_rand(); // reads question on game start
-                text_question.setText(category.toUpperCase()+"\n"+question);
-                answer_display_hidden();
+
                 //porneste animatia pentru questions
                 animate_quest();
-                //genereza si porneste timer
-                timer_create();
-                started = true;
+
                 }
             });
 
             lin_cats.addView(lin);
         }
     }
-
 
       //sets difficulty variables
     private void difficulty_set(int difficulty){
@@ -389,10 +420,10 @@ public class Game_Timer extends Activity{
     private void animate_quest() {
 
         buttons_generate(answer);
-        buttons_display();
+
 
         //animate start button after click to retract back under question
-        Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_top_top);
+        Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
 
         anim_start_back.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -401,6 +432,17 @@ public class Game_Timer extends Activity{
             @Override
             public void onAnimationEnd(Animation animation) {
                 lin_cats.setVisibility(View.GONE);
+                lin_cats.removeAllViews();
+                cats_scroll.setVisibility(View.GONE);
+                text_question.setText(category.toUpperCase()+"\n"+question);
+                answer_display_hidden();
+
+                //this variable will prevent crash for back button pressed
+                started = true;
+
+                //genereza si porneste timer
+                timer_create();
+                buttons_display();
             }
 
             @Override
@@ -415,9 +457,10 @@ public class Game_Timer extends Activity{
             txt.setLayoutParams(text_question.getLayoutParams());
             txt.setTextSize(text_question.getTextSize());
 
-            txt.setText(text);
+
 
             final int Height = dpToPx((int) (DpHeight()/5.0));
+            final int Width = dpToPx((int) (DpWidth()));
 
             Animation a = new Animation()
             {
@@ -426,7 +469,7 @@ public class Game_Timer extends Activity{
                     if(interpolatedTime == 1){
                         text_question.setVisibility(View.GONE);
                     }else{
-                        text_question.getLayoutParams().height = Height - (int)(Height * interpolatedTime);
+                        text_question.getLayoutParams().width = Width - (int)(Width * interpolatedTime);
                         text_question.requestLayout();
                     }
                 }
@@ -440,20 +483,21 @@ public class Game_Timer extends Activity{
             a.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                text_question.setText("");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
 
-                text_question.setText(text);
 
-                text_question.getLayoutParams().height = 0;
+
+                text_question.getLayoutParams().width = 0;
                 text_question.setVisibility(View.VISIBLE);
                 Animation a = new Animation()
                 {
                     @Override
                     protected void applyTransformation(float interpolatedTime, Transformation t) {
-                        text_question.getLayoutParams().height =  (int)(Height * interpolatedTime);
+                        text_question.getLayoutParams().width =  (int)(Width * interpolatedTime);
                         text_question.requestLayout();
                     }
 
@@ -464,7 +508,19 @@ public class Game_Timer extends Activity{
                 };
 
                 // 1dp/ms
-                a.setDuration((int)(Height / text_question.getContext().getResources().getDisplayMetrics().density)*10);
+                a.setDuration(750);
+                a.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        text_question.setText(text);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {                    }
+                });
                 text_question.startAnimation(a);
             }
 
@@ -573,7 +629,7 @@ public class Game_Timer extends Activity{
         text_score.setVisibility(View.INVISIBLE);
 
         text_final_score.setText(score + "");
-        text_final_score.setTypeface(font_bold);
+        text_final_score.setTypeface(font);
 
         Button btn_back = (Button) findViewById(R.id.button_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -681,7 +737,7 @@ public class Game_Timer extends Activity{
                 //test if player has any score
                 if(scoresBuffer != null){
                     score_local = scoresBuffer.getRawScore();
-                    Log.e("Retrieved Total Score:",score_local+"");
+                    Log.e("Retrieved Total Score\n",score_local+"");
                 }
                 Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score+score_local);
                 Log.e("Total Score Uploaded", "TRUE");
@@ -798,7 +854,7 @@ public class Game_Timer extends Activity{
             TextView t = new TextView(this);
 
             t.setGravity(Gravity.CENTER);
-            t.setTypeface(Typeface.MONOSPACE);
+            t.setTypeface(font);
             t.setTextSize(20);
             t.setMaxWidth(dpToPx(max_width));
             t.setTextColor(Color.WHITE);
@@ -855,7 +911,7 @@ public class Game_Timer extends Activity{
         val.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                text_score.setText("Score: "+  animation.getAnimatedValue());
+                text_score.setText("Score\n"+  animation.getAnimatedValue());
             }
         });
 
@@ -897,6 +953,7 @@ public class Game_Timer extends Activity{
                 txt.setText(ans_arr.get(i).toString());
             }
         }
+
     }
 
     //display buttons with animation
@@ -968,6 +1025,7 @@ public class Game_Timer extends Activity{
             t.setLayoutParams(par);
 
             t.setTextSize(30);
+            t.setTypeface(font);
             t.setGravity(Gravity.CENTER);
             //generate id starting with 100
             t.setId(100 + i);
@@ -1102,7 +1160,7 @@ public class Game_Timer extends Activity{
         final TextView txt = new TextView(this);
         txt.setTextColor(getResources().getColor(R.color.white));
         txt.setTextSize(17);
-        txt.setTypeface(font_regular);
+        txt.setTypeface(font);
         txt.setText(text);
 
         message.addView(img);
@@ -1302,11 +1360,18 @@ public class Game_Timer extends Activity{
         Log.e("Answer Chars:", buttons.toString());
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     //overides back buttons pressed not to exit activity
     @Override
     public void onBackPressed(){
 
-        if(game_difficulty == 0) finish();
+        if(!started) finish();
 
         back_pressed++;
         if(back_pressed == 1){
