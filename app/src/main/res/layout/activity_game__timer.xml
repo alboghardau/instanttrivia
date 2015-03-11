@@ -351,4 +351,21 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_inter"
+        android:baselineAligned="false"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Question"
+            android:id="@+id/button_nextq"
+            android:background="@drawable/button_lollipop" />
+    </LinearLayout>
+
 </RelativeLayout>

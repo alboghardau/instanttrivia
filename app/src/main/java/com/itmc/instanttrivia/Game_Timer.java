@@ -60,17 +60,16 @@ public class Game_Timer extends Activity{
     TextView text_score;
     TextView text_question_current;
     TextView text_final_score;
-
     ScrollView cats_scroll;
-
+    Button btn_nextq;
     LinearLayout lin_cats;
     LinearLayout lin_answer;
     LinearLayout lin_bot;
     LinearLayout lin_gratz;
+    LinearLayout lin_inter;
     RelativeLayout lin_top;
     RelativeLayout rel_base;
     GridLayout btn_grid;
-
     ProgressBar prog_bar;
 
     String question;
@@ -85,9 +84,7 @@ public class Game_Timer extends Activity{
     ArrayList<Character> ans_pressed;
 
     int color_extraDark;
-
     Typeface font;
-
 
     Boolean started = false;
 
@@ -136,34 +133,30 @@ public class Game_Timer extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
 
-        //initialize fonts
-        font = Typeface.createFromAsset(getAssets(), "typeface/bubblegum.otf");
+        font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
         //define question text
         text_question = (TextView) findViewById(R.id.text_question);
-        //text_question.setTypeface(font);
         text_score = (TextView) findViewById(R.id.text_score);
-        //text_score.setTypeface(font);
         text_question_current = (TextView) findViewById(R.id.text_question_current);
-        //text_question_current.setTypeface(font);
         text_final_score = (TextView)findViewById(R.id.text_final_score);
+        btn_nextq = (Button)findViewById(R.id.button_nextq);
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
         lin_cats = (LinearLayout) findViewById(R.id.linear_cats);
         lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
+        lin_inter = (LinearLayout) findViewById(R.id.linear_inter);
         lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
         rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
 
         cats_scroll = (ScrollView) findViewById(R.id.cats_scroll);
-
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         overrideFonts(this,rel_base);
@@ -186,23 +179,13 @@ public class Game_Timer extends Activity{
         db = new DbOP(this);
         db.startdb();
 
-        //display ads
-        if(isNetworkAvailable()){
-            top_ads();
-        }
-
         //temporary fix passing of mGoogleApiClient form start activity to this
-        Log.e("SignIn Status before conection:", settings.getBoolean("SIGNED_IN",false)+"");
+        Log.e("SignIn Status b4", settings.getBoolean("SIGNED_IN",false)+"");
         if(settings.getBoolean("SIGNED_IN",false) == true){
             GameHelper gameHelper = new GameHelper(this,GameHelper.CLIENT_GAMES);
             gameHelper.setup(new GameHelper.GameHelperListener() {
-                @Override
-                public void onSignInFailed() {
-                }
-
-                @Override
-                public void onSignInSucceeded() {
-                }
+                @Override public void onSignInFailed() {}
+                @Override public void onSignInSucceeded() {}
             });
             mGoogleApiClient = gameHelper.getApiClient();
             mGoogleApiClient.connect();
@@ -219,23 +202,6 @@ public class Game_Timer extends Activity{
 
         //dispaly animation on start
         animate_start();
-    }
-
-    //overrides all fonts at start , later generated need recall the method or static setting of typeface
-    private void overrideFonts(final Context context, final View v) {
-        Typeface new_font = Typeface.createFromAsset(context.getAssets(), "typeface/bubblegum.otf");
-        try {
-            if (v instanceof ViewGroup) {
-                ViewGroup vg = (ViewGroup) v;
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    View child = vg.getChildAt(i);
-                    overrideFonts(context, child);
-                }
-            } else if (v instanceof TextView ) {
-                ((TextView) v).setTypeface(new_font);
-            }
-        } catch (Exception e) {
-        }
     }
 
     //sets colors for internal views of layout
@@ -292,36 +258,6 @@ public class Game_Timer extends Activity{
         text_final_score.setBackgroundColor(getResources().getColor(darker_color));
     }
 
-    private void top_ads(){
-
-        Banner banner = Banner.create(this, new Banner.BannerListener() {
-            @Override
-            public void bannerOnReceive(Banner banner) {
-
-            }
-
-            @Override
-            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
-
-            }
-
-            @Override
-            public void bannerOnTap(Banner banner) {
-
-            }
-        });
-        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        para.addRule(RelativeLayout.CENTER_IN_PARENT);
-        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        para.width = (int)dpToPx((int)(DpWidth()*0.65));
-        para.height = (int)(para.width/6.4);
-
-        banner.setLayoutParams(para);
-        lin_top.addView(banner);
-    }
-
-
     private void categories_generate_list(){
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
@@ -356,14 +292,9 @@ public class Game_Timer extends Activity{
                 @Override
                 public void onClick(View v) {
                 question_category = Integer.parseInt(categories.get(i2+1));
-
-
-
                 question_read_db_rand(); // reads question on game start
-
                 //porneste animatia pentru questions
                 animate_quest();
-
                 }
             });
 
@@ -371,11 +302,11 @@ public class Game_Timer extends Activity{
         }
     }
 
-      //sets difficulty variables
+    //sets difficulty variables
     private void difficulty_set(int difficulty){
         game_difficulty = difficulty;
         switch (difficulty){
-            case 1:
+            case 1:                     //ease game settings
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
@@ -384,7 +315,7 @@ public class Game_Timer extends Activity{
                 difficulty_setting = 1;
                 coin_awarder_limit = 20;
                 break;
-            case 2:
+            case 2:                     //medium game settings
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
@@ -393,7 +324,7 @@ public class Game_Timer extends Activity{
                 difficulty_setting = 2;
                 coin_awarder_limit = 15;
                 break;
-            case 3:
+            case 3:                     //hard game settings
                 question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
@@ -403,11 +334,11 @@ public class Game_Timer extends Activity{
                 buttons_sort_alpha = false;
                 coin_awarder_limit = 10;
                 break;
-            case 5:
+            case 5:                     //random game settings
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 75;
-                question_time = 35000;
+                question_time = 3000;
                 //leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 difficulty_setting = 5;
                 buttons_sort_alpha = false;
@@ -418,46 +349,70 @@ public class Game_Timer extends Activity{
 
     //animates question textview
     private void animate_quest() {
-
         buttons_generate(answer);
+        question_animate("hide","");
 
-
-        //animate start button after click to retract back under question
-        Animation anim_start_back = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
-
-        anim_start_back.setAnimationListener(new Animation.AnimationListener() {
+        cats_scroll.animate().setListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animation animation) {            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                lin_cats.setVisibility(View.GONE);
-                lin_cats.removeAllViews();
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
                 cats_scroll.setVisibility(View.GONE);
-                text_question.setText(category.toUpperCase()+"\n"+question);
-                answer_display_hidden();
+                cats_scroll.removeAllViews();
 
+                answer_display_hidden();
                 //this variable will prevent crash for back button pressed
                 started = true;
-
                 //genereza si porneste timer
                 timer_create();
                 buttons_display();
             }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {            }
-        });
-        lin_cats.startAnimation(anim_start_back);
+        }).start();
     }
 
-    private void question_update(final String text){
+    private void question_animate(String action, final String text){
+        switch (action){
+            case "hide":
 
+                text_question.animate().setDuration(500).scaleX(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        text_question.setVisibility(View.INVISIBLE);
+                    }
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        text_question.setText("");
+                    }
+                }).start();
+
+                break;
+            case "show":
+
+                text_question.animate().setDuration(500).scaleX(1f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        text_question.setText(text);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        text_question.setVisibility(View.VISIBLE);
+                    }
+                }).start();
+
+                break;
+        }
+    }
+
+
+
+    private void question_update(final String text){
             TextView txt = new TextView(this);
             txt.setLayoutParams(text_question.getLayoutParams());
             txt.setTextSize(text_question.getTextSize());
-
-
 
             final int Height = dpToPx((int) (DpHeight()/5.0));
             final int Width = dpToPx((int) (DpWidth()));
@@ -489,50 +444,37 @@ public class Game_Timer extends Activity{
             @Override
             public void onAnimationEnd(Animation animation) {
 
-
-
                 text_question.getLayoutParams().width = 0;
                 text_question.setVisibility(View.VISIBLE);
-                Animation a = new Animation()
-                {
-                    @Override
-                    protected void applyTransformation(float interpolatedTime, Transformation t) {
+                Animation a = new Animation(){
+                    @Override protected void applyTransformation(float interpolatedTime, Transformation t) {
                         text_question.getLayoutParams().width =  (int)(Width * interpolatedTime);
                         text_question.requestLayout();
                     }
-
-                    @Override
-                    public boolean willChangeBounds() {
+                    @Override public boolean willChangeBounds() {
                         return true;
                     }
                 };
 
-                // 1dp/ms
                 a.setDuration(750);
                 a.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
+                    @Override public void onAnimationStart(Animation animation) {}
+                    @Override public void onAnimationEnd(Animation animation) {
                         text_question.setText(text);
                     }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {                    }
+                    @Override public void onAnimationRepeat(Animation animation) {}
                 });
                 text_question.startAnimation(a);
             }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
+            @Override public void onAnimationRepeat(Animation animation) {}
         });
             text_question.startAnimation(a);
     }
 
     private void question_hide_end(){
+        answer_replace_lost();
+
         //animation to hide the question
         final int Height = dpToPx((int) (DpHeight()/5.0));
         Animation a = new Animation()
@@ -557,7 +499,7 @@ public class Game_Timer extends Activity{
 
         //answer fade out
         lin_answer.setAlpha(1f);
-        lin_answer.animate().setDuration(1000).alpha(0f).setListener(new AnimatorListenerAdapter() {
+        lin_answer.animate().setDuration(1000).setStartDelay(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -604,7 +546,6 @@ public class Game_Timer extends Activity{
     }
 
     private void score_final_display(){
-
         //UPDATE SCORES, ACUM CU TRIPLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
         //send scores to google server
         if(mGoogleApiClient != null){
@@ -658,8 +599,6 @@ public class Game_Timer extends Activity{
                 }
             }
         });
-
-
 
         //set round progress bars
         TextView text_correct_hits = (TextView) findViewById(R.id.text_correct_hits);
@@ -764,37 +703,12 @@ public class Game_Timer extends Activity{
         edit.commit();
     }
 
-    //conversie dp to pixels, util pentru animatii cu layoutparams
-    private static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    private static int pxToDp(int px){
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-    }
-
-    private float DpWidth(){
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return dpWidth;
-    }
-    private float DpHeight(){
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-
-        float dpWidth = displayMetrics.heightPixels / displayMetrics.density;
-        return dpWidth;
-    }
-
     //animation function for the start of activity
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
-
-        TextView score = (TextView) findViewById(R.id.text_score);
-
         lin_cats.startAnimation(anim);
-        score.startAnimation(anim_score);
+        text_score.startAnimation(anim_score);
     }
 
     //function handles animation for answer display connected to answer_display_hidden2();
@@ -899,7 +813,6 @@ public class Game_Timer extends Activity{
 
     //generates the scores number
     private void score_update(){
-
         int time_sub =(int) Math.ceil((1-(millis_buffer)/(float)(question_time)) * score_per_question/2.0);
         int wrong_sub =(int) Math.ceil((pressed_wrong / (float) max_wrong * 0.5 * score_per_question));
         int bonus = score_per_question - time_sub - wrong_sub;
@@ -920,7 +833,6 @@ public class Game_Timer extends Activity{
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, Character pressed) {
-
         //add revealed word to layout
         for (int i = 0; i < answer.size(); i++) {
             if (answer.get(i) == pressed) {
@@ -931,7 +843,6 @@ public class Game_Timer extends Activity{
 
     //function will replace answer chars view from linear layout with animation
     private void answer_replace_char(final Integer char_id, Character change) {
-
         final TextView text = (TextView) findViewById(char_id);
         final LinearLayout lin = (LinearLayout) text.getParent();
         final int index = lin.indexOfChild(text);
@@ -953,7 +864,6 @@ public class Game_Timer extends Activity{
                 txt.setText(ans_arr.get(i).toString());
             }
         }
-
     }
 
     //display buttons with animation
@@ -963,16 +873,11 @@ public class Game_Timer extends Activity{
         //if is not first questions do fade in fade out else do just fade in
         if(question_counter > 1){
             line_bot.setAlpha(1f);
-            line_bot.animate()
-                    .alpha(0f)
-                    .setDuration(1000)
-                    .setStartDelay(1000)
+            line_bot.animate().alpha(0f).setDuration(1000).setStartDelay(1000)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            line_bot.animate()
-                                    .alpha(1f)
-                                    .setDuration(1000)
+                            line_bot.animate().alpha(1f).setDuration(1000)
                                     .setListener(new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
@@ -980,18 +885,14 @@ public class Game_Timer extends Activity{
                                             buttons_enabler(true);      //click enables after fade in
                                             line_bot.clearAnimation();
                                         }
-                                    })
-                                    .start();
+                                    }).start();
                             buttons_display2();
                             buttons_enabler(false);     //click disabled after generation
                         }
-                    })
-                    .start();
+                    }).start();
         }else {
             line_bot.setAlpha(0f);
-            line_bot.animate()
-                    .alpha(1f)
-                    .setDuration(1000)
+            line_bot.animate().alpha(1f).setDuration(1000)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -999,8 +900,7 @@ public class Game_Timer extends Activity{
                             buttons_enabler(true);      //click enabled at animation end
                             line_bot.clearAnimation();
                         }
-                    })
-                    .start();
+                    }).start();
             buttons_display2();
             buttons_enabler(false);         //click disabled on start
         }
@@ -1012,7 +912,6 @@ public class Game_Timer extends Activity{
         btn_grid.removeAllViews();
 
         for (int i = 0; i < buttons.size(); i++) {
-
             Button t = new Button(this);
 
             t.setText(buttons.get(i).toString());
@@ -1049,12 +948,11 @@ public class Game_Timer extends Activity{
                     }
                 });
             }
-
             btn_grid.addView(t);
         }
     }
 
-    //genereaza timerul initial
+    //genereaza timerul
     private void timer_create() {
         if(timer != null) timer.cancel();
         timer = new CountDownTimer(question_time, 100) {
@@ -1063,10 +961,8 @@ public class Game_Timer extends Activity{
                 prog_bar.setProgress((int) (((double)millisUntilFinished / question_time) * 100));
                 millis_buffer = (int)millisUntilFinished;
             }
-
             @Override
             public void onFinish() {
-
                 if(question_counter == question_number){
                     timer_end();
                 }else {
@@ -1079,19 +975,12 @@ public class Game_Timer extends Activity{
     }
 
     private void timer_end(){
-
-        //start quesiton hide animation
-        question_hide_end();
-
-        //hide any procees on bar
-        prog_bar.setProgress(0);
-
-        //hide answer and questions
-        text_question.setText("");
+        question_hide_end();            //start quesiton hide animation
+        prog_bar.setProgress(0);        //hide any procees on bar
+        text_question.setText("");      //hide answer and questions
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {
-
         Button pressed = (Button) findViewById(pressed_id);
         pressed.setEnabled(false);
 
@@ -1125,6 +1014,7 @@ public class Game_Timer extends Activity{
         return cha;
     }
 
+    //display message on top of the screen
     private void display_message(String text){
         int[] locations = new int[2];
         lin_top.getLocationOnScreen(locations);
@@ -1143,9 +1033,7 @@ public class Game_Timer extends Activity{
             message.setZ(dpToPx(7));
         }
         message.setBackgroundColor(color_extraDark);
-
         message.setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5));
-
         message.setGravity(Gravity.CENTER);
         message.bringToFront();
 
@@ -1168,7 +1056,6 @@ public class Game_Timer extends Activity{
 
         //adds message layout
         rel_base.addView(message);
-
 
         message.setAlpha(0.0f);
         message.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
@@ -1268,7 +1155,7 @@ public class Game_Timer extends Activity{
         //reset pressed variables
         pressed_correct = 0;
         pressed_wrong = 0;
-        question_read_db_rand();                 //read new questions form database
+        question_read_db_rand();        //read new questions form database
         answer_display_hidden();        //display answer
         question_update(category.toUpperCase()+"\n"+question);      //update text with animation
         buttons_generate(answer);
@@ -1279,7 +1166,6 @@ public class Game_Timer extends Activity{
 
     //reads new questions from database and sets variables
     private void question_read_db_rand(){
-
         String[] questy;
         questy = db.read_rand_question_difficulty(difficulty_setting,question_category);  // 5 diff for random questions without difficulty
 
@@ -1355,24 +1241,88 @@ public class Game_Timer extends Activity{
                 }
             }
         }
-
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
     }
 
-    private boolean isNetworkAvailable() {
+    //CONVERT DIP to PX
+    private static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+    //CONVERT PX TO DIP
+    private static int pxToDp(int px){
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
+    //MEASURE SCREEN WIDTH IN DP
+    private float DpWidth(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return dpWidth;
+    }
+    //MEASURE SCREEN HEIGHT IN DP
+    private float DpHeight(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.heightPixels / displayMetrics.density;
+        return dpWidth;
+    }
+
+    //TEST INTERNET CONNECTION
+    private boolean isNetworkAvailable(){
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    //overrides all fonts at start , later generated textviews need recall the method or static setting of typeface
+    private void overrideFonts(final Context context, final View v) {
+        Typeface new_font = Typeface.createFromAsset(context.getAssets(), "typeface/bubblegum.otf");
+        try {
+            if (v instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) v;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(context, child);
+                }
+            } else if (v instanceof TextView ) {
+                ((TextView) v).setTypeface(new_font);
+            }
+        } catch (Exception e) {
+        }
+    }
+
+//    private void top_ads(){
+//        Banner banner = Banner.create(this, new Banner.BannerListener() {
+//            @Override
+//            public void bannerOnReceive(Banner banner) {
+//
+//            }
+//
+//            @Override
+//            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
+//
+//            }
+//
+//            @Override
+//            public void bannerOnTap(Banner banner) {
+//
+//            }
+//        });
+//        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//
+//        para.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//        para.width = (int)dpToPx((int)(DpWidth()*0.65));
+//        para.height = (int)(para.width/6.4);
+//
+//        banner.setLayoutParams(para);
+//        lin_top.addView(banner);
+//    }
+
     //overides back buttons pressed not to exit activity
     @Override
     public void onBackPressed(){
-
         if(!started) finish();
-
         back_pressed++;
         if(back_pressed == 1){
             timer_end();
@@ -1388,10 +1338,8 @@ public class Game_Timer extends Activity{
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy(){
         super.onDestroy();
         db.close();
     }
 }
-

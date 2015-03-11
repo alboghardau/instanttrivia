@@ -14,7 +14,7 @@
         android:anyDensity="true"
         android:largeScreens="false"
         android:normalScreens="true"
-        android:smallScreens="false"
+       android:smallScreens="false"
         android:xlargeScreens="false" />
 
     <application
@@ -40,6 +40,10 @@
             android:name=".Game_Timer"
             android:label="@string/title_activity_game__timer"
             android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Options"
@@ -50,10 +54,7 @@
             android:name=".StartActivity"
             android:theme="@style/MyNavigationDrawerTheme"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
     </application>
 
