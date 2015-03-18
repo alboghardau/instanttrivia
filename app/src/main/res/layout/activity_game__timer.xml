@@ -80,11 +80,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/linear_answer"
         android:layout_alignParentStart="false"
-        android:layout_weight="3"
         android:layout_below="@+id/text_question"
         android:divider="@drawable/vertical_divider"
         android:showDividers="middle|beginning|end"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:visibility="gone">
 
     </LinearLayout>
 
@@ -112,7 +112,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
-        android:layout_weight="1"
         android:layout_below="@+id/linear_answer"
         android:showDividers="middle|beginning|end"
         android:divider="@drawable/vertical_divider"
@@ -128,7 +127,8 @@
             android:stretchMode="columnWidth"
             android:layout_below="@+id/linear_answer"
             android:columnCount="4"
-            android:rowCount="4">
+            android:rowCount="4"
+            android:visibility="gone">
 
         </GridLayout>
 
@@ -170,7 +170,8 @@
                     android:id="@+id/imageView"
                     android:src="@drawable/icon_trophy"
                     android:paddingTop="10dp"
-                    android:paddingBottom="10dp" />
+                    android:paddingBottom="10dp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -349,23 +350,23 @@
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linear_inter"
-        android:baselineAligned="false"
-        android:layout_alignParentBottom="true"
-        android:padding="10dp">
-
-        <Button
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Next Question"
-            android:id="@+id/button_nextq"
-            android:background="@drawable/button_lollipop" />
+            android:id="@+id/linear_inter"
+            android:baselineAligned="false"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Next Question"
+                android:id="@+id/button_nextq"
+                android:background="@drawable/button_lollipop" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

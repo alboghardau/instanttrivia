@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Transformation;
 
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -46,7 +45,6 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import com.google.example.games.basegameutils.GameHelper;
-import com.tapfortap.Banner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -202,6 +200,13 @@ public class Game_Timer extends Activity{
 
         //dispaly animation on start
         animate_start();
+
+        btn_nextq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                question_resume();
+            }
+        });
     }
 
     //sets colors for internal views of layout
@@ -278,7 +283,6 @@ public class Game_Timer extends Activity{
             img.setColorFilter(getResources().getColor(R.color.grey_700));
 
             TextView text = new TextView(this);
-
             text.setText(categories.get(i));
             text.setTextSize(15);
             text.setTypeface(font);
@@ -292,9 +296,8 @@ public class Game_Timer extends Activity{
                 @Override
                 public void onClick(View v) {
                 question_category = Integer.parseInt(categories.get(i2+1));
-                question_read_db_rand(); // reads question on game start
                 //porneste animatia pentru questions
-                animate_quest();
+                animate_game_start();
                 }
             });
 
@@ -347,24 +350,17 @@ public class Game_Timer extends Activity{
         }
     }
 
-    //animates question textview
-    private void animate_quest() {
-        buttons_generate(answer);
+    //ANIMATE AFTER CATEGORY IS CHOSEN, START OF GAMEPLAY
+    private void animate_game_start() {
         question_animate("hide","");
-
-        cats_scroll.animate().setListener(new AnimatorListenerAdapter() {
+        cats_scroll.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 cats_scroll.setVisibility(View.GONE);
                 cats_scroll.removeAllViews();
-
-                answer_display_hidden();
-                //this variable will prevent crash for back button pressed
                 started = true;
-                //genereza si porneste timer
-                timer_create();
-                buttons_display();
+                question_next();
             }
         }).start();
     }
@@ -372,7 +368,6 @@ public class Game_Timer extends Activity{
     private void question_animate(String action, final String text){
         switch (action){
             case "hide":
-
                 text_question.animate().setDuration(500).scaleX(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -385,11 +380,9 @@ public class Game_Timer extends Activity{
                         text_question.setText("");
                     }
                 }).start();
-
                 break;
             case "show":
-
-                text_question.animate().setDuration(500).scaleX(1f).setListener(new AnimatorListenerAdapter() {
+                text_question.animate().setDuration(500).scaleX(1).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -402,123 +395,70 @@ public class Game_Timer extends Activity{
                         text_question.setVisibility(View.VISIBLE);
                     }
                 }).start();
-
                 break;
         }
     }
 
-
-
-    private void question_update(final String text){
-            TextView txt = new TextView(this);
-            txt.setLayoutParams(text_question.getLayoutParams());
-            txt.setTextSize(text_question.getTextSize());
-
-            final int Height = dpToPx((int) (DpHeight()/5.0));
-            final int Width = dpToPx((int) (DpWidth()));
-
-            Animation a = new Animation()
-            {
-                @Override
-                protected void applyTransformation(float interpolatedTime, Transformation t) {
-                    if(interpolatedTime == 1){
-                        text_question.setVisibility(View.GONE);
-                    }else{
-                        text_question.getLayoutParams().width = Width - (int)(Width * interpolatedTime);
-                        text_question.requestLayout();
+    private void buttons_display(String state){
+        switch (state){
+            case "show":
+                buttons_enabler(false);
+                btn_grid.setVisibility(View.VISIBLE);
+                btn_grid.setAlpha(0);
+                btn_grid.animate().setDuration(500).setStartDelay(200).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        buttons_enabler(true);
                     }
-                }
-                @Override
-                public boolean willChangeBounds() {
-                    return true;
-                }
-            };
-            // 1dp/ms
-            a.setDuration(750);
-            a.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                text_question.setText("");
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                text_question.getLayoutParams().width = 0;
-                text_question.setVisibility(View.VISIBLE);
-                Animation a = new Animation(){
-                    @Override protected void applyTransformation(float interpolatedTime, Transformation t) {
-                        text_question.getLayoutParams().width =  (int)(Width * interpolatedTime);
-                        text_question.requestLayout();
+                }).start();
+                break;
+            case "hide":
+                buttons_enabler(false);
+                btn_grid.animate().setDuration(500).setStartDelay(200).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
                     }
-                    @Override public boolean willChangeBounds() {
-                        return true;
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        btn_grid.setVisibility(View.GONE);
                     }
-                };
-
-                a.setDuration(750);
-                a.setAnimationListener(new Animation.AnimationListener() {
-                    @Override public void onAnimationStart(Animation animation) {}
-                    @Override public void onAnimationEnd(Animation animation) {
-                        text_question.setText(text);
-                    }
-                    @Override public void onAnimationRepeat(Animation animation) {}
-                });
-                text_question.startAnimation(a);
-            }
-
-            @Override public void onAnimationRepeat(Animation animation) {}
-        });
-            text_question.startAnimation(a);
+                }).start();
+                break;
+        }
     }
 
-    private void question_hide_end(){
-        answer_replace_lost();
-
-        //animation to hide the question
-        final int Height = dpToPx((int) (DpHeight()/5.0));
-        Animation a = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
-                    text_question.setVisibility(View.GONE);
-                }else{
-                    text_question.getLayoutParams().height = Height - (int)(Height * interpolatedTime);
-                    text_question.requestLayout();
-                }
-            }
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-        // 1dp/ms
-        a.setDuration(750);
-        text_question.startAnimation(a);
-
-        //answer fade out
-        lin_answer.setAlpha(1f);
-        lin_answer.animate().setDuration(1000).setStartDelay(2000).alpha(0f).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                lin_answer.setVisibility(View.GONE);
-            }
-        }).start();
-
-        buttons_enabler(false);
-        //buttons fade out
-        lin_bot.setAlpha(1f);
-        lin_bot.animate().setDuration(1000).alpha(0f).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                btn_grid.removeAllViews();
-                score_final_display();
-                lin_bot.clearAnimation();
-            }
-        }).start();
+    private void inter_display(String state){
+        switch (state){
+            case "show":
+                btn_nextq.setEnabled(false);
+                //lin_inter.setAlpha(0);
+                lin_inter.animate().setStartDelay(700).setDuration(500).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        lin_inter.setVisibility(View.VISIBLE);
+                        btn_nextq.setEnabled(true);
+                    }
+                }).start();
+                break;
+            case "hide":
+                btn_nextq.setEnabled(false);
+                lin_inter.animate().setDuration(500).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        lin_inter.setVisibility(View.GONE);
+                    }
+                }).start();
+                break;
+        }
     }
 
     //function to activate / deactivate the buttons
@@ -711,45 +651,34 @@ public class Game_Timer extends Activity{
         text_score.startAnimation(anim_score);
     }
 
-    //function handles animation for answer display connected to answer_display_hidden2();
-    private void answer_display_hidden() {
-
-        //display update question number on top
-        text_question_current.setText(question_counter+"/"+question_number);
-
-        //animation definition
-        Animation fade_out = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
-        fade_out.setStartOffset(1000);
-        final Animation fade_in = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        //animation action listener on ending fade in new answer
-        fade_out.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                lin_answer.removeAllViews();
-                answer_display_hidden2();
-                lin_answer.startAnimation(fade_in);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-
-        //displays only fade in for first questions , fade in out for other questions
-        if(question_counter > 1) {
-            lin_answer.startAnimation(fade_out);
-        }else{
-            lin_answer.startAnimation(fade_in);
-            answer_display_hidden2();
+    //CHANGE DISPLAY STATE OF ANSWER WITH FADE IN / OUT ANIM
+    private void answer_display(String action){
+        switch (action){
+            case "show":
+                lin_answer.setVisibility(View.VISIBLE);
+                lin_answer.setAlpha(0);
+                lin_answer.animate().setDuration(500).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                }).start();
+                break;
+            case "hide":
+                lin_answer.animate().setDuration(500).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        lin_answer.setVisibility(View.GONE);
+                    }
+                }).start();
+                break;
         }
     }
 
     //function handles text view generation for answer letters
-    private void answer_display_hidden2(){
+    private void answer_add_views(){
+        lin_answer.removeAllViews();
         LinearLayout line = new LinearLayout(this);
         line.setOrientation(LinearLayout.HORIZONTAL);
         line.setGravity(Gravity.CENTER);
@@ -797,13 +726,11 @@ public class Game_Timer extends Activity{
     }
 
     private void coin_award(boolean pressed){
-
         if(pressed == true){
             coin_awarder++;
         }else{
             coin_awarder = 0;
         }
-
         if(coin_awarder == coin_awarder_limit){
             display_message(" +1");
             coin_awarder = 0;
@@ -855,7 +782,6 @@ public class Game_Timer extends Activity{
 
     //display answer if mistaken
     private void answer_replace_lost(){
-
         int cont_id = 200;
         for(int i = 0; i < ans_arr.size(); i++){
             if(ans_arr.get(i) != " ".charAt(0) && ans_pressed.contains(ans_arr.get(i)) == false) {
@@ -866,49 +792,8 @@ public class Game_Timer extends Activity{
         }
     }
 
-    //display buttons with animation
-    private void buttons_display() {
-
-        final LinearLayout line_bot = (LinearLayout) findViewById(R.id.linear_bot);
-        //if is not first questions do fade in fade out else do just fade in
-        if(question_counter > 1){
-            line_bot.setAlpha(1f);
-            line_bot.animate().alpha(0f).setDuration(1000).setStartDelay(1000)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            line_bot.animate().alpha(1f).setDuration(1000)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            buttons_enabler(true);      //click enables after fade in
-                                            line_bot.clearAnimation();
-                                        }
-                                    }).start();
-                            buttons_display2();
-                            buttons_enabler(false);     //click disabled after generation
-                        }
-                    }).start();
-        }else {
-            line_bot.setAlpha(0f);
-            line_bot.animate().alpha(1f).setDuration(1000)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            buttons_enabler(true);      //click enabled at animation end
-                            line_bot.clearAnimation();
-                        }
-                    }).start();
-            buttons_display2();
-            buttons_enabler(false);         //click disabled on start
-        }
-    }
-
     //function to dispaly the generated buttons, connected to buttons_display()
-    private void buttons_display2(){
-        GridLayout btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
+    private void buttons_add_views(){
         btn_grid.removeAllViews();
 
         for (int i = 0; i < buttons.size(); i++) {
@@ -952,32 +837,19 @@ public class Game_Timer extends Activity{
         }
     }
 
-    //genereaza timerul
-    private void timer_create() {
-        if(timer != null) timer.cancel();
-        timer = new CountDownTimer(question_time, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                prog_bar.setProgress((int) (((double)millisUntilFinished / question_time) * 100));
-                millis_buffer = (int)millisUntilFinished;
-            }
-            @Override
-            public void onFinish() {
-                if(question_counter == question_number){
-                    timer_end();
-                }else {
-                    answer_replace_lost();  //reveal answer
-                    question_next();
-                }
-            }
-        };
-        timer.start();
-    }
-
-    private void timer_end(){
-        question_hide_end();            //start quesiton hide animation
+    private void game_end(){
+        answer_replace_lost();          //REVEAL ANSWER
         prog_bar.setProgress(0);        //hide any procees on bar
-        text_question.setText("");      //hide answer and questions
+
+        //FADE OUT BUTTONS AND DISPLAY STATISTICS
+        btn_grid.animate().alpha(0f).setDuration(500).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                score_final_display();
+            }
+        }).start();
+
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {
@@ -998,77 +870,15 @@ public class Game_Timer extends Activity{
         }
     }
 
-    //verifica daca literele afisate sunt in raspuns
-    private boolean check_letter_exist(){
-        for(int i = 0; i < 8; i++){
-            if(ans_arr.contains(buttons.get(i))){
-                return true;
-            }
-        }
-        return false;
-    }
-
+    //GENERATE RANDOM LETTER
     private Character random_letter(){
         Random rnd = new Random();
         Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
         return cha;
     }
 
-    //display message on top of the screen
-    private void display_message(String text){
-        int[] locations = new int[2];
-        lin_top.getLocationOnScreen(locations);
-        int left = locations[0];
-        int top = locations[1];
-        Log.e("Location",left+top+"");
-
-        final LinearLayout message = new LinearLayout(this);
-        message.setOrientation(LinearLayout.HORIZONTAL);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, prog_bar.getId());
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        message.setLayoutParams(params);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            message.setElevation(dpToPx(7));       //implement elevation for 5.0+
-            message.setZ(dpToPx(7));
-        }
-        message.setBackgroundColor(color_extraDark);
-        message.setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5));
-        message.setGravity(Gravity.CENTER);
-        message.bringToFront();
-
-        final ImageView img = new ImageView(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.height = dpToPx(24);
-        lp.width = dpToPx(24);
-        img.setLayoutParams(lp);
-        img.setImageResource(R.drawable.icon_coin);
-        img.setColorFilter(getResources().getColor(R.color.white));
-
-        final TextView txt = new TextView(this);
-        txt.setTextColor(getResources().getColor(R.color.white));
-        txt.setTextSize(17);
-        txt.setTypeface(font);
-        txt.setText(text);
-
-        message.addView(img);
-        message.addView(txt);
-
-        //adds message layout
-        rel_base.addView(message);
-
-        message.setAlpha(0.0f);
-        message.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                message.animate().alpha(0.0f).setStartDelay(1000).setDuration(500).start();
-            }
-        }).start();
-    }
-
+    //HELP METHOND TO REVEAL 30% OF ANSWER
     private void buttons_reveal_help(int id){
-
         TextView pressed = (TextView) findViewById(id);
         pressed.setVisibility(View.INVISIBLE);
         pressed.setEnabled(false);
@@ -1128,21 +938,22 @@ public class Game_Timer extends Activity{
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
-            answer_replace_lost();
         }
-        if(check_completion() == true){
+
+        if(answer_check_complete() == true){
             score_update();
             question_correct++;
         }
 
         //action for word completion
-        if(check_completion() == true || (pressed_wrong == max_wrong)){
+        if(answer_check_complete() == true || (pressed_wrong == max_wrong)){
+            question_pause();
             //test if the timer is gone when change the question
             if(question_counter < question_number){
-                question_next();
+
             }else{
                 timer.cancel();             //solves some weird animation bug
-                timer_end();
+                game_end();
             }
         }
 
@@ -1151,16 +962,48 @@ public class Game_Timer extends Activity{
         }
     }
 
+    //PAUSE TEST AFTER ANSWER
+    private void question_pause(){
+        answer_replace_lost();
+        buttons_display("hide");
+        inter_display("show");
+        timer.cancel();
+        Log.e("FUNCTION","question_pause");
+    }
+
+    //RESUME TEST ON BUTTON PRESS
+    private void question_resume(){
+        question_animate("hide","");
+        answer_display("hide");
+
+        lin_inter.setAlpha(1f);
+        lin_inter.animate().setStartDelay(0).setDuration(500).alpha(0f).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                question_next();
+                lin_inter.setVisibility(View.GONE);
+            }
+        }).start();
+    }
+
+    //DISPLAY NEXT QUESTION
     private void question_next(){
         //reset pressed variables
         pressed_correct = 0;
         pressed_wrong = 0;
         question_read_db_rand();        //read new questions form database
-        answer_display_hidden();        //display answer
-        question_update(category.toUpperCase()+"\n"+question);      //update text with animation
-        buttons_generate(answer);
-        buttons_display();
-        buttons_enabler(false);         //click disables after word completion, reactivated in buttons display animation end
+
+        //generate new views
+        answer_add_views();
+        buttons_add_views();
+
+        text_question_current.setText(question_counter+"/10");
+
+        question_animate("show", category.toUpperCase() + "\n" + question);
+        answer_display("show");
+        buttons_display("show");
+
         timer_create();
     }
 
@@ -1183,10 +1026,11 @@ public class Game_Timer extends Activity{
         for(Character ch: answer.toCharArray()){
             ans_arr.add(ch);
         }
+        buttons_generate(answer);   //generates the random chars for buttons
     }
 
-    //verifica daca cuvantul este completat
-    private boolean check_completion(){
+    //CHECKS IF ANSWER IS COMPLETED
+    private boolean answer_check_complete(){
         for( int i = 0; i < ans_arr.size(); i++){
             if( ans_pressed.contains(ans_arr.get(i)) != true){
                 return false;
@@ -1196,14 +1040,12 @@ public class Game_Timer extends Activity{
         return true;
     }
 
-    //generate 8 random chars containing minimum 3 answer chars at beggining
+    //GENERATE 16 RANDOM CHARS CONTAINING THE ANSWER ALSO
     private void buttons_generate(String ans) {
         ArrayList<Character> a = new ArrayList<Character>();
         Character cha = null;
         Random rnd = new Random();
-
         buttons.clear();
-
         //adds answer letters to array
         for(Character ch: ans.toCharArray()){
             if(buttons.contains(ch) == false && ch != " ".charAt(0)){
@@ -1243,6 +1085,80 @@ public class Game_Timer extends Activity{
         }
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
+    }
+
+    //DISPLAY MESAGE ON TOP OF THE SCREEN, COULD BE USED FOR ANY TIME OF INFORMATION DURING GAMEPLAY
+    private void display_message(String text){
+        int[] locations = new int[2];
+        lin_top.getLocationOnScreen(locations);
+        int left = locations[0];
+        int top = locations[1];
+        Log.e("Location",left+top+"");
+
+        final LinearLayout message = new LinearLayout(this);
+        message.setOrientation(LinearLayout.HORIZONTAL);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, prog_bar.getId());
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        message.setLayoutParams(params);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            message.setElevation(dpToPx(7));       //implement elevation for 5.0+
+            message.setZ(dpToPx(7));
+        }
+        message.setBackgroundColor(color_extraDark);
+        message.setPadding(dpToPx(5), dpToPx(5), dpToPx(5), dpToPx(5));
+        message.setGravity(Gravity.CENTER);
+        message.bringToFront();
+
+        final ImageView img = new ImageView(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.height = dpToPx(24);
+        lp.width = dpToPx(24);
+        img.setLayoutParams(lp);
+        img.setImageResource(R.drawable.icon_coin);
+        img.setColorFilter(getResources().getColor(R.color.white));
+
+        final TextView txt = new TextView(this);
+        txt.setTextColor(getResources().getColor(R.color.white));
+        txt.setTextSize(17);
+        txt.setTypeface(font);
+        txt.setText(text);
+
+        message.addView(img);
+        message.addView(txt);
+
+        //adds message layout
+        rel_base.addView(message);
+
+        message.setAlpha(0.0f);
+        message.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                message.animate().alpha(0.0f).setStartDelay(1000).setDuration(500).start();
+            }
+        }).start();
+    }
+
+    //TIMER GENERATE
+    private void timer_create() {
+        if(timer != null) timer.cancel();
+        timer = new CountDownTimer(question_time, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                prog_bar.setProgress((int) (((double)millisUntilFinished / question_time) * 100));
+                millis_buffer = (int)millisUntilFinished;
+            }
+            @Override
+            public void onFinish() {
+                if(question_counter == question_number){
+                    game_end();
+                }else {
+                    question_pause();
+                }
+            }
+        };
+        timer.start();
     }
 
     //CONVERT DIP to PX
@@ -1325,7 +1241,7 @@ public class Game_Timer extends Activity{
         if(!started) finish();
         back_pressed++;
         if(back_pressed == 1){
-            timer_end();
+            game_end();
             if(started == true){
                 timer.cancel();                         //prevent timer from exception
                 btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
