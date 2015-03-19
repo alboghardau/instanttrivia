@@ -328,7 +328,7 @@ public class Game_Timer extends Activity{
                 coin_awarder_limit = 15;
                 break;
             case 3:                     //hard game settings
-                question_number = 10;
+                question_number = 2;
                 max_wrong = 3;
                 score_per_question = 150;
                 question_time = 30000;
@@ -451,6 +451,12 @@ public class Game_Timer extends Activity{
             case "hide":
                 btn_nextq.setEnabled(false);
                 lin_inter.animate().setDuration(500).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        btn_nextq.setEnabled(false);
+                    }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -842,10 +848,11 @@ public class Game_Timer extends Activity{
         prog_bar.setProgress(0);        //hide any procees on bar
 
         //FADE OUT BUTTONS AND DISPLAY STATISTICS
-        btn_grid.animate().alpha(0f).setDuration(500).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
+        btn_grid.animate().alpha(0f).setDuration(1000).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                btn_grid.setVisibility(View.GONE);
                 score_final_display();
             }
         }).start();
@@ -947,10 +954,9 @@ public class Game_Timer extends Activity{
 
         //action for word completion
         if(answer_check_complete() == true || (pressed_wrong == max_wrong)){
-            question_pause();
             //test if the timer is gone when change the question
             if(question_counter < question_number){
-
+                question_pause();
             }else{
                 timer.cancel();             //solves some weird animation bug
                 game_end();
@@ -978,6 +984,12 @@ public class Game_Timer extends Activity{
 
         lin_inter.setAlpha(1f);
         lin_inter.animate().setStartDelay(0).setDuration(500).alpha(0f).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                btn_nextq.setEnabled(false);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
