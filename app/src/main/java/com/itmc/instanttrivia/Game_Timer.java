@@ -2,6 +2,7 @@ package com.itmc.instanttrivia;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -27,6 +28,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.PathInterpolator;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -69,6 +72,11 @@ public class Game_Timer extends Activity{
     RelativeLayout rel_base;
     GridLayout btn_grid;
     ProgressBar prog_bar;
+
+    int animation_time = 700;
+
+    //animation interpolator for all animations
+    TimeInterpolator interpolator;
 
     String question;
     String answer;
@@ -158,6 +166,9 @@ public class Game_Timer extends Activity{
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
 
         overrideFonts(this,rel_base);
+
+        //set interpolator
+        interpolator = new DecelerateInterpolator(1);
 
         //sets colors for layout
         Theme_Setter_Views();
@@ -328,7 +339,7 @@ public class Game_Timer extends Activity{
                 coin_awarder_limit = 15;
                 break;
             case 3:                     //hard game settings
-                question_number = 2;
+                question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
                 question_time = 30000;
@@ -341,7 +352,7 @@ public class Game_Timer extends Activity{
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 75;
-                question_time = 3000;
+                question_time = 30000;
                 //leaderboard_name = R.string.leaderboard_time_trial__hard_level;
                 difficulty_setting = 5;
                 buttons_sort_alpha = false;
@@ -353,7 +364,7 @@ public class Game_Timer extends Activity{
     //ANIMATE AFTER CATEGORY IS CHOSEN, START OF GAMEPLAY
     private void animate_game_start() {
         question_animate("hide","");
-        cats_scroll.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+        cats_scroll.animate().alpha(0f).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -368,7 +379,7 @@ public class Game_Timer extends Activity{
     private void question_animate(String action, final String text){
         switch (action){
             case "hide":
-                text_question.animate().setDuration(500).scaleX(0).setListener(new AnimatorListenerAdapter() {
+                text_question.animate().setDuration(animation_time).setInterpolator(interpolator).scaleX(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -382,7 +393,7 @@ public class Game_Timer extends Activity{
                 }).start();
                 break;
             case "show":
-                text_question.animate().setDuration(500).scaleX(1).setListener(new AnimatorListenerAdapter() {
+                text_question.animate().setDuration(animation_time).setInterpolator(interpolator).scaleX(1).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -402,10 +413,15 @@ public class Game_Timer extends Activity{
     private void buttons_display(String state){
         switch (state){
             case "show":
-                buttons_enabler(false);
                 btn_grid.setVisibility(View.VISIBLE);
                 btn_grid.setAlpha(0);
-                btn_grid.animate().setDuration(500).setStartDelay(200).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                btn_grid.animate().setDuration(animation_time).setStartDelay(0).setInterpolator(interpolator).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        buttons_enabler(false);
+                    }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -414,11 +430,11 @@ public class Game_Timer extends Activity{
                 }).start();
                 break;
             case "hide":
-                buttons_enabler(false);
-                btn_grid.animate().setDuration(500).setStartDelay(200).alpha(0).setListener(new AnimatorListenerAdapter() {
+                btn_grid.animate().setDuration(animation_time).setStartDelay(0).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
+                        buttons_enabler(false);
                     }
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -435,7 +451,7 @@ public class Game_Timer extends Activity{
             case "show":
                 btn_nextq.setEnabled(false);
                 //lin_inter.setAlpha(0);
-                lin_inter.animate().setStartDelay(700).setDuration(500).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                lin_inter.animate().setStartDelay(700).setDuration(animation_time).setInterpolator(interpolator).alpha(1f).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -450,7 +466,7 @@ public class Game_Timer extends Activity{
                 break;
             case "hide":
                 btn_nextq.setEnabled(false);
-                lin_inter.animate().setDuration(500).alpha(0).setListener(new AnimatorListenerAdapter() {
+                lin_inter.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
@@ -567,7 +583,7 @@ public class Game_Timer extends Activity{
         prog_acc.setProgress(Integer.valueOf((int) accuracy));
 
 
-        lin_bot.animate().setDuration(1000).alpha(1f).setListener(new AnimatorListenerAdapter() {
+        lin_bot.animate().setDuration(animation_time).alpha(1f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -663,7 +679,7 @@ public class Game_Timer extends Activity{
             case "show":
                 lin_answer.setVisibility(View.VISIBLE);
                 lin_answer.setAlpha(0);
-                lin_answer.animate().setDuration(500).alpha(1f).setListener(new AnimatorListenerAdapter() {
+                lin_answer.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(1f).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -671,7 +687,7 @@ public class Game_Timer extends Activity{
                 }).start();
                 break;
             case "hide":
-                lin_answer.animate().setDuration(500).alpha(0).setListener(new AnimatorListenerAdapter() {
+                lin_answer.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -848,7 +864,12 @@ public class Game_Timer extends Activity{
         prog_bar.setProgress(0);        //hide any procees on bar
 
         //FADE OUT BUTTONS AND DISPLAY STATISTICS
-        btn_grid.animate().alpha(0f).setDuration(1000).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
+        btn_grid.animate().alpha(0f).setDuration(animation_time).setInterpolator(interpolator).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                buttons_enabler(false);
+            }
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -856,7 +877,6 @@ public class Game_Timer extends Activity{
                 score_final_display();
             }
         }).start();
-
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {
@@ -983,7 +1003,7 @@ public class Game_Timer extends Activity{
         answer_display("hide");
 
         lin_inter.setAlpha(1f);
-        lin_inter.animate().setStartDelay(0).setDuration(500).alpha(0f).setListener(new AnimatorListenerAdapter() {
+        lin_inter.animate().setStartDelay(0).setDuration(animation_time).setInterpolator(interpolator).alpha(0f).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
@@ -1143,11 +1163,11 @@ public class Game_Timer extends Activity{
         rel_base.addView(message);
 
         message.setAlpha(0.0f);
-        message.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+        message.animate().alpha(1.0f).setDuration(animation_time).setInterpolator(interpolator).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                message.animate().alpha(0.0f).setStartDelay(1000).setDuration(500).start();
+                message.animate().alpha(0.0f).setStartDelay(1000).setDuration(animation_time).setInterpolator(interpolator).start();
             }
         }).start();
     }
