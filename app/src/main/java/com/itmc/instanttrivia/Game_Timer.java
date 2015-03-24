@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Bundle;
@@ -74,6 +76,8 @@ public class Game_Timer extends Activity{
     ProgressBar prog_bar;
 
     int animation_time = 700;
+
+    ArrayList<String> questions_array;
 
     //animation interpolator for all animations
     TimeInterpolator interpolator;
@@ -212,6 +216,8 @@ public class Game_Timer extends Activity{
         //dispaly animation on start
         animate_start();
 
+        db.read_10_questions(2,2);
+
         btn_nextq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,12 +314,47 @@ public class Game_Timer extends Activity{
                 public void onClick(View v) {
                 question_category = Integer.parseInt(categories.get(i2+1));
                 //porneste animatia pentru questions
-                animate_game_start();
+
+                async_load_questions();
                 }
             });
-
             lin_cats.addView(lin);
         }
+    }
+
+    private void async_load_questions(){
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Loading questions");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+
+        AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                pd.show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    questions_array = db.read_10_questions(difficulty_setting, question_category);
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                pd.dismiss();
+                animate_game_start();
+            }
+        };
+        task.execute((Void[])null);
     }
 
     //sets difficulty variables
@@ -1041,13 +1082,11 @@ public class Game_Timer extends Activity{
 
     //reads new questions from database and sets variables
     private void question_read_db_rand(){
-        String[] questy;
-        questy = db.read_rand_question_difficulty(difficulty_setting,question_category);  // 5 diff for random questions without difficulty
 
         //0 questions 1 answer 2 categpry 3 difficulty
-        question = questy[0];
-        answer = questy[1];
-        category = questy[2];
+        question = questions_array.get(question_counter*3);
+        answer = questions_array.get(question_counter*3+1);
+        category = questions_array.get(question_counter*3+2);
         question_counter++;
 
         //delete previously pressed chars

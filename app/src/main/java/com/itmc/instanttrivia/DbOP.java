@@ -3,6 +3,8 @@ package com.itmc.instanttrivia;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
+
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -15,7 +17,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 38; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 40; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -139,7 +141,48 @@ public class DbOP {
         return question;
     }
 
-    //test purpose only
+    public ArrayList<String> read_10_questions(int difficulty, int category){
+
+        Cursor cursor = null;
+        ArrayList<String> result = new ArrayList<String>();
+
+        String where = "WHERE diff = " + difficulty+" AND cat_id = "+ category;
+        if(difficulty == 5) where = "WHERE cat_id = "+ category;
+        if(category == 1) where = "WHERE diff = "+ difficulty;
+        if(difficulty == 5 && category == 1) where = "";
+
+        cursor = db.rawQuery("SELECT * FROM quest "+where+" ORDER BY played,RANDOM() LIMIT 10", null);
+
+        cursor.moveToFirst();
+
+        while(cursor.isAfterLast() == false){
+            Log.e ("db test", cursor.getString(cursor.getColumnIndex("question")));
+
+            result.add(cursor.getString(1));    //question
+            result.add(cursor.getString(2));    //answer
+            result.add(cursor.getString(4));    //categoryname
+
+            update_db_played(cursor.getInt(0), cursor.getInt(6)+1);
+
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return result;
+    }
+
+    //UPDATES THE PLAYED COLUMB OF THE QUESTION TABLE
+    private void update_db_played(int id,int played){
+        Cursor cursor = null;
+
+        cursor = db.rawQuery("UPDATE quest SET played="+played+" WHERE id="+id,null);
+        cursor.moveToFirst();
+        cursor.close();
+
+    }
+
+    //TEST PURPOSE ONLY
     public String[] read_spec_questions(int idq)
     {
         String[] question = new String[4];
@@ -160,13 +203,11 @@ public class DbOP {
         cursor.moveToPosition(i);
         int index = cursor.getColumnIndex("question");
         int index2 = cursor.getColumnIndex("answer");
-        int index3 = cursor.getColumnIndex("cat");
-        int index4 = cursor.getColumnIndex("diff");
 
         question[0] = cursor.getString(index);
         question[1] = cursor.getString(index2);
-        question[2] = cursor.getString(index3);
-        question[3] = cursor.getString(index4);
+
+        Log.e("play test",cursor.getInt(6)+"");
 
         cursor.close();
         return question;
@@ -214,27 +255,6 @@ public class DbOP {
         }
         cursor.close();
         return cat;
-    }
-
-    public String[][] q_test(int test_id)
-    {
-        Cursor cursor = null;
-        String[][] test = new String[10][3];
-        cursor = db.rawQuery("SELECT * FROM quest WHERE test_id="+test_id, null);
-        cursor.moveToFirst();
-
-        int i = 0;
-        while(cursor.isAfterLast() == false)
-        {
-            test[i][0] = cursor.getString(1);
-            test[i][1] = cursor.getString(2);
-            test[i][2] = cursor.getString(4);
-            i++;
-            cursor.moveToNext();
-        }
-
-        cursor.close();
-        return test;
     }
 
     public void close(){
