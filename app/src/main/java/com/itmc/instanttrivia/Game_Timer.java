@@ -286,24 +286,27 @@ public class Game_Timer extends Activity{
 
         for( int i = 0; i < categories.size(); i=i+2){
 
+            LinearLayout orig_lin = new LinearLayout(this);
+            orig_lin.setOrientation(LinearLayout.VERTICAL);
+
             LinearLayout lin = new LinearLayout(this);
-            lin.setOrientation(LinearLayout.HORIZONTAL);
+            lin.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 
             lin.setLayoutParams(params);
             lin.setGravity(Gravity.CENTER_VERTICAL);
-            lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.options_ripple));
+            lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
 
             ImageView img = new ImageView(this);
             img.setImageResource(getResources().getIdentifier("icon_cat_"+categories.get(i+1),"drawable","com.itmc.instanttrivia"));
-            img.setPadding(dpToPx(20),0,dpToPx(20),0);
+            img.setPadding(dpToPx(5),0,dpToPx(5),0);
             img.setColorFilter(getResources().getColor(R.color.grey_700));
 
             TextView text = new TextView(this);
             text.setText(categories.get(i));
             text.setTextSize(15);
             text.setTypeface(font);
-            text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
+            //text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
 
             final int i2 = i;
 

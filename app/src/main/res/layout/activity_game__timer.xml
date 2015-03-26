@@ -72,7 +72,94 @@
         android:elevation="5dp"
         android:text="Chose Category"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:paddingRight="10dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_question"
+        android:id="@+id/linear_difficulty"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Difficulty"
+            android:id="@+id/textView8"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Easy"
+                android:id="@+id/radioButton"
+                android:background="@drawable/button_lollipop"
+                android:checked="false"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium"
+                android:id="@+id/radioButton2"
+                android:background="@drawable/button_lollipop"
+                android:checked="false"
+                android:layout_weight="1"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:weightSum="2">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hard"
+                android:id="@+id/radioButton3"
+                android:background="@drawable/button_lollipop"
+                android:checked="false"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Random"
+                android:id="@+id/radioButton4"
+                android:background="@drawable/button_lollipop"
+                android:singleLine="false"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:clickable="false" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Category"
+            android:id="@+id/textView15"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -92,7 +179,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/cats_scroll"
-        android:layout_below="@+id/linear_answer">
+        android:layout_below="@+id/linear_difficulty">
 
         <LinearLayout
             android:orientation="vertical"
@@ -112,7 +199,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
-        android:layout_below="@+id/linear_answer"
+        android:layout_below="@+id/linear_difficulty"
         android:showDividers="middle|beginning|end"
         android:divider="@drawable/vertical_divider"
         android:gravity="center">
