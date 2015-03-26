@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,6 +38,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -59,21 +61,14 @@ import java.util.Random;
 
 public class Game_Timer extends Activity{
 
-    TextView text_question;
-    TextView text_score;
-    TextView text_question_current;
-    TextView text_final_score;
+    TextView text_question, text_score, text_question_current, text_final_score, text_difficulty, text_category;
     ScrollView cats_scroll;
     Button btn_nextq;
-    LinearLayout lin_cats;
-    LinearLayout lin_answer;
-    LinearLayout lin_bot;
-    LinearLayout lin_gratz;
-    LinearLayout lin_inter;
-    RelativeLayout lin_top;
-    RelativeLayout rel_base;
+    LinearLayout lin_cats, lin_answer, lin_bot, lin_gratz, lin_inter, lin_difficulty;
+    RelativeLayout lin_top, rel_base;
     GridLayout btn_grid;
     ProgressBar prog_bar;
+    RadioButton radio_easy, radio_medium, radio_hard, radio_random;
 
     int animation_time = 700;
 
@@ -155,13 +150,22 @@ public class Game_Timer extends Activity{
         text_score = (TextView) findViewById(R.id.text_score);
         text_question_current = (TextView) findViewById(R.id.text_question_current);
         text_final_score = (TextView)findViewById(R.id.text_final_score);
+        text_difficulty = (TextView) findViewById(R.id.text_difficulty);
+        text_category = (TextView) findViewById(R.id.text_category);
         btn_nextq = (Button)findViewById(R.id.button_nextq);
+
+        radio_easy = (RadioButton) findViewById(R.id.radio_easy);
+        radio_medium = (RadioButton) findViewById(R.id.radio_medium);
+        radio_hard = (RadioButton) findViewById(R.id.radio_hard);
+        radio_random = (RadioButton) findViewById(R.id.radio_random);
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
         lin_cats = (LinearLayout) findViewById(R.id.linear_cats);
         lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
         lin_inter = (LinearLayout) findViewById(R.id.linear_inter);
+        lin_difficulty = (LinearLayout) findViewById(R.id.linear_difficulty);
+
         lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
         rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
@@ -226,6 +230,45 @@ public class Game_Timer extends Activity{
         });
     }
 
+    public void onDifficultyRadioClick(View view){
+        switch (view.getId()){
+            case R.id.radio_easy:
+                difficulty_radio_reset();
+                update_options_difficulty(1);
+                difficulty_set(1);
+                break;
+            case R.id.radio_medium:
+                difficulty_radio_reset();
+                update_options_difficulty(2);
+                difficulty_set(2);
+                break;
+            case R.id.radio_hard:
+                difficulty_radio_reset();
+                update_options_difficulty(3);
+                difficulty_set(3);
+                break;
+            case R.id.radio_random:
+                difficulty_radio_reset();
+                update_options_difficulty(5);
+                difficulty_set(5);
+                break;
+        }
+    }
+
+    //sets the question difficulty setting in preferences
+    private void update_options_difficulty(int difficulty){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("question_diff", difficulty);
+        editor.commit();
+    }
+
+    private void difficulty_radio_reset(){
+        radio_easy.setChecked(false);
+        radio_medium.setChecked(false);
+        radio_hard.setChecked(false);
+        radio_random.setChecked(false);
+    }
+
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){
         String tester = settings.getString("Color_Theme","Purple");
@@ -278,6 +321,8 @@ public class Game_Timer extends Activity{
         lin_top.setBackgroundColor((getResources().getColor(darker_color)));
         lin_gratz.setBackgroundColor(getResources().getColor(primary_color));
         text_final_score.setBackgroundColor(getResources().getColor(darker_color));
+        text_difficulty.setTextColor(getResources().getColor(darker_color));
+        text_category.setTextColor(getResources().getColor(darker_color));
     }
 
     private void categories_generate_list(){
@@ -298,12 +343,13 @@ public class Game_Timer extends Activity{
             lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
 
             ImageView img = new ImageView(this);
-            img.setImageResource(getResources().getIdentifier("icon_cat_"+categories.get(i+1),"drawable","com.itmc.instanttrivia"));
+            img.setImageResource(getResources().getIdentifier("icon_cat_" + categories.get(i + 1), "drawable", "com.itmc.instanttrivia"));
             img.setPadding(dpToPx(5),0,dpToPx(5),0);
             img.setColorFilter(getResources().getColor(R.color.grey_700));
 
             TextView text = new TextView(this);
             text.setText(categories.get(i));
+            text.setGravity(Gravity.CENTER);
             text.setTextSize(15);
             text.setTypeface(font);
             //text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
@@ -365,6 +411,7 @@ public class Game_Timer extends Activity{
         game_difficulty = difficulty;
         switch (difficulty){
             case 1:                     //ease game settings
+                radio_easy.setChecked(true);
                 question_number = 10;
                 max_wrong = 5;
                 score_per_question = 50;
@@ -374,6 +421,7 @@ public class Game_Timer extends Activity{
                 coin_awarder_limit = 20;
                 break;
             case 2:                     //medium game settings
+                radio_medium.setChecked(true);
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 100;
@@ -383,6 +431,7 @@ public class Game_Timer extends Activity{
                 coin_awarder_limit = 15;
                 break;
             case 3:                     //hard game settings
+                radio_hard.setChecked(true);
                 question_number = 10;
                 max_wrong = 3;
                 score_per_question = 150;
@@ -393,6 +442,7 @@ public class Game_Timer extends Activity{
                 coin_awarder_limit = 10;
                 break;
             case 5:                     //random game settings
+                radio_random.setChecked(true);
                 question_number = 10;
                 max_wrong = 4;
                 score_per_question = 75;
@@ -408,6 +458,13 @@ public class Game_Timer extends Activity{
     //ANIMATE AFTER CATEGORY IS CHOSEN, START OF GAMEPLAY
     private void animate_game_start() {
         question_animate("hide","");
+        lin_difficulty.animate().alpha(0f).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                lin_difficulty.setVisibility(View.GONE);
+            }
+        }).start();
         cats_scroll.animate().alpha(0f).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

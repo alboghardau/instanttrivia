@@ -82,14 +82,16 @@
         android:layout_below="@+id/text_question"
         android:id="@+id/linear_difficulty"
         android:paddingLeft="15dp"
-        android:paddingRight="15dp">
+        android:paddingRight="15dp"
+        android:divider="@drawable/vertical_divider"
+        android:showDividers="middle">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Difficulty"
-            android:id="@+id/textView8"
+            android:id="@+id/text_difficulty"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textSize="15dp"
@@ -98,55 +100,67 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:divider="@drawable/vertical_divider"
+            android:showDividers="middle">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Easy"
-                android:id="@+id/radioButton"
+                android:id="@+id/radio_easy"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:gravity="center"
+                android:onClick="onDifficultyRadioClick"
+                android:textSize="15dp" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Medium"
-                android:id="@+id/radioButton2"
+                android:id="@+id/radio_medium"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:gravity="center"
+                android:nestedScrollingEnabled="false"
+                android:onClick="onDifficultyRadioClick"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:showDividers="middle"
+            android:divider="@drawable/vertical_divider">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hard"
-                android:id="@+id/radioButton3"
+                android:id="@+id/radio_hard"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:gravity="center"
+                android:onClick="onDifficultyRadioClick"
+                android:textSize="15dp" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Random"
-                android:id="@+id/radioButton4"
+                android:id="@+id/radio_random"
                 android:background="@drawable/button_lollipop"
                 android:singleLine="false"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:clickable="false" />
+                android:onClick="onDifficultyRadioClick"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <TextView
@@ -154,7 +168,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Category"
-            android:id="@+id/textView15"
+            android:id="@+id/text_category"
             android:padding="15dp"
             android:textColor="@color/white"
             android:textSize="15dp"
@@ -187,7 +201,11 @@
             android:layout_height="match_parent"
             android:id="@+id/linear_cats"
             android:layout_below="@+id/linear_answer"
-            android:gravity="center">
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:showDividers="middle"
+            android:divider="@drawable/vertical_divider">
 
         </LinearLayout>
     </ScrollView>
