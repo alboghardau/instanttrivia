@@ -134,9 +134,9 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:weightSum="2"
             android:showDividers="middle"
-            android:divider="@drawable/vertical_divider">
+            android:divider="@drawable/vertical_divider"
+            android:weightSum="2">
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -160,7 +160,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:checked="false" />
         </LinearLayout>
 
         <TextView
@@ -195,19 +196,21 @@
         android:id="@+id/cats_scroll"
         android:layout_below="@+id/linear_difficulty">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/linear_cats"
-            android:layout_below="@+id/linear_answer"
-            android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:showDividers="middle"
-            android:divider="@drawable/vertical_divider">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-        </LinearLayout>
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="4"
+                android:id="@+id/grid_categories"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_gravity="center_horizontal"
+                android:useDefaultMargins="true"></GridLayout>
+        </FrameLayout>
     </ScrollView>
 
     <LinearLayout

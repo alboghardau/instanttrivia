@@ -64,9 +64,9 @@ public class Game_Timer extends Activity{
     TextView text_question, text_score, text_question_current, text_final_score, text_difficulty, text_category;
     ScrollView cats_scroll;
     Button btn_nextq;
-    LinearLayout lin_cats, lin_answer, lin_bot, lin_gratz, lin_inter, lin_difficulty;
+    LinearLayout lin_answer, lin_bot, lin_gratz, lin_inter, lin_difficulty;
     RelativeLayout lin_top, rel_base;
-    GridLayout btn_grid;
+    GridLayout btn_grid, grid_categories;
     ProgressBar prog_bar;
     RadioButton radio_easy, radio_medium, radio_hard, radio_random;
 
@@ -162,7 +162,6 @@ public class Game_Timer extends Activity{
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
-        lin_cats = (LinearLayout) findViewById(R.id.linear_cats);
         lin_gratz = (LinearLayout) findViewById(R.id.linear_gratz);
         lin_inter = (LinearLayout) findViewById(R.id.linear_inter);
         lin_difficulty = (LinearLayout) findViewById(R.id.linear_difficulty);
@@ -170,6 +169,7 @@ public class Game_Timer extends Activity{
         lin_top = (RelativeLayout) findViewById(R.id.linear_topbar);
         rel_base = (RelativeLayout) findViewById(R.id.relative_base);
         btn_grid = (GridLayout) findViewById(R.id.buttons_grid);
+        grid_categories = (GridLayout) findViewById(R.id.grid_categories);
 
         cats_scroll = (ScrollView) findViewById(R.id.cats_scroll);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
@@ -313,7 +313,7 @@ public class Game_Timer extends Activity{
     }
 
     private void Views_Editor(String color){
-        int primary_color = getResources().getIdentifier("color/"+color+"_500",null,getPackageName());
+        int primary_color = getResources().getIdentifier("color/" + color + "_500", null, getPackageName());
         int darker_color = getResources().getIdentifier("color/"+color+"_700",null,getPackageName());
         int progress_dwg = getResources().getIdentifier("drawable/custom_progressbar_"+color,null,getPackageName());
 
@@ -331,15 +331,15 @@ public class Game_Timer extends Activity{
         LinearLayout lin = new LinearLayout(this);
         lin.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.weight = 1;
+        params.width = (int) (dpToPx((int) (DpWidth()*0.4)));
 
         lin.setLayoutParams(params);
         lin.setGravity(Gravity.CENTER_VERTICAL);
         lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
 
         ImageView img = new ImageView(this);
-        img.setImageResource(getResources().getIdentifier("icon_cat_" +id, "drawable", "com.itmc.instanttrivia"));
-        img.setPadding(dpToPx(5),0,dpToPx(5),0);
+        img.setImageResource(getResources().getIdentifier("icon_cat_" + id, "drawable", "com.itmc.instanttrivia"));
+        img.setPadding(dpToPx(5), 0, dpToPx(5), 0);
         img.setColorFilter(getResources().getColor(R.color.grey_700));
 
         TextView text = new TextView(this);
@@ -368,21 +368,13 @@ public class Game_Timer extends Activity{
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
 
-        for( int i = 0; i < categories.size(); i=i+4){
 
-            LinearLayout orig_lin = new LinearLayout(this);
-            orig_lin.setOrientation(LinearLayout.HORIZONTAL);
 
+        for( int i = 0; i < categories.size(); i=i+2){
             LinearLayout lin = categories_generate_view(categories.get(i),categories.get(i+1));
-            LinearLayout lin2 = categories_generate_view(categories.get(i+2),categories.get(i+3));
-
-            final int i2 = i;
 
 
-            orig_lin.addView(lin);
-            orig_lin.addView(lin2);
-
-            lin_cats.addView(orig_lin);
+            grid_categories.addView(lin);
         }
     }
 
@@ -785,7 +777,7 @@ public class Game_Timer extends Activity{
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
-        lin_cats.startAnimation(anim);
+        grid_categories.startAnimation(anim);
         text_score.startAnimation(anim_score);
     }
 
@@ -1392,7 +1384,7 @@ public class Game_Timer extends Activity{
                 timer.cancel();                         //prevent timer from exception
                 btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
             }else{
-                lin_cats.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
+                grid_categories.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
         }else{
             finish();
