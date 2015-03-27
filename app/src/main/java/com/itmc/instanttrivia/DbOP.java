@@ -18,6 +18,7 @@ public class DbOP {
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
     public int db_version = 40; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    private int max_in_category = 1;
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
 
@@ -40,7 +41,6 @@ public class DbOP {
     //test if newer database has been added delete old one upload new one
     public void testnewdb()
     {
-
         if(mydbhelp.checkDataBase() == true)
         {
             try{
@@ -64,13 +64,10 @@ public class DbOP {
                 }
                 Log.e("DB","Questions DB Upgrade working");
             }
-
         }
-        else
-        {
+        else{
             try{
                 mydbhelp.createDataBase();
-
             }catch(IOException ioe) {
                 throw new Error("Unable to create db");
             }
@@ -172,17 +169,16 @@ public class DbOP {
         return result;
     }
 
-    //UPDATES THE PLAYED COLUMB OF THE QUESTION TABLE
+    //UPDATES THE PLAYED COLUMN OF THE QUESTION TABLE
     private void update_db_played(int id,int played){
         Cursor cursor = null;
 
         cursor = db.rawQuery("UPDATE quest SET played="+played+" WHERE id="+id,null);
         cursor.moveToFirst();
         cursor.close();
-
     }
 
-    //TEST PURPOSE ONLY
+    //TEST PURPOSE ONLY READS A QUESTION
     public String[] read_spec_questions(int idq)
     {
         String[] question = new String[4];
@@ -213,7 +209,7 @@ public class DbOP {
         return question;
     }
 
-    //reads categories that have tests
+    //READS CATEGORIES WITH A MINIMUM NO O QUESTIONS/EACH DIFFICULTY
     public ArrayList<String> read_cats(int diff)
     {
         Cursor cursor = null;
@@ -229,23 +225,23 @@ public class DbOP {
         while(cursor.isAfterLast() == false)
         {
             int id = cursor.getInt(0);
-            if(diff == 5 && cursor.getInt(2) > 25){
+            if(diff == 5 && cursor.getInt(2) > max_in_category){
                   Log.e("Total_No", cursor.getInt(2)+"");
 
                   cat.add(cursor.getString(1));
                   cat.add(cursor.getInt(0)+"");
             }
-            if(diff == 1 && cursor.getInt(3) > 25){
+            if(diff == 1 && cursor.getInt(3) > max_in_category){
                 Log.e("Easy_No", cursor.getInt(3)+"");
                 cat.add(cursor.getString(1));
                 cat.add(cursor.getInt(0)+"");
             }
-            if(diff == 2 && cursor.getInt(4) > 25){
+            if(diff == 2 && cursor.getInt(4) > max_in_category){
                 Log.e("Med_No", cursor.getInt(4)+"");
                 cat.add(cursor.getString(1));
                 cat.add(cursor.getInt(0)+"");
             }
-            if(diff == 3 && cursor.getInt(5) > 25){
+            if(diff == 3 && cursor.getInt(5) > max_in_category){
                 Log.e("Hard_No", cursor.getInt(5)+"");
                 cat.add(cursor.getString(1));
                 cat.add(cursor.getInt(0)+"");

@@ -87,6 +87,7 @@ public class Game_Timer extends Activity{
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
+    ArrayList<String> categories;
 
     int color_extraDark;
     Typeface font;
@@ -325,49 +326,63 @@ public class Game_Timer extends Activity{
         text_category.setTextColor(getResources().getColor(darker_color));
     }
 
+    private LinearLayout categories_generate_view(final String name, final String id){
+
+        LinearLayout lin = new LinearLayout(this);
+        lin.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.weight = 1;
+
+        lin.setLayoutParams(params);
+        lin.setGravity(Gravity.CENTER_VERTICAL);
+        lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+
+        ImageView img = new ImageView(this);
+        img.setImageResource(getResources().getIdentifier("icon_cat_" +id, "drawable", "com.itmc.instanttrivia"));
+        img.setPadding(dpToPx(5),0,dpToPx(5),0);
+        img.setColorFilter(getResources().getColor(R.color.grey_700));
+
+        TextView text = new TextView(this);
+        text.setText((CharSequence) name);
+        text.setGravity(Gravity.CENTER);
+        text.setTextSize(15);
+        text.setTypeface(font);
+
+        lin.addView(img);
+        lin.addView(text);
+
+        lin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                question_category = Integer.parseInt(id);
+                //porneste animatia pentru questions
+
+                async_load_questions();
+            }
+        });
+
+        return lin;
+    }
+
     private void categories_generate_list(){
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
 
-        for( int i = 0; i < categories.size(); i=i+2){
+        for( int i = 0; i < categories.size(); i=i+4){
 
             LinearLayout orig_lin = new LinearLayout(this);
-            orig_lin.setOrientation(LinearLayout.VERTICAL);
+            orig_lin.setOrientation(LinearLayout.HORIZONTAL);
 
-            LinearLayout lin = new LinearLayout(this);
-            lin.setOrientation(LinearLayout.VERTICAL);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            lin.setLayoutParams(params);
-            lin.setGravity(Gravity.CENTER_VERTICAL);
-            lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
-
-            ImageView img = new ImageView(this);
-            img.setImageResource(getResources().getIdentifier("icon_cat_" + categories.get(i + 1), "drawable", "com.itmc.instanttrivia"));
-            img.setPadding(dpToPx(5),0,dpToPx(5),0);
-            img.setColorFilter(getResources().getColor(R.color.grey_700));
-
-            TextView text = new TextView(this);
-            text.setText(categories.get(i));
-            text.setGravity(Gravity.CENTER);
-            text.setTextSize(15);
-            text.setTypeface(font);
-            //text.setPadding(dpToPx(25),dpToPx(15),dpToPx(25),dpToPx(15));
+            LinearLayout lin = categories_generate_view(categories.get(i),categories.get(i+1));
+            LinearLayout lin2 = categories_generate_view(categories.get(i+2),categories.get(i+3));
 
             final int i2 = i;
 
-            lin.addView(img);
-            lin.addView(text);
-            lin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                question_category = Integer.parseInt(categories.get(i2+1));
-                //porneste animatia pentru questions
 
-                async_load_questions();
-                }
-            });
-            lin_cats.addView(lin);
+            orig_lin.addView(lin);
+            orig_lin.addView(lin2);
+
+            lin_cats.addView(orig_lin);
         }
     }
 
