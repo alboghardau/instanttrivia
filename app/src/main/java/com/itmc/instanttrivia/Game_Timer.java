@@ -69,6 +69,7 @@ public class Game_Timer extends Activity{
     GridLayout btn_grid, grid_categories;
     ProgressBar prog_bar;
     RadioButton radio_easy, radio_medium, radio_hard, radio_random;
+    ImageView image_help, image_time;
 
     int animation_time = 700;
 
@@ -140,6 +141,7 @@ public class Game_Timer extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
+        Theme_Setter();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game__timer);
@@ -159,6 +161,9 @@ public class Game_Timer extends Activity{
         radio_medium = (RadioButton) findViewById(R.id.radio_medium);
         radio_hard = (RadioButton) findViewById(R.id.radio_hard);
         radio_random = (RadioButton) findViewById(R.id.radio_random);
+
+        image_help = (ImageView) findViewById(R.id.image_help);
+        image_time = (ImageView) findViewById(R.id.image_time);
 
         lin_answer = (LinearLayout) findViewById(R.id.linear_answer);
         lin_bot = (LinearLayout) findViewById(R.id.linear_bot);
@@ -229,6 +234,18 @@ public class Game_Timer extends Activity{
                 question_resume();
             }
         });
+        image_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hints_reveal_chars();
+            }
+        });
+        image_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    hints_extra_time();
+            }
+        });
     }
 
     public void onDifficultyRadioClick(View view){
@@ -252,6 +269,27 @@ public class Game_Timer extends Activity{
                 difficulty_radio_reset();
                 update_options_difficulty(5);
                 difficulty_set(5);
+                break;
+        }
+    }
+
+    private void Theme_Setter(){
+        String tester = settings.getString("Color_Theme","Purple");
+        switch (tester){
+            case "Red":
+                setTheme(R.style.ActionTheme_Options_Style_Red);
+                break;
+            case "Purple":
+                setTheme(R.style.ActionTheme_Options_Style_Purple);
+                break;
+            case "Blue":
+                setTheme(R.style.ActionTheme_Options_Style_Blue);
+                break;
+            case "LGreen":
+                setTheme(R.style.ActionTheme_Options_Style_LGreen);
+                break;
+            case "Orange":
+                setTheme(R.style.ActionTheme_Options_Style_Orange);
                 break;
         }
     }
@@ -316,6 +354,13 @@ public class Game_Timer extends Activity{
         int primary_color = getResources().getIdentifier("color/" + color + "_500", null, getPackageName());
         int darker_color = getResources().getIdentifier("color/"+color+"_700",null,getPackageName());
         int progress_dwg = getResources().getIdentifier("drawable/custom_progressbar_"+color,null,getPackageName());
+        int left_helper = getResources().getIdentifier("drawable/hints_time_"+color+"_700",null,getPackageName());
+        int right_helper = getResources().getIdentifier("drawable/hints_help_"+color+"_700",null,getPackageName());
+
+        image_help.setBackgroundDrawable(getResources().getDrawable(right_helper));
+        image_time.setBackgroundDrawable(getResources().getDrawable(left_helper));
+        image_help.setColorFilter(getResources().getColor(R.color.white));
+        image_time.setColorFilter(getResources().getColor(R.color.white));
 
         prog_bar.setProgressDrawable(getResources().getDrawable(progress_dwg));
         text_question.setBackgroundColor(getResources().getColor(primary_color));
@@ -340,12 +385,13 @@ public class Game_Timer extends Activity{
         ImageView img = new ImageView(this);
         img.setImageResource(getResources().getIdentifier("icon_cat_" + id, "drawable", "com.itmc.instanttrivia"));
         img.setPadding(dpToPx(5), 0, dpToPx(5), 0);
-        img.setColorFilter(getResources().getColor(R.color.grey_700));
+        img.setColorFilter(getResources().getColor(R.color.grey_900));
 
         TextView text = new TextView(this);
         text.setText((CharSequence) name);
         text.setGravity(Gravity.CENTER);
         text.setTextSize(15);
+        text.setTextColor(getResources().getColor(R.color.grey_900));
         text.setTypeface(font);
 
         lin.addView(img);
@@ -368,12 +414,8 @@ public class Game_Timer extends Activity{
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
 
-
-
         for( int i = 0; i < categories.size(); i=i+2){
             LinearLayout lin = categories_generate_view(categories.get(i),categories.get(i+1));
-
-
             grid_categories.addView(lin);
         }
     }
@@ -465,6 +507,22 @@ public class Game_Timer extends Activity{
     //ANIMATE AFTER CATEGORY IS CHOSEN, START OF GAMEPLAY
     private void animate_game_start() {
         question_animate("hide","");
+        text_score.setAlpha(0);
+        text_score.animate().alpha(1).setInterpolator(interpolator).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                text_score.setVisibility(View.VISIBLE);
+            }
+        }).start();
+        text_question_current.setAlpha(0);
+        text_question_current.animate().alpha(1).setInterpolator(interpolator).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                text_question_current.setVisibility(View.VISIBLE);
+            }
+        }).start();
         lin_difficulty.animate().alpha(0f).setDuration(animation_time).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -776,9 +834,8 @@ public class Game_Timer extends Activity{
     //animation function for the start of activity
     private void animate_start() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        Animation anim_score = AnimationUtils.loadAnimation(this, R.anim.anim_right_in_translate);
+        lin_difficulty.startAnimation(anim);
         grid_categories.startAnimation(anim);
-        text_score.startAnimation(anim_score);
     }
 
     //CHANGE DISPLAY STATE OF ANSWER WITH FADE IN / OUT ANIM
@@ -946,30 +1003,21 @@ public class Game_Timer extends Activity{
 
             //set clicker
             final int finalI = i;
-            if(buttons.get(i) == "?".charAt(0)) {
-                t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_hints));
-                t.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        buttons_reveal_help(100+ finalI);
-                        Log.e("CLICK","TRUE");
-                    }
-                });
-            }else{
                 t.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         buttons_click(100 + finalI);
                     }
                 });
-            }
             btn_grid.addView(t);
         }
     }
 
     private void game_end(){
         answer_replace_lost();          //REVEAL ANSWER
-        prog_bar.setProgress(0);        //hide any procees on bar
+        prog_bar.setProgress(0);        //hide any progres on bar
+        hints_help_enable(false);
+        hints_time_enable(false);
 
         //FADE OUT BUTTONS AND DISPLAY STATISTICS
         btn_grid.animate().alpha(0f).setDuration(animation_time).setInterpolator(interpolator).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
@@ -1012,11 +1060,84 @@ public class Game_Timer extends Activity{
         return cha;
     }
 
+    //DISPLAY REVEAL ANSWER HELPER
+    private void hints_help_enable(boolean state){
+        if (state){
+            if(coins_left()>=1){
+                image_help.animate().alpha(1).setDuration(animation_time).setInterpolator(interpolator).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        image_help.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        image_help.setEnabled(false);
+                        image_help.setVisibility(View.VISIBLE);
+                    }
+                }).start();
+
+            }
+        }else {
+            image_help.animate().alpha(0).setDuration(animation_time).setInterpolator(interpolator).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    image_help.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    image_help.setEnabled(false);
+                }
+            }).start();
+        }
+    }
+
+    //DISPLAY MORE TIME HELPER
+    private void hints_time_enable(boolean state){
+        if(state){
+            image_time.animate().alpha(1).setDuration(animation_time).setInterpolator(interpolator).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    image_time.setEnabled(true);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    image_time.setEnabled(false);
+                    image_time.setVisibility(View.VISIBLE);
+                }
+            }).start();
+        }else {
+            image_time.animate().alpha(0).setDuration(animation_time).setInterpolator(interpolator).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    image_time.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    image_time.setEnabled(false);
+                }
+            }).start();
+        }
+    }
+
+    private void hints_extra_time(){
+        timer.cancel();
+        hints_time_enable(false);
+    }
+
     //HELP METHOND TO REVEAL 30% OF ANSWER
-    private void buttons_reveal_help(int id){
-        TextView pressed = (TextView) findViewById(id);
-        pressed.setVisibility(View.INVISIBLE);
-        pressed.setEnabled(false);
+    private void hints_reveal_chars(){
 
         if(coins_left()-1 == 0){
             display_message(" 0");
@@ -1043,6 +1164,7 @@ public class Game_Timer extends Activity{
                 }
             }
         }
+        hints_help_enable(false);
     }
 
     //functie pentru litere.onclick
@@ -1100,6 +1222,8 @@ public class Game_Timer extends Activity{
     private void question_pause(){
         answer_replace_lost();
         buttons_display("hide");
+        hints_help_enable(false);
+        hints_time_enable(false);
         inter_display("show");
         timer.cancel();
         Log.e("FUNCTION","question_pause");
@@ -1143,6 +1267,14 @@ public class Game_Timer extends Activity{
         question_animate("show", category.toUpperCase() + "\n" + question);
         answer_display("show");
         buttons_display("show");
+
+        //display helpers
+        if(coins_left()>=1 && ans_arr.size()>6){
+            hints_help_enable(true);
+        }
+        if(coins_left()>=1){
+            hints_time_enable(true);
+        }
 
         timer_create();
     }
@@ -1210,17 +1342,6 @@ public class Game_Timer extends Activity{
             Collections.shuffle(buttons);
         }
 
-        //adds the hints button if there are hints left
-        if(coins_left() > 0 && ans_arr.size() > 5) {
-            boolean tester = false;
-            while (tester == false) {
-                int ran = rnd.nextInt(15);
-                if (!ans_arr.contains(buttons.get(ran))) {
-                    buttons.set(ran, "?".charAt(0));
-                    tester = true;
-                }
-            }
-        }
         Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
     }

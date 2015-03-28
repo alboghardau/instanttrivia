@@ -26,7 +26,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="1/10"
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,7 +45,8 @@
             android:layout_alignParentEnd="false"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:gravity="center" />
+            android:gravity="center"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
@@ -105,7 +108,7 @@
             android:showDividers="middle">
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Easy"
                 android:id="@+id/radio_easy"
@@ -117,7 +120,7 @@
                 android:textSize="15dp" />
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Medium"
                 android:id="@+id/radio_medium"
@@ -139,7 +142,7 @@
             android:weightSum="2">
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hard"
                 android:id="@+id/radio_hard"
@@ -151,7 +154,7 @@
                 android:textSize="15dp" />
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Random"
                 android:id="@+id/radio_random"
@@ -217,10 +220,9 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
         android:id="@+id/linear_bot"
-        android:layout_below="@+id/linear_difficulty"
+        android:layout_below="@+id/linear_answer"
         android:showDividers="middle|beginning|end"
         android:divider="@drawable/vertical_divider"
         android:gravity="center">
@@ -476,5 +478,27 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_help"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_help"
+        android:layout_alignParentStart="false"
+        android:background="@drawable/hints_help_red_700"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_time"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_etime"
+        android:layout_alignParentStart="false"
+        android:background="@drawable/hints_time_red_700"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
