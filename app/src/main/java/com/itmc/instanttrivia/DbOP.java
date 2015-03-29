@@ -163,9 +163,7 @@ public class DbOP {
 
             cursor.moveToNext();
         }
-
         cursor.close();
-
         return result;
     }
 

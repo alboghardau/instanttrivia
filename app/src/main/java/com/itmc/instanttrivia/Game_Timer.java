@@ -52,6 +52,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 
 import com.google.example.games.basegameutils.GameHelper;
+import com.tapfortap.Banner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,6 +71,7 @@ public class Game_Timer extends Activity{
     ProgressBar prog_bar;
     RadioButton radio_easy, radio_medium, radio_hard, radio_random;
     ImageView image_help, image_time;
+    Banner banner;
 
     int animation_time = 700;
 
@@ -94,6 +96,7 @@ public class Game_Timer extends Activity{
     Typeface font;
 
     Boolean started = false;
+    Boolean game_paused = null;
 
     //TO DO INSPECT IF CAN DELETE THIS VARIABLE
     int game_difficulty = 0;
@@ -226,7 +229,9 @@ public class Game_Timer extends Activity{
         //dispaly animation on start
         animate_start();
 
-        db.read_10_questions(2,2);
+        if(isNetworkAvailable()){
+            ads_add();
+        }
 
         btn_nextq.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,7 +380,7 @@ public class Game_Timer extends Activity{
 
         LinearLayout lin = new LinearLayout(this);
         lin.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
         params.width = (int) (dpToPx((int) (DpWidth()*0.4)));
 
         lin.setLayoutParams(params);
@@ -570,6 +575,7 @@ public class Game_Timer extends Activity{
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
                         text_question.setVisibility(View.VISIBLE);
+                        text_question.setText("");      //SOLVES WEIRD BUG ON ANDROID 4.0 WHERE IS SHOWS DIFFERENT QUESTION BEFORE THE ACTUAL ONE
                     }
                 }).start();
                 break;
@@ -1013,26 +1019,47 @@ public class Game_Timer extends Activity{
         }
     }
 
+    //TRIGGERS GAME END / SHOWS STATISTICS
     private void game_end(){
-        answer_replace_lost();          //REVEAL ANSWER
-        prog_bar.setProgress(0);        //hide any progres on bar
-        hints_help_enable(false);
-        hints_time_enable(false);
+        if(game_paused){
+            ads_display(false);             //hide ads
 
-        //FADE OUT BUTTONS AND DISPLAY STATISTICS
-        btn_grid.animate().alpha(0f).setDuration(animation_time).setInterpolator(interpolator).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                buttons_enabler(false);
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                btn_grid.setVisibility(View.GONE);
-                score_final_display();
-            }
-        }).start();
+            btn_nextq.setEnabled(false);
+            lin_inter.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    btn_nextq.setEnabled(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    lin_inter.setVisibility(View.GONE);
+                    score_final_display();
+                }
+            }).start();
+        }else {
+            answer_replace_lost();          //REVEAL LAST ANSWER
+            prog_bar.setProgress(0);        //hide any progres on bar
+            hints_help_enable(false);       //hide right helper
+            hints_time_enable(false);       //hide left helper
+
+            //FADE OUT BUTTONS AND DISPLAY STATISTICS
+            btn_grid.animate().alpha(0f).setDuration(animation_time).setInterpolator(interpolator).setStartDelay(0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    buttons_enabler(false);
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    btn_grid.setVisibility(View.GONE);
+                    score_final_display();
+                }
+            }).start();
+        }
     }
 
     private void buttons_after_press(int pressed_id, boolean correct) {
@@ -1220,10 +1247,12 @@ public class Game_Timer extends Activity{
 
     //PAUSE TEST AFTER ANSWER
     private void question_pause(){
+        game_paused = true;
         answer_replace_lost();
         buttons_display("hide");
         hints_help_enable(false);
         hints_time_enable(false);
+        ads_display(true);
         inter_display("show");
         timer.cancel();
         Log.e("FUNCTION","question_pause");
@@ -1233,6 +1262,7 @@ public class Game_Timer extends Activity{
     private void question_resume(){
         question_animate("hide","");
         answer_display("hide");
+        ads_display(false);
 
         lin_inter.setAlpha(1f);
         lin_inter.animate().setStartDelay(0).setDuration(animation_time).setInterpolator(interpolator).alpha(0f).setListener(new AnimatorListenerAdapter() {
@@ -1253,6 +1283,7 @@ public class Game_Timer extends Activity{
 
     //DISPLAY NEXT QUESTION
     private void question_next(){
+        game_paused = false;
         //reset pressed variables
         pressed_correct = 0;
         pressed_wrong = 0;
@@ -1466,33 +1497,44 @@ public class Game_Timer extends Activity{
         }
     }
 
-//    private void top_ads(){
-//        Banner banner = Banner.create(this, new Banner.BannerListener() {
-//            @Override
-//            public void bannerOnReceive(Banner banner) {
-//
-//            }
-//
-//            @Override
-//            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
-//
-//            }
-//
-//            @Override
-//            public void bannerOnTap(Banner banner) {
-//
-//            }
-//        });
-//        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//
-//        para.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        para.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-//        para.width = (int)dpToPx((int)(DpWidth()*0.65));
-//        para.height = (int)(para.width/6.4);
-//
-//        banner.setLayoutParams(para);
-//        lin_top.addView(banner);
-//    }
+    private void ads_display(boolean state){
+        if(isNetworkAvailable()) {
+            if (state) {
+                banner.setVisibility(View.VISIBLE);
+            } else {
+                banner.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void ads_add(){
+        banner = Banner.create(this, new Banner.BannerListener() {
+            @Override
+            public void bannerOnReceive(Banner banner) {
+
+            }
+
+            @Override
+            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
+
+            }
+
+            @Override
+            public void bannerOnTap(Banner banner) {
+
+            }
+        });
+        banner.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        para.addRule(RelativeLayout.CENTER_IN_PARENT);
+        para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        para.width = (int)dpToPx((int)(DpWidth()));
+        para.height = (int)(para.width/6.4);
+
+        banner.setLayoutParams(para);
+        rel_base.addView(banner);
+    }
 
     //overides back buttons pressed not to exit activity
     @Override
@@ -1503,7 +1545,7 @@ public class Game_Timer extends Activity{
             game_end();
             if(started == true){
                 timer.cancel();                         //prevent timer from exception
-                btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
+                //btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
             }else{
                 grid_categories.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
             }
