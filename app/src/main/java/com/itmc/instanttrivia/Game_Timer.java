@@ -472,6 +472,7 @@ public class Game_Timer extends Activity{
                 question_time = 40000;
                 leaderboard_name = R.string.leaderboard_time_trial__easy_level;
                 difficulty_setting = 1;
+                buttons_sort_alpha = true;
                 coin_awarder_limit = 20;
                 break;
             case 2:                     //medium game settings
@@ -482,6 +483,7 @@ public class Game_Timer extends Activity{
                 question_time = 35000;
                 leaderboard_name = R.string.leaderboard_time_trial__medium_level;
                 difficulty_setting = 2;
+                buttons_sort_alpha = true;
                 coin_awarder_limit = 15;
                 break;
             case 3:                     //hard game settings

@@ -17,7 +17,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 40; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 41; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
     private int max_in_category = 1;
 
     ArrayList<Integer> seen = new ArrayList<Integer>();
@@ -153,7 +153,6 @@ public class DbOP {
         cursor.moveToFirst();
 
         while(cursor.isAfterLast() == false){
-            Log.e ("db test", cursor.getString(cursor.getColumnIndex("question")));
 
             result.add(cursor.getString(1));    //question
             result.add(cursor.getString(2));    //answer
@@ -200,8 +199,6 @@ public class DbOP {
 
         question[0] = cursor.getString(index);
         question[1] = cursor.getString(index2);
-
-        Log.e("play test",cursor.getInt(6)+"");
 
         cursor.close();
         return question;
