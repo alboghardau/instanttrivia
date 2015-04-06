@@ -54,10 +54,20 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.GameHelper;
 import com.tapfortap.Banner;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 public class Game_Timer extends Activity{
@@ -80,6 +90,7 @@ public class Game_Timer extends Activity{
     //animation interpolator for all animations
     TimeInterpolator interpolator;
 
+    String question_id;
     String question;
     String answer;
     String category;
@@ -127,6 +138,7 @@ public class Game_Timer extends Activity{
     int question_wrong = 0;
     int total_buttons_correct = 0;
     int total_buttons_wrong = 0;
+    int helper_time_used = 0;       //will count how many times the helper is used
 
     int coin_awarder = 0;
     int coin_awarder_limit = 0;
@@ -248,6 +260,7 @@ public class Game_Timer extends Activity{
         image_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                    helper_time_used++;
                     hints_extra_time();
             }
         });
@@ -952,6 +965,10 @@ public class Game_Timer extends Activity{
 
         val.start();
         score = score + bonus;
+
+        //SEND TO SERVER THE RATIO
+        double q_ratio = (double) bonus/score_per_question;
+        new send_async_ratio().execute(question_id, q_ratio+"");
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, Character pressed) {
@@ -1224,6 +1241,7 @@ public class Game_Timer extends Activity{
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
+            new send_async_ratio().execute(question_id, "0.0");
         }
 
         if(answer_check_complete() == true){
@@ -1305,7 +1323,7 @@ public class Game_Timer extends Activity{
         if(coins_left()>=1 && ans_arr.size()>6){
             hints_help_enable(true);
         }
-        if(coins_left()>=1){
+        if(coins_left()>=1 && helper_time_used < 3){
             hints_time_enable(true);
         }
 
@@ -1316,9 +1334,10 @@ public class Game_Timer extends Activity{
     private void question_read_db_rand(){
 
         //0 questions 1 answer 2 categpry 3 difficulty
-        question = questions_array.get(question_counter*3);
-        answer = questions_array.get(question_counter*3+1);
-        category = questions_array.get(question_counter*3+2);
+        question_id = questions_array.get(question_counter*4);
+        question = questions_array.get(question_counter*4+1);
+        answer = questions_array.get(question_counter*4+2);
+        category = questions_array.get(question_counter*4+3);
         question_counter++;
 
         //delete previously pressed chars
@@ -1447,6 +1466,8 @@ public class Game_Timer extends Activity{
                     game_end();
                 }else {
                     question_pause();
+                    //SEND RATIO TO SERVER
+                    new send_async_ratio().execute(question_id, "0.0");
                 }
             }
         };
@@ -1536,6 +1557,39 @@ public class Game_Timer extends Activity{
 
         banner.setLayoutParams(para);
         rel_base.addView(banner);
+    }
+
+    //SEND QUESTION RATIO TO SERVER
+    public class send_async_ratio extends AsyncTask<String, Integer, Double> {
+
+        @Override
+        protected Double doInBackground(String... params) {
+            server_send_ratio(params[0], params[1]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Double aDouble) {
+            super.onPostExecute(aDouble);
+            Log.e("Server Rat","SCS");
+        }
+
+        private void server_send_ratio(String id, String ratio) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://instanttrivia.atwebpages.com/o_scripts/record_play.php");
+
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("id", id));
+                nameValuePairs.add(new BasicNameValuePair("ratio", ratio));
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                HttpResponse response = httpClient.execute(httpPost);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                Log.e("Server Rat","FAILED");
+            }
+        }
     }
 
     //overides back buttons pressed not to exit activity

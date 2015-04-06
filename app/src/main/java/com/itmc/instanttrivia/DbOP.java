@@ -154,6 +154,7 @@ public class DbOP {
 
         while(cursor.isAfterLast() == false){
 
+            result.add(cursor.getInt(0) + "");  //id
             result.add(cursor.getString(1));    //question
             result.add(cursor.getString(2));    //answer
             result.add(cursor.getString(4));    //categoryname
