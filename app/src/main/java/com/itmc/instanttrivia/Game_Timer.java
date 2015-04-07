@@ -810,7 +810,7 @@ public class Game_Timer extends Activity{
 
         //update difficulty leaderboard score
         if(difficulty_setting != 5) {   //temporary will not post score for random difficulty
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score/10);
         }
 
         //update total score
@@ -967,8 +967,10 @@ public class Game_Timer extends Activity{
         score = score + bonus;
 
         //SEND TO SERVER THE RATIO
-        double q_ratio = (double) bonus/score_per_question;
-        new send_async_ratio().execute(question_id, q_ratio+"");
+        if(isNetworkAvailable()){
+            double q_ratio = (double) bonus/score_per_question;
+            new send_async_ratio().execute(question_id, q_ratio+"");
+        }
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, Character pressed) {
@@ -1241,7 +1243,9 @@ public class Game_Timer extends Activity{
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
-            new send_async_ratio().execute(question_id, "0.0");
+            if(isNetworkAvailable()) {
+                new send_async_ratio().execute(question_id, "0.0");
+            }
         }
 
         if(answer_check_complete() == true){
@@ -1467,7 +1471,9 @@ public class Game_Timer extends Activity{
                 }else {
                     question_pause();
                     //SEND RATIO TO SERVER
-                    new send_async_ratio().execute(question_id, "0.0");
+                    if(isNetworkAvailable()) {
+                        new send_async_ratio().execute(question_id, "0.0");
+                    }
                 }
             }
         };
