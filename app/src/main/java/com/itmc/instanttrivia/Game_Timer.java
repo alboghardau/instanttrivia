@@ -468,6 +468,7 @@ public class Game_Timer extends Activity{
                 super.onPostExecute(aVoid);
                 pd.dismiss();
                 animate_game_start();
+
             }
         };
         task.execute((Void[])null);
@@ -556,8 +557,8 @@ public class Game_Timer extends Activity{
                 super.onAnimationEnd(animation);
                 cats_scroll.setVisibility(View.GONE);
                 cats_scroll.removeAllViews();
-                started = true;
                 question_next();
+                started = true;
             }
         }).start();
     }
@@ -1601,18 +1602,22 @@ public class Game_Timer extends Activity{
     //overides back buttons pressed not to exit activity
     @Override
     public void onBackPressed(){
-        if(!started) finish();
         back_pressed++;
-        if(back_pressed == 1){
-            game_end();
-            if(started == true){
-                timer.cancel();                         //prevent timer from exception
-                //btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
-            }else{
-                grid_categories.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
-            }
-        }else{
+        Log.e("started", started.toString());
+        if(started == false) {
             finish();
+        }else{
+            if(back_pressed == 1){
+                game_end();
+                if(started == true){
+                    timer.cancel();                         //prevent timer from exception
+                    //btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
+                }else{
+                    grid_categories.setVisibility(View.GONE);     //if back pressed imediatly hide start btn
+                }
+            }else{
+                finish();
+            }
         }
     }
 
