@@ -25,6 +25,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.share.widget.ShareButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -85,6 +87,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         db.close();
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
+
+
 
         //add home fragment
         Intent options = new Intent(this, Options.class);
@@ -178,12 +185,17 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         section_signout.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(section_signout);
 
+
+
+
         //SETTINGS SECTION
         MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
         section_settings.setTypeface(font);
         section_settings.useRealColor();
         section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
         this.addBottomSection(section_settings);
+
+
 
         //add google api initializer
         mGoogleApiClient = new GoogleApiClient.Builder(this)

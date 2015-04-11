@@ -32,6 +32,7 @@
         <meta-data
             android:name="com.tapfortap.API_KEY"
             android:value="@string/tapfortap_api" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <!--<meta-data-->
             <!--android:name="com.tapfortap.TEST_MODE"-->
             <!--android:value="true" />-->

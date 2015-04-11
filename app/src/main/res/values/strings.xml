@@ -22,5 +22,6 @@
     <string name="action_example">Example action</string>
     <string name="title_activity_testnav">testnav</string>
     <string name="title_activity_start">StartActivity</string>
+    <string name="facebook_app_id">1559660810925343</string>
 
 </resources>
