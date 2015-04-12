@@ -26,7 +26,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -60,6 +62,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     public GoogleApiClient mGoogleApiClient;
 
+    ShareDialog shareDialog;
+
     Typeface font;
 
     private boolean mResolvingConnectionFailure = false;
@@ -81,16 +85,16 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
 
-        //database
+        //DATABASE UPDATE
         db = new DbOP(this);
         db.testnewdb();
         db.close();
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
+        //INITIALIZE FB SDK AND SHARE DIALOG
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-
+        shareDialog = new ShareDialog(this);
 
 
         //add home fragment
@@ -185,8 +189,19 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         section_signout.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(section_signout);
 
+        MaterialSection section_share = newSection("Share",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                ShareLinkContent content = new ShareLinkContent.Builder().setContentDescription("test").build();
 
 
+                shareDialog.show(content);
+            }
+        });
+        section_share.setTypeface(font);
+        section_share.useRealColor();
+        section_share.setIconColor(getResources().getColor(R.color.blue_500));
+        this.addSection(section_share);
 
         //SETTINGS SECTION
         MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
