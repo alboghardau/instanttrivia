@@ -22,7 +22,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,7 +31,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.PathInterpolator;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -811,7 +809,7 @@ public class Game_Timer extends Activity{
 
         //update difficulty leaderboard score
         if(difficulty_setting != 5) {   //temporary will not post score for random difficulty
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score/10);
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
         }
 
         //update total score
@@ -828,7 +826,7 @@ public class Game_Timer extends Activity{
                     score_local = scoresBuffer.getRawScore();
                     Log.e("Retrieved Total Score\n",score_local+"");
                 }
-                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score+score_local);
+                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score/10+score_local);
                 Log.e("Total Score Uploaded", "TRUE");
             }
         };

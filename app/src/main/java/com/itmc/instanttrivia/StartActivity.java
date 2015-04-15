@@ -1,9 +1,11 @@
 package com.itmc.instanttrivia;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,19 +17,22 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareButton;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
+import com.facebook.share.widget.LikeView;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,13 +40,10 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.games.achievement.Achievement;
-import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameUtils;
-import com.google.example.games.basegameutils.GameHelper;
 
 import java.io.InputStream;
 import java.util.List;
@@ -49,7 +51,6 @@ import java.util.List;
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionListener;
-import it.neokree.materialnavigationdrawer.util.MaterialDrawerLayout;
 
 
 public class StartActivity extends MaterialNavigationDrawer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
@@ -62,7 +63,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     public GoogleApiClient mGoogleApiClient;
 
+    //FACEBOOK
     ShareDialog shareDialog;
+    AppInviteDialog appInviteDialog;
+    CallbackManager callbackManager;
+    LikeView likeView;
 
     Typeface font;
 
@@ -92,9 +97,31 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
+
         //INITIALIZE FB SDK AND SHARE DIALOG
         FacebookSdk.sdkInitialize(getApplicationContext());
-        shareDialog = new ShareDialog(this);
+        appInviteDialog = new AppInviteDialog(this);
+        callbackManager = CallbackManager.Factory.create();
+        //CALLBACK RESPONSE FOR INVITE FRIENDS
+        appInviteDialog.registerCallback(callbackManager, new FacebookCallback<AppInviteDialog.Result>() {
+            @Override
+            public void onSuccess(AppInviteDialog.Result result) {
+                Log.e("FB CallB","YES");
+                //FB POLICY DOESNT WANT REWARDS FOR ACTIONS EXCEPT LIKE YOUR PAGE
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("FB CallB","Canceled");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.e("FB CallB","Error");
+            }
+        });
+        //LIKE INTERFACE
+        likeView = new LikeView(this);
 
 
         //add home fragment
@@ -168,6 +195,53 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         sign_in.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(sign_in);
 
+        //LIKE OUR PAGE SECTION
+        if(appInstalledOrNot("com.facebook.katana")) {
+            MaterialSection section_like_page = newSection("Like", getResources().getDrawable(R.drawable.icon_like), new MaterialSectionListener() {
+                @Override
+                public void onClick(MaterialSection section){
+                    if(isNetworkAvailable()){
+                        launchFacebook();
+                    }else{
+                        Toast t = Toast.makeText(getApplicationContext(), "Internet not connected", Toast.LENGTH_SHORT);
+                        t.show();
+
+                    }
+                }
+            });
+            section_like_page.setTypeface(font);
+            section_like_page.useRealColor();
+            section_like_page.setIconColor(getResources().getColor(R.color.facebook_blue));
+            this.addSection(section_like_page);
+        }
+
+        //FACEBOOK INVITED SECTION
+        if(appInstalledOrNot("com.facebook.katana")) {
+            MaterialSection section_invite_friends = newSection("Invite Friends", getResources().getDrawable(R.drawable.icon_facebook), new MaterialSectionListener() {
+                @Override
+                public void onClick(MaterialSection section) {
+                    String appLinkUrl, previewImageUrl;
+                    appLinkUrl = "https://fb.me/1561478857410205";
+                    previewImageUrl = "http://s17.postimg.org/t7g1erdf3/new_version_promo.png";
+
+                    if (AppInviteDialog.canShow() && isNetworkAvailable()) {
+                        AppInviteContent content = new AppInviteContent.Builder()
+                                .setApplinkUrl(appLinkUrl)
+                                .setPreviewImageUrl(previewImageUrl)
+                                .build();
+                        appInviteDialog.show(content);
+                    } else {
+                        Toast t = Toast.makeText(getApplicationContext(), "Internet not connected", Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                }
+            });
+            section_invite_friends.setTypeface(font);
+            section_invite_friends.useRealColor();
+            section_invite_friends.setIconColor(getResources().getColor(R.color.facebook_blue));
+            this.addSection(section_invite_friends);
+        }
+
         //SIGN OUT SECTION
         MaterialSection section_signout = newSection("Sign Out",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
             @Override
@@ -188,20 +262,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         section_signout.useRealColor();
         section_signout.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(section_signout);
-
-        MaterialSection section_share = newSection("Share",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                ShareLinkContent content = new ShareLinkContent.Builder().setContentDescription("test").build();
-
-
-                shareDialog.show(content);
-            }
-        });
-        section_share.setTypeface(font);
-        section_share.useRealColor();
-        section_share.setIconColor(getResources().getColor(R.color.blue_500));
-        this.addSection(section_share);
 
         //SETTINGS SECTION
         MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
@@ -233,6 +293,23 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //onGameFirstRun will initialize the difficulty
         initialize_question_diff();
+    }
+
+    //CHECK IF APP IS INSTALLED
+    private boolean appInstalledOrNot(String uri)
+    {
+        PackageManager pm = getPackageManager();
+        boolean app_installed = false;
+        try
+        {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            app_installed = false;
+        }
+        return app_installed ;
     }
 
     //initialize first run question diff setting
@@ -415,6 +492,36 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         }
     }
 
+    //OPEN FACEBOOK GAME PAGE
+    public final void launchFacebook() {
+        final String urlFb = "fb://page/"+"883932578295403";
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(urlFb));
+
+        // If a Facebook app is installed, use it. Otherwise, launch
+        // a browser
+        final PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> list =
+                packageManager.queryIntentActivities(intent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+        if (list.size() == 0) {
+            final String urlBrowser = "https://www.facebook.com/pages/883932578295403";
+            intent.setData(Uri.parse(urlBrowser));
+        }
+        startActivity(intent);
+    }
+
+    //READS COINTS LEFT
+    private int coins_left(){
+        return settings.getInt("Coins", 25);
+    }
+    //UPDATES COINS
+    private void settings_coins_update(int hints){
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putInt("Coins",hints);
+        edit.commit();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -472,6 +579,10 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent intent) {
+        //HANDLE FB CALLBACKS
+        callbackManager.onActivityResult(requestCode, resultCode, intent);
+
+        //HANDLE GOOGLE LOG IN
         if (requestCode == RC_SIGN_IN) {
             mSignInClicked = false;
             mResolvingConnectionFailure = false;
@@ -533,6 +644,24 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             pendingResult.setResultCallback(scoreCallback);
         }
         edit.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isNetworkAvailable()) {
+            AppEventsLogger.activateApp(this);
+        }
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isNetworkAvailable()) {
+            AppEventsLogger.deactivateApp(this);
+        }
     }
 
     /**
