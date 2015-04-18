@@ -832,8 +832,8 @@ public class Game_Timer extends Activity{
         int total_hits = total_buttons_correct+total_buttons_wrong;
         double accuracy = Math.ceil(((total_buttons_correct)/(float)total_hits)*100);
         text_accuracy.setText((int)accuracy+"");
-        text_stat_ans.setText(question_correct+" / "+(question_correct+question_wrong));
-        text_highest_score.setText("Highest score: "+highest_score_get(difficulty_setting,score));
+        text_stat_ans.setText(question_correct+" / 10");
+        text_highest_score.setText("Best score: "+highest_score_get(difficulty_setting,score));
 
         prog_correct.setMax(total_hits);
         prog_correct.setProgress(total_buttons_correct);
@@ -1188,7 +1188,7 @@ public class Game_Timer extends Activity{
         int h_score = 0;
         h_score = settings.getInt("highest_score"+difficulty, 0);
         //CHECK IF NEW SCORE IS BETTER
-        if(new_score > h_score){
+        if(new_score >= h_score){
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("highest_score"+difficulty, new_score);
             editor.commit();

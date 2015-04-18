@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
+import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
@@ -333,7 +334,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         frag.ui_top_scores.setVisibility(View.VISIBLE);
         //request data from server for total score
         PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+        final ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
             public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
                 //gets player's score from server
@@ -359,11 +360,9 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
                 if(scoresBuffer != null){
                     long score = scoresBuffer.getRawScore();
-                    frag.ui_dice_1.setVisibility(View.VISIBLE);
                     frag.ui_score_easy.setText("" + score);
                     highest_score_set(1, (int) score);
                 }else{
-                    frag.ui_dice_1.setVisibility(View.VISIBLE);
                     frag.ui_score_easy.setText("0");
                 }
             }
@@ -378,11 +377,9 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
                 if(scoresBuffer != null){
                     long score = scoresBuffer.getRawScore();
-                    frag.ui_dice_2.setVisibility(View.VISIBLE);
                     frag.ui_score_med.setText("" + score);
                     highest_score_set(2, (int) score);
                 }else{
-                    frag.ui_dice_2.setVisibility(View.VISIBLE);
                     frag.ui_score_med.setText("0");
                 }
             }
@@ -397,16 +394,30 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
                 if(scoresBuffer != null){
                     long score = scoresBuffer.getRawScore();
-                    frag.ui_dice_3.setVisibility(View.VISIBLE);
                     frag.ui_score_hard.setText("" + score);
                     highest_score_set(3, (int) score);
                 }else{
-                    frag.ui_dice_3.setVisibility(View.VISIBLE);
                     frag.ui_score_hard.setText("0");
                 }
             }
         };
         pending_hard.setResultCallback(hard_callback);
+
+        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_random = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__random), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
+        ResultCallback<Leaderboards.LoadPlayerScoreResult> random_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
+            @Override
+            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
+                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
+                if(scoresBuffer != null){
+                    long score = scoresBuffer.getRawScore();
+                    frag.ui_score_random.setText(""+ score);
+                    highest_score_set(5,(int) score);
+                }else{
+                    frag.ui_score_random.setText("0");
+                }
+            }
+        };
+        pending_random.setResultCallback(random_callback);
 
         //loads profile picture
         if(personPhotoUrl != null) {

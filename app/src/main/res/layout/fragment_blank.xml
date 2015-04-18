@@ -4,7 +4,8 @@
     tools:context=".Main_Menu"
     android:id="@+id/ui_frag_back"
     android:clickable="false"
-    android:focusable="false">
+    android:focusable="false"
+    android:background="@color/deep_purple_700">
 
 
     <RelativeLayout
@@ -137,103 +138,178 @@
 
     </RelativeLayout>
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Top Scores"
-        android:id="@+id/ui_top_scores"
         android:layout_below="@+id/ui_user_details"
-        android:textColor="@color/white"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:textSize="15dp"
-        android:visibility="invisible"
-        android:gravity="center" />
+        android:background="@drawable/ui_card_test"
+        android:id="@+id/linear_scores"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="10dp"
+        android:elevation="5dp">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ui_top_scores"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/ui_linear_score_icons">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Top Scores"
+            android:id="@+id/ui_top_scores"
+            android:layout_below="@+id/ui_user_details"
+            android:textColor="@color/grey_700"
+            android:textSize="18dp"
+            android:gravity="center" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
+            android:layout_below="@+id/ui_top_scores"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/ui_linear_score_icons">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:id="@+id/ui_dice_1"
-                android:src="@drawable/icon_dice_1"
-                android:tint="@color/white"
-                android:visibility="invisible" />
-
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/ui_score_easy"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="15dp" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_dice_1"
+                    android:src="@drawable/icon_dice_1"
+                    android:tint="@color/grey_700" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:id="@+id/ui_dice_2"
-                android:src="@drawable/icon_dice_2"
-                android:tint="@color/white"
-                android:visibility="invisible" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView15"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="Easy" />
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_score_easy"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/ui_score_med"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="15dp" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_dice_2"
+                    android:src="@drawable/icon_dice_2"
+                    android:tint="@color/grey_700" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:id="@+id/ui_dice_3"
-                android:src="@drawable/icon_dice_3"
-                android:tint="@color/white"
-                android:visibility="invisible" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView18"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="Medium" />
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_score_med"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/ui_score_hard"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="15dp" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center">
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_dice_3"
+                    android:src="@drawable/icon_dice_3"
+                    android:tint="@color/grey_700" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView19"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="Hard" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_score_hard"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/ui_dice_4"
+                    android:src="@drawable/icon_shuffle"
+                    android:tint="@color/grey_700" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/textView20"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="Random" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/ui_score_random"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:textSize="15dp"
+                    android:text="0" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

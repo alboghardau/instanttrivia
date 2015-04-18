@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,8 +33,8 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
 
     private OnFragmentInteractionListener mListener;
 
-    ImageView logo_1, logo_2, logo_3, ui_profile, ui_total_trophy, ui_dice_1, ui_dice_2, ui_dice_3, ui_coins;
-    TextView ui_loged_as, ui_total_score, ui_score_easy, ui_score_med, ui_score_hard, ui_total_coins, ui_top_scores;
+    ImageView logo_1, logo_2, logo_3, ui_profile, ui_total_trophy, ui_dice_1, ui_dice_2, ui_dice_3, ui_dice_4, ui_coins;
+    TextView ui_loged_as, ui_total_score, ui_score_easy, ui_score_med, ui_score_hard, ui_total_coins, ui_top_scores, ui_score_random;
     RelativeLayout ui_frag_back;
     RelativeLayout ui_bot_section;
     Button btn_play;
@@ -73,6 +75,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         ui_dice_1 = (ImageView) rootView.findViewById(R.id.ui_dice_1);
         ui_dice_2 = (ImageView) rootView.findViewById(R.id.ui_dice_2);
         ui_dice_3 = (ImageView) rootView.findViewById(R.id.ui_dice_3);
+        ui_dice_4 = (ImageView) rootView.findViewById(R.id.ui_dice_4);
         ui_total_trophy = (ImageView) rootView.findViewById(R.id.ui_total_trophy);
         ui_profile = (ImageView) rootView.findViewById(R.id.ui_profile_img);
         ui_coins = (ImageView) rootView.findViewById(R.id.ui_coins);
@@ -81,6 +84,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         ui_score_easy = (TextView) rootView.findViewById(R.id.ui_score_easy);
         ui_score_med = (TextView) rootView.findViewById(R.id.ui_score_med);
         ui_score_hard = (TextView) rootView.findViewById(R.id.ui_score_hard);
+        ui_score_random = (TextView) rootView.findViewById(R.id.ui_score_random);
         ui_total_coins = (TextView) rootView.findViewById(R.id.ui_total_coins);
         ui_top_scores = (TextView) rootView.findViewById(R.id.ui_top_scores);
         btn_play = (Button) rootView.findViewById(R.id.ui_button_play);
