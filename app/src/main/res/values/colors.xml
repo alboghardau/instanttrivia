@@ -2,7 +2,9 @@
 <resources>
 
     <!-- White -->
-    <color name="transparent">#00ffffff</color>
+
+<color name="transparent">#00ffffff</color>
+<color name="semi_transparent">#22ffffff</color>
 <color name="white">#ffffff</color>
 <color name="text_dark">#212121</color>
 

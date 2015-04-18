@@ -10,6 +10,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -41,6 +42,17 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -49,6 +61,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 
+import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 import com.tapfortap.Banner;
 
@@ -76,7 +89,7 @@ public class Game_Timer extends Activity{
     LinearLayout lin_answer, lin_bot, lin_gratz, lin_inter, lin_difficulty;
     RelativeLayout lin_top, rel_base;
     GridLayout btn_grid, grid_categories;
-    ProgressBar prog_bar;
+    ProgressBar prog_bar, prog_score;
     RadioButton radio_easy, radio_medium, radio_hard, radio_random;
     ImageView image_help, image_time;
     Banner banner;
@@ -87,6 +100,10 @@ public class Game_Timer extends Activity{
 
     //animation interpolator for all animations
     TimeInterpolator interpolator;
+
+    //FACEBOOK
+    ShareDialog shareDialog;
+    CallbackManager callbackManager;
 
     String question_id;
     String question;
@@ -191,8 +208,30 @@ public class Game_Timer extends Activity{
 
         cats_scroll = (ScrollView) findViewById(R.id.cats_scroll);
         prog_bar = (ProgressBar) findViewById(R.id.timer_bar);
+        prog_score = (ProgressBar) findViewById(R.id.progress_score);
 
         overrideFonts(this,rel_base);
+
+        //FACEBOOK INITIALIZE
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("FB SHARE", "CANCEL");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Log.e("FB SHARE", "SHARING ERROR! - " + e.getMessage());
+            }
+        });
 
         //set interpolator
         interpolator = new DecelerateInterpolator(1);
@@ -262,6 +301,13 @@ public class Game_Timer extends Activity{
                     hints_extra_time();
             }
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent intent) {
+        //HANDLE FB CALLBACKS
+        callbackManager.onActivityResult(requestCode, resultCode, intent);
+
     }
 
     public void onDifficultyRadioClick(View view){
@@ -379,6 +425,7 @@ public class Game_Timer extends Activity{
         image_time.setColorFilter(getResources().getColor(R.color.white));
 
         prog_bar.setProgressDrawable(getResources().getDrawable(progress_dwg));
+        prog_score.setProgressDrawable(getResources().getDrawable(progress_dwg));
         text_question.setBackgroundColor(getResources().getColor(primary_color));
         lin_top.setBackgroundColor((getResources().getColor(darker_color)));
         lin_gratz.setBackgroundColor(getResources().getColor(primary_color));
@@ -515,9 +562,9 @@ public class Game_Timer extends Activity{
                 max_wrong = 4;
                 score_per_question = 75;
                 question_time = 30000;
-                //leaderboard_name = R.string.leaderboard_time_trial__hard_level;
+                leaderboard_name = R.string.leaderboard_time_trial__random;
                 difficulty_setting = 5;
-                buttons_sort_alpha = false;
+                buttons_sort_alpha = true;
                 coin_awarder_limit = 15;
                 break;
         }
@@ -693,7 +740,27 @@ public class Game_Timer extends Activity{
         edit.commit();
     }
 
+    //DISPLAY FINAL SCORE DIALOG
     private void score_final_display(){
+        //FACEBOOK SHARE BUTTON
+        Button btn_share = (Button) findViewById(R.id.button_facebook);
+        if(appInstalledOrNot("com.facebook.katana") && score > 100) {
+            btn_share.setVisibility(View.VISIBLE);
+            btn_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(ShareDialog.canShow(ShareLinkContent.class)){
+                        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                .setContentTitle("Hey, I just got "+score+" points on Instant Trivia")
+                                .setContentDescription("Download now from Google Play!")
+                                .setContentUrl(Uri.parse("https://www.facebook.com/pages/Instant-Trivia/883932578295403"))
+                                .build();
+                        shareDialog.show(linkContent);
+                    }
+                }
+            });
+        }
+
         //UPDATE SCORES, ACUM CU TRIPLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
         //send scores to google server
         if(mGoogleApiClient != null){
@@ -712,14 +779,14 @@ public class Game_Timer extends Activity{
             Log.e("API ACTION:", "Scores saved for later upload");
         }
 
+        //FINAL SCORE
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
         lin_score.setVisibility(View.VISIBLE);
-
         text_score.setVisibility(View.INVISIBLE);
-
         text_final_score.setText(score + "");
         text_final_score.setTypeface(font);
 
+        //BACK TO MAIN MENU BUTTON
         Button btn_back = (Button) findViewById(R.id.button_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -727,8 +794,9 @@ public class Game_Timer extends Activity{
                 finish();
             }
         });
-        final Button btn_rate = (Button) findViewById(R.id.button_rate);
 
+        //RATE APP BUTTON
+        final Button btn_rate = (Button) findViewById(R.id.button_rate);
         if(settings.getBoolean("Rated", false) == true){
             btn_rate.setVisibility(View.GONE);
         }
@@ -748,25 +816,32 @@ public class Game_Timer extends Activity{
             }
         });
 
-        //set round progress bars
+        //SET ROUND PROGRESS BARS
         TextView text_correct_hits = (TextView) findViewById(R.id.text_correct_hits);
         TextView text_wrong_hits = (TextView)findViewById(R.id.text_wrong_hits);
         TextView text_accuracy = (TextView)findViewById(R.id.text_accuracy);
+        TextView text_stat_ans = (TextView)findViewById(R.id.text_stat_answers);
+        TextView text_highest_score = (TextView)findViewById(R.id.text_highest_score);
         ProgressBar prog_correct = (ProgressBar)findViewById(R.id.prog_correct);
         ProgressBar prog_wrong = (ProgressBar) findViewById(R.id.prog_wrong);
         ProgressBar prog_acc = (ProgressBar) findViewById(R.id.prog_accuracy);
 
+        //UPDATE STATISTICS DISPLAY
         text_correct_hits.setText(total_buttons_correct+"");
         text_wrong_hits.setText(total_buttons_wrong+"");
         int total_hits = total_buttons_correct+total_buttons_wrong;
         double accuracy = Math.ceil(((total_buttons_correct)/(float)total_hits)*100);
         text_accuracy.setText((int)accuracy+"");
+        text_stat_ans.setText(question_correct+" / "+(question_correct+question_wrong));
+        text_highest_score.setText("Highest score: "+highest_score_get(difficulty_setting,score));
 
         prog_correct.setMax(total_hits);
         prog_correct.setProgress(total_buttons_correct);
         prog_wrong.setMax(total_hits);
         prog_wrong.setProgress(total_buttons_wrong);
         prog_acc.setProgress(Integer.valueOf((int) accuracy));
+        prog_score.setMax(question_number);
+        prog_score.setProgress(question_correct);
 
 
         lin_bot.animate().setDuration(animation_time).alpha(1f).setListener(new AnimatorListenerAdapter() {
@@ -806,11 +881,8 @@ public class Game_Timer extends Activity{
 
     //updates total score leadeboard
     private void score_total_update(){
-
-        //update difficulty leaderboard score
-        if(difficulty_setting != 5) {   //temporary will not post score for random difficulty
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
-        }
+        //update difficulty score
+        Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
 
         //update total score
         //request data from server
@@ -845,6 +917,9 @@ public class Game_Timer extends Activity{
                 break;
             case 3:
                 edit.putInt("saved_score_hard",score);
+                break;
+            case 5:
+                edit.putInt("saved_score_random",score);
                 break;
         }
         edit.putInt("saved_total_score", score+settings.getInt("saved_total_score",0));
@@ -1105,6 +1180,21 @@ public class Game_Timer extends Activity{
         Random rnd = new Random();
         Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
         return cha;
+    }
+
+    //GET HIGHEST SCORE
+    private int highest_score_get(int difficulty, int new_score){
+        //READ PREVIOUS SCORE
+        int h_score = 0;
+        h_score = settings.getInt("highest_score"+difficulty, 0);
+        //CHECK IF NEW SCORE IS BETTER
+        if(new_score > h_score){
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("highest_score"+difficulty, new_score);
+            editor.commit();
+            h_score = new_score;
+        }
+        return h_score;
     }
 
     //DISPLAY REVEAL ANSWER HELPER
@@ -1562,6 +1652,23 @@ public class Game_Timer extends Activity{
 
         banner.setLayoutParams(para);
         rel_base.addView(banner);
+    }
+
+    //CHECK IF APP IS INSTALLED
+    private boolean appInstalledOrNot(String uri)
+    {
+        PackageManager pm = getPackageManager();
+        boolean app_installed = false;
+        try
+        {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            app_installed = false;
+        }
+        return app_installed ;
     }
 
     //SEND QUESTION RATIO TO SERVER

@@ -48,6 +48,18 @@
             android:gravity="center"
             android:visibility="invisible" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share Score"
+            android:id="@+id/button_facebook"
+            style="@style/com_facebook_button_share"
+            android:background="@drawable/button_lollipop_tansparent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
     <ProgressBar
@@ -272,16 +284,44 @@
                     android:text="Congratulations!"
                     android:id="@+id/textView17"
                     android:paddingTop="10dp"
-                    android:textColor="@color/white" />
-
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageView"
-                    android:src="@drawable/icon_trophy"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:textColor="@color/white"
                     android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Correct answers"
+                    android:id="@+id/textView8"
+                    android:textSize="15dp"
+                    android:textColor="@color/white"
+                    android:padding="5dp" />
+
+                <ProgressBar
+                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progress_score"
+                    android:progress="10"
+                    android:max="10"
+                    android:visibility="visible"
+                    android:progressDrawable="@drawable/custom_progressbar_white"
+                    android:layout_below="@+id/linear_topbar"
+                    android:elevation="5dp"
+                    android:indeterminate="false"
+                    android:minHeight="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="7/10"
+                    android:id="@+id/text_stat_answers"
+                    android:textSize="15dp"
+                    android:textColor="@color/white"
+                    android:padding="3dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -431,6 +471,16 @@
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Best score: 250"
+                    android:id="@+id/text_highest_score"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:padding="3dp" />
 
                 <TextView
                     android:layout_width="match_parent"

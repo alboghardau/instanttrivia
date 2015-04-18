@@ -64,7 +64,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     public GoogleApiClient mGoogleApiClient;
 
     //FACEBOOK
-    ShareDialog shareDialog;
     AppInviteDialog appInviteDialog;
     CallbackManager callbackManager;
     LikeView likeView;
@@ -195,6 +194,40 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         sign_in.setIconColor(getResources().getColor(R.color.red_500));
         this.addSection(sign_in);
 
+        //SIGN OUT SECTION
+        MaterialSection section_signout = newSection("Sign Out",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                // user explicitly signed out, so turn off auto sign in
+                mExplicitSignOut = true;
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                    Games.signOut(mGoogleApiClient);
+                    mGoogleApiClient.disconnect();
+                }
+                //registers signed out option
+                options_signed_in(false);
+                //show hide buttons
+                display_change_state(false);
+            }
+        });
+        section_signout.setTypeface(font);
+        section_signout.useRealColor();
+        section_signout.setIconColor(getResources().getColor(R.color.red_500));
+        this.addSection(section_signout);
+
+        //DIVIDER // SUB HEADER
+        if(appInstalledOrNot("com.facebook.katana")){
+            this.addSubheader("Facebook");
+            //this.addDivisor();
+        }
+
+        //SETTINGS SECTION
+        MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
+        section_settings.setTypeface(font);
+        section_settings.useRealColor();
+        section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
+        this.addBottomSection(section_settings);
+
         //LIKE OUR PAGE SECTION
         if(appInstalledOrNot("com.facebook.katana")) {
             MaterialSection section_like_page = newSection("Like", getResources().getDrawable(R.drawable.icon_like), new MaterialSectionListener() {
@@ -205,7 +238,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     }else{
                         Toast t = Toast.makeText(getApplicationContext(), "Internet not connected", Toast.LENGTH_SHORT);
                         t.show();
-
                     }
                 }
             });
@@ -241,36 +273,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             section_invite_friends.setIconColor(getResources().getColor(R.color.facebook_blue));
             this.addSection(section_invite_friends);
         }
-
-        //SIGN OUT SECTION
-        MaterialSection section_signout = newSection("Sign Out",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                // user explicitly signed out, so turn off auto sign in
-                mExplicitSignOut = true;
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    Games.signOut(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
-                }
-                //registers signed out option
-                options_signed_in(false);
-                //show hide buttons
-                display_change_state(false);
-            }
-        });
-        section_signout.setTypeface(font);
-        section_signout.useRealColor();
-        section_signout.setIconColor(getResources().getColor(R.color.red_500));
-        this.addSection(section_signout);
-
-        //SETTINGS SECTION
-        MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
-        section_settings.setTypeface(font);
-        section_settings.useRealColor();
-        section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
-        this.addBottomSection(section_settings);
-
-
 
         //add google api initializer
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -349,7 +351,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         };
         pendingResult.setResultCallback(scoreCallback);
 
-        //get from server scores for easy level
+        //GET SCORE FROM SERVER - EASY LEVEL
         PendingResult<Leaderboards.LoadPlayerScoreResult> pending_easy = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> easy_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
@@ -359,6 +361,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     long score = scoresBuffer.getRawScore();
                     frag.ui_dice_1.setVisibility(View.VISIBLE);
                     frag.ui_score_easy.setText("" + score);
+                    highest_score_set(1, (int) score);
                 }else{
                     frag.ui_dice_1.setVisibility(View.VISIBLE);
                     frag.ui_score_easy.setText("0");
@@ -367,7 +370,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         };
         pending_easy.setResultCallback(easy_callback);
 
-        //get from server scores for medium level
+        //GET SCORE FROM SERVER - MEDIUM LEVEL
         PendingResult<Leaderboards.LoadPlayerScoreResult> pending_medium = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__medium_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> medium_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
@@ -377,6 +380,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     long score = scoresBuffer.getRawScore();
                     frag.ui_dice_2.setVisibility(View.VISIBLE);
                     frag.ui_score_med.setText("" + score);
+                    highest_score_set(2, (int) score);
                 }else{
                     frag.ui_dice_2.setVisibility(View.VISIBLE);
                     frag.ui_score_med.setText("0");
@@ -385,7 +389,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         };
         pending_medium.setResultCallback(medium_callback);
 
-        //get from server scores for easy level
+        //GET SCORE FROM SERVER - HARD LEVEL
         PendingResult<Leaderboards.LoadPlayerScoreResult> pending_hard = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__hard_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
         ResultCallback<Leaderboards.LoadPlayerScoreResult> hard_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
             @Override
@@ -395,6 +399,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     long score = scoresBuffer.getRawScore();
                     frag.ui_dice_3.setVisibility(View.VISIBLE);
                     frag.ui_score_hard.setText("" + score);
+                    highest_score_set(3, (int) score);
                 }else{
                     frag.ui_dice_3.setVisibility(View.VISIBLE);
                     frag.ui_score_hard.setText("0");
@@ -605,6 +610,19 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         mGoogleApiClient.connect();
     }
 
+    //GET HIGHEST SCORE
+    private void highest_score_set(int difficulty, int new_score){
+        //READ PREVIOUS SCORE
+        int h_score = settings.getInt("highest_score"+difficulty, 0);
+        //CHECK IF NEW SCORE IS BETTER
+        if(new_score > h_score){
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("highest_score"+difficulty, new_score);
+            editor.commit();
+        }
+    }
+
+    //UPDATE SCORES SAVED LATER WHEN CONNECTED
     private void scores_late_upload(){
         final SharedPreferences.Editor edit = settings.edit();
         if(settings.getInt("saved_score_easy", 0) > 0){

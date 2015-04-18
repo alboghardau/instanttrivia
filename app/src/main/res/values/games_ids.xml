@@ -34,6 +34,6 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="leaderboard_total_score">CgkIyc6Y-6gaEAIQBA</string>
     <string name="leaderboard_time_trial__easy_level">CgkIyc6Y-6gaEAIQAQ</string>
     <string name="leaderboard_time_trial__medium_level">CgkIyc6Y-6gaEAIQAg</string>
-
     <string name="leaderboard_time_trial__hard_level">CgkIyc6Y-6gaEAIQBQ</string>
+    <string name="leaderboard_time_trial__random">CgkIyc6Y-6gaEAIQFw</string>
 </resources>
