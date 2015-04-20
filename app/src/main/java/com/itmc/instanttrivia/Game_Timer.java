@@ -83,7 +83,7 @@ import java.util.Random;
 
 public class Game_Timer extends Activity{
 
-    TextView text_question, text_score, text_question_current, text_final_score, text_difficulty, text_category;
+    TextView text_question, text_score, text_question_current, text_final_score, text_difficulty, text_category, text_view_category;
     ScrollView cats_scroll;
     Button btn_nextq;
     LinearLayout lin_answer, lin_bot, lin_gratz, lin_inter, lin_difficulty;
@@ -185,6 +185,8 @@ public class Game_Timer extends Activity{
         text_final_score = (TextView)findViewById(R.id.text_final_score);
         text_difficulty = (TextView) findViewById(R.id.text_difficulty);
         text_category = (TextView) findViewById(R.id.text_category);
+        text_view_category = (TextView) findViewById(R.id.text_view_category);
+
         btn_nextq = (Button)findViewById(R.id.button_nextq);
 
         radio_easy = (RadioButton) findViewById(R.id.radio_easy);
@@ -611,6 +613,7 @@ public class Game_Timer extends Activity{
     private void question_animate(String action, final String text){
         switch (action){
             case "hide":
+                //QUESTION HIDE
                 text_question.animate().setDuration(animation_time).setInterpolator(interpolator).scaleX(0).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -623,8 +626,21 @@ public class Game_Timer extends Activity{
                         text_question.setText("");
                     }
                 }).start();
+                //CATEGORY HIDE
+                text_view_category.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        text_view_category.setVisibility(View.INVISIBLE);
+                    }
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                    }
+                }).start();
                 break;
             case "show":
+                //QUESTION SHOW
                 text_question.animate().setDuration(animation_time).setInterpolator(interpolator).scaleX(1).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -637,6 +653,20 @@ public class Game_Timer extends Activity{
                         super.onAnimationStart(animation);
                         text_question.setVisibility(View.VISIBLE);
                         text_question.setText("");      //SOLVES WEIRD BUG ON ANDROID 4.0 WHERE IS SHOWS DIFFERENT QUESTION BEFORE THE ACTUAL ONE
+                    }
+                }).start();
+                //QUESTION HIDE
+                text_view_category.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        super.onAnimationStart(animation);
+                        text_view_category.setVisibility(View.VISIBLE);
+                        text_view_category.setText(category.toUpperCase());      //SOLVES WEIRD BUG ON ANDROID 4.0 WHERE IS SHOWS DIFFERENT QUESTION BEFORE THE ACTUAL ONE
                     }
                 }).start();
                 break;
@@ -1408,7 +1438,7 @@ public class Game_Timer extends Activity{
 
         text_question_current.setText(question_counter+"/10");
 
-        question_animate("show", category.toUpperCase() + "\n" + question);
+        question_animate("show", question);
         answer_display("show");
         buttons_display("show");
 

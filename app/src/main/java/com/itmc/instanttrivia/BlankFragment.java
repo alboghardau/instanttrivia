@@ -138,22 +138,27 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
         switch (tester){
             case "Red":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.red_500));
+                ui_top_scores.setTextColor(getResources().getColor(R.color.red_700));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.deep_purple_500));
+                ui_top_scores.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.purple_700));
                 break;
             case "Blue":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.blue_500));
+                ui_top_scores.setTextColor(getResources().getColor(R.color.blue_700));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.blue_700));
                 break;
             case "LGreen":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.light_green_500));
+                ui_top_scores.setTextColor(getResources().getColor(R.color.light_green_700));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.light_green_700));
                 break;
             case "Orange":
                 ui_frag_back.setBackgroundColor(getResources().getColor(R.color.orange_500));
+                ui_top_scores.setTextColor(getResources().getColor(R.color.orange_700));
                 //ui_bot_section.setBackgroundColor(getResources().getColor(R.color.orange_700));
                 break;
         }

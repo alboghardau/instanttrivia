@@ -51,13 +51,29 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share Score"
+            android:text="Share"
             android:id="@+id/button_facebook"
             style="@style/com_facebook_button_share"
             android:background="@drawable/button_lollipop_tansparent"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Science &amp; Tech"
+            android:id="@+id/text_view_category"
+            android:layout_alignParentTop="false"
+            android:textColor="@color/grey_900"
+            android:elevation="3dp"
+            android:background="@drawable/ui_card_test"
+            android:padding="5dp"
+            android:textSize="20dp"
+            android:layout_alignParentBottom="false"
+            android:layout_centerInParent="true"
             android:visibility="gone" />
 
     </RelativeLayout>

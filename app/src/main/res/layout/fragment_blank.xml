@@ -4,8 +4,7 @@
     tools:context=".Main_Menu"
     android:id="@+id/ui_frag_back"
     android:clickable="false"
-    android:focusable="false"
-    android:background="@color/deep_purple_700">
+    android:focusable="false">
 
 
     <RelativeLayout
@@ -143,23 +142,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ui_user_details"
-        android:background="@drawable/ui_card_test"
         android:id="@+id/linear_scores"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:padding="10dp"
-        android:elevation="5dp">
+        android:background="@drawable/ui_card_test"
+        android:elevation="3dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Top Scores"
+            android:text="Best Scores"
             android:id="@+id/ui_top_scores"
             android:layout_below="@+id/ui_user_details"
-            android:textColor="@color/grey_700"
-            android:textSize="18dp"
-            android:gravity="center" />
+            android:textColor="@color/grey_900"
+            android:textSize="22dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="4dp" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -181,7 +181,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/ui_dice_1"
                     android:src="@drawable/icon_dice_1"
-                    android:tint="@color/grey_700" />
+                    android:tint="@color/grey_900" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/textView15"
                     android:gravity="center"
-                    android:textColor="@color/grey_700"
+                    android:textColor="@color/grey_900"
                     android:textSize="15dp"
                     android:text="Easy" />
 
@@ -216,7 +216,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/ui_dice_2"
                     android:src="@drawable/icon_dice_2"
-                    android:tint="@color/grey_700" />
+                    android:tint="@color/grey_900" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -224,7 +224,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/textView18"
                     android:gravity="center"
-                    android:textColor="@color/grey_700"
+                    android:textColor="@color/grey_900"
                     android:textSize="15dp"
                     android:text="Medium" />
 
@@ -251,7 +251,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/ui_dice_3"
                     android:src="@drawable/icon_dice_3"
-                    android:tint="@color/grey_700" />
+                    android:tint="@color/grey_900" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -259,7 +259,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/textView19"
                     android:gravity="center"
-                    android:textColor="@color/grey_700"
+                    android:textColor="@color/grey_900"
                     android:textSize="15dp"
                     android:text="Hard" />
 
@@ -286,7 +286,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/ui_dice_4"
                     android:src="@drawable/icon_shuffle"
-                    android:tint="@color/grey_700" />
+                    android:tint="@color/grey_900" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -294,7 +294,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/textView20"
                     android:gravity="center"
-                    android:textColor="@color/grey_700"
+                    android:textColor="@color/grey_900"
                     android:textSize="15dp"
                     android:text="Random" />
 
@@ -332,8 +332,10 @@
             android:id="@+id/ui_button_play"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/button_lollipop"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            android:elevation="3dp"
+            android:padding="10dp"
+            android:background="@drawable/button_lollipop" />
 
     </RelativeLayout>
 
