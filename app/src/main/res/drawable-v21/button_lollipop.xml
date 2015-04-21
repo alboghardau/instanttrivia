@@ -14,7 +14,7 @@
                 android:right="5dp"
                 android:bottom="5dp"
                 />
-            <corners android:radius="20dp"/>
+            <corners android:radius="2dp"/>
         </shape>
     </item>
     <item android:drawable="@drawable/button_lollipop_notpressed">

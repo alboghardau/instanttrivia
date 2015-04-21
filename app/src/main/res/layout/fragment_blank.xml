@@ -331,7 +331,8 @@
             android:textSize="18dp"
             android:elevation="3dp"
             android:padding="10dp"
-            android:background="@drawable/button_lollipop" />
+            android:background="@drawable/button_lollipop"
+            android:stateListAnimator="@null" />
 
     </RelativeLayout>
 

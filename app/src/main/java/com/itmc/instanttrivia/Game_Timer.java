@@ -842,7 +842,7 @@ public class Game_Timer extends Activity{
         int total_hits = total_buttons_correct+total_buttons_wrong;
         double accuracy = Math.ceil(((total_buttons_correct)/(float)total_hits)*100);
         text_accuracy.setText((int)accuracy+"");
-        text_stat_ans.setText(question_correct+" / 10");
+        text_stat_ans.setText(question_correct+" / 10 Correct Answers");
         text_highest_score.setText("Best score: "+highest_score_get(difficulty_setting,score));
 
         prog_correct.setMax(total_hits);
