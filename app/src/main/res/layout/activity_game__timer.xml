@@ -67,7 +67,6 @@
             android:text="Science &amp; Tech"
             android:id="@+id/text_view_category"
             android:layout_alignParentTop="false"
-            android:textColor="@color/grey_900"
             android:elevation="3dp"
             android:background="@drawable/ui_card_test"
             android:padding="5dp"
@@ -289,9 +288,9 @@
                 android:focusableInTouchMode="false"
                 android:id="@+id/linear_gratz"
                 android:gravity="center"
-                android:elevation="5dp"
+                android:elevation="3dp"
                 android:layout_margin="5dp"
-                android:background="@color/purple_500">
+                android:background="@drawable/ui_card_test">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -310,7 +309,6 @@
                     android:text="Correct answers"
                     android:id="@+id/textView8"
                     android:textSize="15dp"
-                    android:textColor="@color/white"
                     android:padding="5dp" />
 
                 <ProgressBar
@@ -336,7 +334,6 @@
                     android:text="7/10"
                     android:id="@+id/text_stat_answers"
                     android:textSize="15dp"
-                    android:textColor="@color/white"
                     android:padding="3dp" />
 
                 <LinearLayout
@@ -359,7 +356,6 @@
                             android:text="Correct\nhits"
                             android:id="@+id/textView3"
                             android:textSize="15dp"
-                            android:textColor="@color/white"
                             android:gravity="center" />
 
                         <RelativeLayout
@@ -384,7 +380,6 @@
                                 android:id="@+id/text_correct_hits"
                                 android:textSize="13dp"
                                 android:gravity="center"
-                                android:textColor="@color/white"
                                 android:layout_alignParentStart="false"
                                 android:layout_alignBottom="@+id/prog_correct"
                                 android:layout_alignParentLeft="false"
@@ -407,7 +402,6 @@
                             android:text="Wrong\nhits"
                             android:id="@+id/textView5"
                             android:textSize="15dp"
-                            android:textColor="@color/white"
                             android:gravity="center" />
 
                         <RelativeLayout
@@ -432,7 +426,6 @@
                                 android:id="@+id/text_wrong_hits"
                                 android:textSize="13dp"
                                 android:gravity="center"
-                                android:textColor="@color/white"
                                 android:layout_alignParentStart="false"
                                 android:layout_alignBottom="@+id/prog_wrong"
                                 android:layout_alignParentLeft="false"
@@ -453,7 +446,6 @@
                             android:text="Accuracy\n"
                             android:id="@+id/textView2"
                             android:textSize="15dp"
-                            android:textColor="@color/white"
                             android:gravity="center" />
 
                         <RelativeLayout
@@ -478,7 +470,6 @@
                                 android:id="@+id/text_accuracy"
                                 android:textSize="13dp"
                                 android:gravity="center"
-                                android:textColor="@color/white"
                                 android:layout_alignParentStart="false"
                                 android:layout_alignBottom="@+id/prog_accuracy"
                                 android:layout_alignParentLeft="false"
@@ -495,7 +486,6 @@
                     android:text="Best score: 250"
                     android:id="@+id/text_highest_score"
                     android:textSize="20dp"
-                    android:textColor="@color/white"
                     android:padding="3dp" />
 
                 <TextView
@@ -505,24 +495,19 @@
                     android:text="Medium Text"
                     android:id="@+id/text_final_score"
                     android:textColor="@color/white"
-                    android:background="@color/purple_800"
+                    android:background="@drawable/card_inside_blue_700"
                     android:gravity="center"
-                    android:textSize="30dp" />
+                    android:textSize="30dp"
+                    android:layout_margin="3dp" />
             </LinearLayout>
-
-            <Button
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Rate Us! +25 Coins"
-                android:id="@+id/button_rate"
-                android:background="@drawable/button_lollipop" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Back"
                 android:id="@+id/button_back"
-                android:background="@drawable/button_lollipop" />
+                android:background="@drawable/button_lollipop"
+                android:textSize="18dp" />
 
         </LinearLayout>
 
@@ -540,7 +525,8 @@
                 android:layout_height="wrap_content"
                 android:text="Next Question"
                 android:id="@+id/button_nextq"
-                android:background="@drawable/button_lollipop" />
+                android:background="@drawable/button_lollipop"
+                android:textSize="18dp" />
         </LinearLayout>
 
     </LinearLayout>

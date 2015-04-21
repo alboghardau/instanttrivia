@@ -420,6 +420,7 @@ public class Game_Timer extends Activity{
         int progress_dwg = getResources().getIdentifier("drawable/custom_progressbar_"+color,null,getPackageName());
         int left_helper = getResources().getIdentifier("drawable/hints_time_"+color+"_700",null,getPackageName());
         int right_helper = getResources().getIdentifier("drawable/hints_help_"+color+"_700",null,getPackageName());
+        int final_score_helper = getResources().getIdentifier("drawable/card_inside_"+color+"_700",null,getPackageName());
 
         image_help.setBackgroundDrawable(getResources().getDrawable(right_helper));
         image_time.setBackgroundDrawable(getResources().getDrawable(left_helper));
@@ -430,8 +431,8 @@ public class Game_Timer extends Activity{
         prog_score.setProgressDrawable(getResources().getDrawable(progress_dwg));
         text_question.setBackgroundColor(getResources().getColor(primary_color));
         lin_top.setBackgroundColor((getResources().getColor(darker_color)));
-        lin_gratz.setBackgroundColor(getResources().getColor(primary_color));
-        text_final_score.setBackgroundColor(getResources().getColor(darker_color));
+        text_view_category.setTextColor(getResources().getColor(darker_color));
+        text_final_score.setBackgroundDrawable(getResources().getDrawable(final_score_helper));
         text_difficulty.setTextColor(getResources().getColor(darker_color));
         text_category.setTextColor(getResources().getColor(darker_color));
     }
@@ -666,7 +667,7 @@ public class Game_Timer extends Activity{
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
                         text_view_category.setVisibility(View.VISIBLE);
-                        text_view_category.setText(category.toUpperCase());      //SOLVES WEIRD BUG ON ANDROID 4.0 WHERE IS SHOWS DIFFERENT QUESTION BEFORE THE ACTUAL ONE
+                        text_view_category.setText(category);      //SOLVES WEIRD BUG ON ANDROID 4.0 WHERE IS SHOWS DIFFERENT QUESTION BEFORE THE ACTUAL ONE
                     }
                 }).start();
                 break;
@@ -756,7 +757,7 @@ public class Game_Timer extends Activity{
     }
 
     private int coins_left(){
-        return settings.getInt("Coins", 25);
+        return settings.getInt("Coins", 5);
     }
 
     private void settings_coins_update(int hints){
@@ -822,27 +823,6 @@ public class Game_Timer extends Activity{
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-
-        //RATE APP BUTTON
-        final Button btn_rate = (Button) findViewById(R.id.button_rate);
-        if(settings.getBoolean("Rated", false) == true){
-            btn_rate.setVisibility(View.GONE);
-        }
-        btn_rate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                try {
-                    startActivity(goToMarket);
-                    settings_coins_update(coins_left() + 25);
-                    btn_rate.setVisibility(View.GONE);
-                    settings_rated(true);
-                } catch (ActivityNotFoundException e) {
-
-                }
             }
         });
 

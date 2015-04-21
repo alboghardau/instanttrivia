@@ -1,5 +1,6 @@
 package com.itmc.instanttrivia;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -248,7 +249,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             this.addSection(section_like_page);
         }
 
-        //FACEBOOK INVITED SECTION
+        //FACEBOOK INVITE FRIENDS SECTION
         if(appInstalledOrNot("com.facebook.katana")) {
             MaterialSection section_invite_friends = newSection("Invite Friends", getResources().getDrawable(R.drawable.icon_facebook), new MaterialSectionListener() {
                 @Override
@@ -275,7 +276,30 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             this.addSection(section_invite_friends);
         }
 
-        //add google api initializer
+        //RATE US SECTION
+        if(!settings.getBoolean("Rated", false)) {
+            this.addDivisor();
+            MaterialSection section_rate_us = newSection("Rate Us! +25 Coins", getResources().getDrawable(R.drawable.icon_star), new MaterialSectionListener() {
+                @Override
+                public void onClick(MaterialSection section) {
+                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    try {
+                        startActivity(goToMarket);
+                        settings_coins_update(coins_left() + 25);
+                        settings_rated(true);
+                    } catch (ActivityNotFoundException e) {
+
+                    }
+                }
+            });
+            section_rate_us.setTypeface(font);
+            section_rate_us.useRealColor();
+            section_rate_us.setIconColor(getResources().getColor(R.color.green_500));
+            this.addSection(section_rate_us);
+        }
+
+        //GOOGLE API INITIALIZE
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).setViewForPopups(null)
@@ -285,6 +309,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             options_signed_in(false);
         }
 
+        //CHANGE DISPLAY FOR SIGN ON
         if(settings.getBoolean("SIGNED_IN", false) == false) {
             display_change_state(false);
         }else{
@@ -322,6 +347,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             edit.putInt("question_diff",5);
             edit.commit();
         }
+    }
+
+    //SETTING RATE US
+    private void settings_rated(boolean set){
+        SharedPreferences.Editor edit = settings.edit();
+        edit.putBoolean("Rated", set);
+        edit.commit();
     }
 
     private void get_pic_result(){
@@ -529,7 +561,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     //READS COINTS LEFT
     private int coins_left(){
-        return settings.getInt("Coins", 25);
+        return settings.getInt("Coins", 5);
     }
     //UPDATES COINS
     private void settings_coins_update(int hints){
