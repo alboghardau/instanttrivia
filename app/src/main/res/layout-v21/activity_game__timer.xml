@@ -13,7 +13,8 @@
         android:id="@+id/linear_topbar"
         android:gravity="center"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:elevation="7dp">
 
 
         <TextView
@@ -27,14 +28,14 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:gravity="center"
-            android:text="1/10"
+            android:text="@string/top_bar_qno"
             android:visibility="invisible" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Score\n0"
+            android:text="@string/top_bar_score"
             android:id="@+id/text_score"
             android:clickable="false"
             android:textSize="16dp"
@@ -51,7 +52,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
+            android:text="@string/share_fb"
             android:id="@+id/button_facebook"
             style="@style/com_facebook_button_share"
             android:background="@drawable/button_lollipop_tansparent"
@@ -64,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Science &amp; Tech"
+            android:text="@string/top_bar_category"
             android:id="@+id/text_view_category"
             android:layout_alignParentTop="false"
             android:elevation="3dp"
@@ -86,8 +87,7 @@
         android:max="100"
         android:visibility="visible"
         android:progressDrawable="@drawable/custom_progressbar_red"
-        android:layout_below="@+id/linear_topbar"
-        android:elevation="5dp" />
+        android:layout_below="@+id/linear_topbar" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -100,7 +100,7 @@
         android:textSize="16dp"
         android:gravity="center"
         android:elevation="5dp"
-        android:text="Chose Category"
+        android:text="@string/question"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:visibility="gone" />
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Difficulty"
+            android:text="@string/title_diff"
             android:id="@+id/text_difficulty"
             android:padding="15dp"
             android:textColor="@color/white"
@@ -137,7 +137,7 @@
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Easy"
+                android:text="@string/radio_easy"
                 android:id="@+id/radio_easy"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
@@ -145,12 +145,12 @@
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
                 android:textSize="15dp"
-                android:elevation="3dp" />
+                android:elevation="2dp" />
 
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Medium"
+                android:text="@string/radio_medium"
                 android:id="@+id/radio_medium"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
@@ -159,7 +159,7 @@
                 android:nestedScrollingEnabled="false"
                 android:onClick="onDifficultyRadioClick"
                 android:textSize="15dp"
-                android:elevation="3dp" />
+                android:elevation="2dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -173,7 +173,7 @@
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hard"
+                android:text="@string/radio_hard"
                 android:id="@+id/radio_hard"
                 android:background="@drawable/button_lollipop"
                 android:checked="false"
@@ -181,12 +181,12 @@
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
                 android:textSize="15dp"
-                android:elevation="3dp" />
+                android:elevation="2dp" />
 
             <RadioButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Random"
+                android:text="@string/radio_random"
                 android:id="@+id/radio_random"
                 android:background="@drawable/button_lollipop"
                 android:singleLine="false"
@@ -195,14 +195,14 @@
                 android:onClick="onDifficultyRadioClick"
                 android:textSize="15dp"
                 android:checked="false"
-                android:elevation="3dp" />
+                android:elevation="2dp" />
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Category"
+            android:text="@string/category"
             android:id="@+id/text_category"
             android:padding="15dp"
             android:textColor="@color/white"
@@ -232,7 +232,7 @@
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content">
 
             <GridLayout
                 android:layout_width="wrap_content"
@@ -243,7 +243,7 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:layout_gravity="center_horizontal"
-                android:useDefaultMargins="true"></GridLayout>
+                android:useDefaultMargins="true"/>
         </FrameLayout>
     </ScrollView>
 
@@ -266,7 +266,6 @@
             android:gravity="center"
             android:drawSelectorOnTop="true"
             android:stretchMode="columnWidth"
-            android:layout_below="@+id/linear_answer"
             android:columnCount="4"
             android:rowCount="4"
             android:visibility="gone">
@@ -300,7 +299,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="7/10"
+                    android:text=""
                     android:id="@+id/text_stat_answers"
                     android:textSize="15dp"
                     android:padding="3dp" />
@@ -314,7 +313,6 @@
                     android:max="10"
                     android:visibility="visible"
                     android:progressDrawable="@drawable/custom_progressbar_white"
-                    android:layout_below="@+id/linear_topbar"
                     android:elevation="5dp"
                     android:indeterminate="false"
                     android:minHeight="5dp"
@@ -340,7 +338,7 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Correct\nhits"
+                            android:text=""
                             android:id="@+id/textView3"
                             android:textSize="15dp"
                             android:gravity="center" />
@@ -363,7 +361,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="50"
+                                android:text=""
                                 android:id="@+id/text_correct_hits"
                                 android:textSize="13dp"
                                 android:gravity="center"
@@ -386,7 +384,7 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Wrong\nhits"
+                            android:text=""
                             android:id="@+id/textView5"
                             android:textSize="15dp"
                             android:gravity="center" />
@@ -409,7 +407,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="50"
+                                android:text=""
                                 android:id="@+id/text_wrong_hits"
                                 android:textSize="13dp"
                                 android:gravity="center"
@@ -430,7 +428,7 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Accuracy\n"
+                            android:text=""
                             android:id="@+id/textView2"
                             android:textSize="15dp"
                             android:gravity="center" />
@@ -453,7 +451,7 @@
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:text="50"
+                                android:text=""
                                 android:id="@+id/text_accuracy"
                                 android:textSize="13dp"
                                 android:gravity="center"
@@ -470,7 +468,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Best score: 250"
+                    android:text=""
                     android:id="@+id/text_highest_score"
                     android:textSize="20dp"
                     android:padding="3dp" />
@@ -479,7 +477,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
+                    android:text=""
                     android:id="@+id/text_final_score"
                     android:textColor="@color/white"
                     android:background="@drawable/card_inside_blue_700"
@@ -491,7 +489,7 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Back"
+                android:text="@string/back"
                 android:id="@+id/button_back"
                 android:background="@drawable/button_lollipop"
                 android:textSize="18dp" />
@@ -510,7 +508,7 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Next Question"
+                android:text="@string/next_question"
                 android:id="@+id/button_nextq"
                 android:background="@drawable/button_lollipop"
                 android:textSize="18dp" />
@@ -527,7 +525,8 @@
         android:src="@drawable/icon_help"
         android:layout_alignParentStart="false"
         android:background="@drawable/hints_help_red_700"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:contentDescription="@string/description" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -538,6 +537,7 @@
         android:layout_alignParentStart="false"
         android:background="@drawable/hints_time_red_700"
         android:layout_alignParentLeft="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:contentDescription="@string/description" />
 
 </RelativeLayout>

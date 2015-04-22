@@ -448,7 +448,7 @@ public class Game_Timer extends Activity{
         lin.setGravity(Gravity.CENTER_VERTICAL);
         lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            lin.setElevation(dpToPx(3));
+            lin.setElevation(dpToPx(2));
         }
 
         ImageView img = new ImageView(this);
