@@ -6,7 +6,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,11 +46,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.ShareOpenGraphAction;
-import com.facebook.share.model.ShareOpenGraphContent;
-import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -60,8 +55,6 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-
-import com.google.example.games.basegameutils.BaseGameUtils;
 import com.google.example.games.basegameutils.GameHelper;
 import com.tapfortap.Banner;
 
@@ -116,7 +109,6 @@ public class Game_Timer extends Activity{
     ArrayList<Character> buttons;
     ArrayList<Character> ans_arr;
     ArrayList<Character> ans_pressed;
-    ArrayList<String> categories;
 
     int color_extraDark;
     Typeface font;
@@ -161,7 +153,6 @@ public class Game_Timer extends Activity{
     //buffer variables for millis left to calc score
     int millis_buffer = 0;
 
-    int total_time = 0;
     CountDownTimer timer = null;
 
     private DbOP db;
@@ -248,9 +239,9 @@ public class Game_Timer extends Activity{
         p.height = dpToPx((int) (DpHeight()/6.0));
 
         //declare answer chars store , and store answer in array
-        buttons = new ArrayList<Character>();
-        ans_arr = new ArrayList<Character>();
-        ans_pressed = new ArrayList<Character>();
+        buttons = new ArrayList<>();
+        ans_arr = new ArrayList<>();
+        ans_pressed = new ArrayList<>();
 
         //start database operator
         db = new DbOP(this);
@@ -258,7 +249,7 @@ public class Game_Timer extends Activity{
 
         //temporary fix passing of mGoogleApiClient form start activity to this
         Log.e("SignIn Status b4", settings.getBoolean("SIGNED_IN",false)+"");
-        if(settings.getBoolean("SIGNED_IN",false) == true){
+        if(settings.getBoolean("SIGNED_IN", false)){
             GameHelper gameHelper = new GameHelper(this,GameHelper.CLIENT_GAMES);
             gameHelper.setup(new GameHelper.GameHelperListener() {
                 @Override public void onSignInFailed() {}
@@ -362,7 +353,7 @@ public class Game_Timer extends Activity{
     private void update_options_difficulty(int difficulty){
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("question_diff", difficulty);
-        editor.commit();
+        editor.apply();
     }
 
     private void difficulty_radio_reset(){
@@ -422,8 +413,8 @@ public class Game_Timer extends Activity{
         int right_helper = getResources().getIdentifier("drawable/hints_help_"+color+"_700",null,getPackageName());
         int final_score_helper = getResources().getIdentifier("drawable/card_inside_"+color+"_700",null,getPackageName());
 
-        image_help.setBackgroundDrawable(getResources().getDrawable(right_helper));
-        image_time.setBackgroundDrawable(getResources().getDrawable(left_helper));
+        image_help.setBackground(getResources().getDrawable(right_helper));
+        image_time.setBackground(getResources().getDrawable(left_helper));
         image_help.setColorFilter(getResources().getColor(R.color.white));
         image_time.setColorFilter(getResources().getColor(R.color.white));
 
@@ -432,7 +423,7 @@ public class Game_Timer extends Activity{
         text_question.setBackgroundColor(getResources().getColor(primary_color));
         lin_top.setBackgroundColor((getResources().getColor(darker_color)));
         text_view_category.setTextColor(getResources().getColor(darker_color));
-        text_final_score.setBackgroundDrawable(getResources().getDrawable(final_score_helper));
+        text_final_score.setBackground(getResources().getDrawable(final_score_helper));
         text_difficulty.setTextColor(getResources().getColor(darker_color));
         text_category.setTextColor(getResources().getColor(darker_color));
     }
@@ -442,11 +433,11 @@ public class Game_Timer extends Activity{
         LinearLayout lin = new LinearLayout(this);
         lin.setOrientation(LinearLayout.VERTICAL);
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = (int) (dpToPx((int) (DpWidth()*0.4)));
+        params.width = dpToPx((int) (DpWidth()*0.4));
 
         lin.setLayoutParams(params);
         lin.setGravity(Gravity.CENTER_VERTICAL);
-        lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+        lin.setBackground(getResources().getDrawable(R.drawable.button_lollipop));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             lin.setElevation(dpToPx(2));
         }
@@ -457,7 +448,7 @@ public class Game_Timer extends Activity{
         img.setColorFilter(getResources().getColor(R.color.grey_900));
 
         TextView text = new TextView(this);
-        text.setText((CharSequence) name);
+        text.setText(name);
         text.setGravity(Gravity.CENTER);
         text.setTextSize(15);
         text.setTextColor(getResources().getColor(R.color.grey_900));
@@ -766,12 +757,7 @@ public class Game_Timer extends Activity{
     private void settings_coins_update(int hints){
         SharedPreferences.Editor edit = settings.edit();
         edit.putInt("Coins",hints);
-        edit.commit();
-    }
-    private void settings_rated(boolean set){
-        SharedPreferences.Editor edit = settings.edit();
-        edit.putBoolean("Rated", set);
-        edit.commit();
+        edit.apply();
     }
 
     //DISPLAY FINAL SCORE DIALOG
@@ -799,7 +785,7 @@ public class Game_Timer extends Activity{
         //send scores to google server
         if(mGoogleApiClient != null){
             Log.e("API ACTION:", "Api client is initialized");
-            if(mGoogleApiClient.isConnected() == true && difficulty_setting != 0 && question_category!=0) {
+            if(mGoogleApiClient.isConnected() && difficulty_setting != 0 && question_category!=0) {
                 Log.e("API ACTION:", "Uploading Scores!");
                 //update leaderboards total score
                 score_total_update();
@@ -852,7 +838,7 @@ public class Game_Timer extends Activity{
         prog_correct.setProgress(total_buttons_correct);
         prog_wrong.setMax(total_hits);
         prog_wrong.setProgress(total_buttons_wrong);
-        prog_acc.setProgress(Integer.valueOf((int) accuracy));
+        prog_acc.setProgress((int) accuracy);
         prog_score.setMax(question_number);
         prog_score.setProgress(question_correct);
 
@@ -936,7 +922,7 @@ public class Game_Timer extends Activity{
                 break;
         }
         edit.putInt("saved_total_score", score+settings.getInt("saved_total_score",0));
-        edit.commit();
+        edit.apply();
     }
 
     //animation function for the start of activity
@@ -988,6 +974,7 @@ public class Game_Timer extends Activity{
         //contor used for answers id starting with 200
         Integer cont_id = 200;
 
+
         for (Character ch : answer.toCharArray()) {
             TextView t = new TextView(this);
 
@@ -1000,7 +987,7 @@ public class Game_Timer extends Activity{
                 t.setElevation(5);       //implement elevation for 5.0+
             }
             t.setId(cont_id);
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.transition_answer));
+            t.setBackground(getResources().getDrawable(R.drawable.transition_answer));
             t.setPadding(dpToPx(4),0, dpToPx(4),0);
 
             if (ch.compareTo(" ".charAt(0)) == 0) {
@@ -1021,7 +1008,7 @@ public class Game_Timer extends Activity{
     }
 
     private void coin_award(boolean pressed){
-        if(pressed == true){
+        if(pressed){
             coin_awarder++;
         }else{
             coin_awarder = 0;
@@ -1072,8 +1059,6 @@ public class Game_Timer extends Activity{
     //function will replace answer chars view from linear layout with animation
     private void answer_replace_char(final Integer char_id, Character change) {
         final TextView text = (TextView) findViewById(char_id);
-        final LinearLayout lin = (LinearLayout) text.getParent();
-        final int index = lin.indexOfChild(text);
 
         //transition animation for the background drawable
         TransitionDrawable trans = (TransitionDrawable) text.getBackground();
@@ -1085,9 +1070,9 @@ public class Game_Timer extends Activity{
     private void answer_replace_lost(){
         int cont_id = 200;
         for(int i = 0; i < ans_arr.size(); i++){
-            if(ans_arr.get(i) != " ".charAt(0) && ans_pressed.contains(ans_arr.get(i)) == false) {
+            if(ans_arr.get(i) != " ".charAt(0) && !ans_pressed.contains(ans_arr.get(i))) {
                 TextView txt = (TextView) findViewById(cont_id + i);
-                txt.setBackgroundDrawable(getResources().getDrawable(R.drawable.answer_red));
+                txt.setBackground(getResources().getDrawable(R.drawable.answer_red));
                 txt.setText(ans_arr.get(i).toString());
             }
         }
@@ -1101,7 +1086,7 @@ public class Game_Timer extends Activity{
             Button t = new Button(this);
 
             t.setText(buttons.get(i).toString());
-            t.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+            t.setBackground(getResources().getDrawable(R.drawable.button_lollipop));
             t.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
             GridLayout.LayoutParams par = new GridLayout.LayoutParams();
             par.width = dpToPx((int)DpWidth()/6);
@@ -1175,13 +1160,13 @@ public class Game_Timer extends Activity{
         pressed.setEnabled(false);
 
         //change background for buttons after click
-        if(correct == true){
-            pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_true));
+        if(correct){
+            pressed.setBackground(getResources().getDrawable(R.drawable.button_lollipop_true));
             AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
             ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));
         }else{
-            pressed.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop_false));
+            pressed.setBackground(getResources().getDrawable(R.drawable.button_lollipop_false));
             AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
             ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));
@@ -1191,20 +1176,18 @@ public class Game_Timer extends Activity{
     //GENERATE RANDOM LETTER
     private Character random_letter(){
         Random rnd = new Random();
-        Character cha = (Character) randomchars.charAt(rnd.nextInt(randomchars.length()));
-        return cha;
+        return randomchars.charAt(rnd.nextInt(randomchars.length()));
     }
 
     //GET HIGHEST SCORE
     private int highest_score_get(int difficulty, int new_score){
         //READ PREVIOUS SCORE
-        int h_score = 0;
-        h_score = settings.getInt("highest_score"+difficulty, 0);
+        int h_score = settings.getInt("highest_score"+difficulty, 0);
         //CHECK IF NEW SCORE IS BETTER
         if(new_score >= h_score){
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("highest_score"+difficulty, new_score);
-            editor.commit();
+            editor.apply();
             h_score = new_score;
         }
         return h_score;
@@ -1300,11 +1283,10 @@ public class Game_Timer extends Activity{
 
         HashSet uniq_ans = new HashSet();
         uniq_ans.addAll(ans_arr);
-        ArrayList<Character> uniq = new ArrayList<Character>();
+        ArrayList<Character> uniq = new ArrayList<>();
         uniq.addAll(uniq_ans);
         Collections.shuffle(uniq);
 
-        int size = uniq_ans.size();
         for(int i = 0; i < uniq_ans.size()*0.3 ; i++)
         {
             for(int j = 100; j < 115; j++){
@@ -1350,13 +1332,13 @@ public class Game_Timer extends Activity{
             }
         }
 
-        if(answer_check_complete() == true){
+        if(answer_check_complete()){
             score_update();
             question_correct++;
         }
 
         //action for word completion
-        if(answer_check_complete() == true || (pressed_wrong == max_wrong)){
+        if(answer_check_complete() || (pressed_wrong == max_wrong)){
             //test if the timer is gone when change the question
             if(question_counter < question_number){
                 question_pause();
@@ -1364,10 +1346,6 @@ public class Game_Timer extends Activity{
                 timer.cancel();             //solves some weird animation bug
                 game_end();
             }
-        }
-
-        if(ans_arr.contains(c_btn) == true ){
-           // Log.e("text char press", "TRUE");
         }
     }
 
@@ -1460,7 +1438,7 @@ public class Game_Timer extends Activity{
     //CHECKS IF ANSWER IS COMPLETED
     private boolean answer_check_complete(){
         for( int i = 0; i < ans_arr.size(); i++){
-            if( ans_pressed.contains(ans_arr.get(i)) != true){
+            if(!ans_pressed.contains(ans_arr.get(i))){
                 return false;
             }
         }
@@ -1470,13 +1448,10 @@ public class Game_Timer extends Activity{
 
     //GENERATE 16 RANDOM CHARS CONTAINING THE ANSWER ALSO
     private void buttons_generate(String ans) {
-        ArrayList<Character> a = new ArrayList<Character>();
-        Character cha = null;
-        Random rnd = new Random();
         buttons.clear();
         //adds answer letters to array
         for(Character ch: ans.toCharArray()){
-            if(buttons.contains(ch) == false && ch != " ".charAt(0)){
+            if(!buttons.contains(ch) && ch != " ".charAt(0)){
                 buttons.add(ch);
             }
         }
@@ -1484,12 +1459,12 @@ public class Game_Timer extends Activity{
         //completes the array with random letters up to 16
         while(buttons.size() < 16){
             Character c = random_letter();
-            if(buttons.contains(c) == false){
+            if(!buttons.contains(c)){
                 buttons.add(c);
             }
         }
 
-        if(buttons_sort_alpha == true){
+        if(buttons_sort_alpha){
             Collections.sort(buttons, new Comparator<Character>() {
                 @Override
                 public int compare(Character lhs, Character rhs) {
@@ -1500,7 +1475,6 @@ public class Game_Timer extends Activity{
             Collections.shuffle(buttons);
         }
 
-        Log.e("Answer", a.toString());
         Log.e("Answer Chars:", buttons.toString());
     }
 
@@ -1593,14 +1567,12 @@ public class Game_Timer extends Activity{
     //MEASURE SCREEN WIDTH IN DP
     private float DpWidth(){
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return dpWidth;
+        return displayMetrics.widthPixels / displayMetrics.density;
     }
     //MEASURE SCREEN HEIGHT IN DP
     private float DpHeight(){
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.heightPixels / displayMetrics.density;
-        return dpWidth;
+        return displayMetrics.heightPixels / displayMetrics.density;
     }
 
     //TEST INTERNET CONNECTION
@@ -1625,6 +1597,7 @@ public class Game_Timer extends Activity{
                 ((TextView) v).setTypeface(new_font);
             }
         } catch (Exception e) {
+            Log.e("Font O Err",e.toString());
         }
     }
 
@@ -1660,7 +1633,7 @@ public class Game_Timer extends Activity{
 
         para.addRule(RelativeLayout.CENTER_IN_PARENT);
         para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        para.width = (int)dpToPx((int)(DpWidth()));
+        para.width = dpToPx((int)(DpWidth()));
         para.height = (int)(para.width/6.4);
 
         banner.setLayoutParams(para);
@@ -1671,7 +1644,7 @@ public class Game_Timer extends Activity{
     private boolean appInstalledOrNot(String uri)
     {
         PackageManager pm = getPackageManager();
-        boolean app_installed = false;
+        boolean app_installed;
         try
         {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
@@ -1704,7 +1677,7 @@ public class Game_Timer extends Activity{
             HttpPost httpPost = new HttpPost("http://instanttrivia.atwebpages.com/o_scripts/record_play.php");
 
             try {
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                List<NameValuePair> nameValuePairs = new ArrayList<>();
                 nameValuePairs.add(new BasicNameValuePair("id", id));
                 nameValuePairs.add(new BasicNameValuePair("ratio", ratio));
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -1722,12 +1695,12 @@ public class Game_Timer extends Activity{
     public void onBackPressed(){
         back_pressed++;
         Log.e("started", started.toString());
-        if(started == false) {
+        if(!started) {
             finish();
         }else{
             if(back_pressed == 1){
                 game_end();
-                if(started == true){
+                if(started){
                     timer.cancel();                         //prevent timer from exception
                     //btn_grid.setVisibility(View.GONE);      //solves not fading out button grid after back button pressed bug
                 }else{
