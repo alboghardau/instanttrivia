@@ -447,6 +447,9 @@ public class Game_Timer extends Activity{
         lin.setLayoutParams(params);
         lin.setGravity(Gravity.CENTER_VERTICAL);
         lin.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_lollipop));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            lin.setElevation(dpToPx(3));
+        }
 
         ImageView img = new ImageView(this);
         img.setImageResource(getResources().getIdentifier("icon_cat_" + id, "drawable", "com.itmc.instanttrivia"));
@@ -842,7 +845,7 @@ public class Game_Timer extends Activity{
         int total_hits = total_buttons_correct+total_buttons_wrong;
         double accuracy = Math.ceil(((total_buttons_correct)/(float)total_hits)*100);
         text_accuracy.setText((int)accuracy+"");
-        text_stat_ans.setText(question_correct+" / 10 Correct Answers");
+        text_stat_ans.setText(question_correct+" / 10");
         text_highest_score.setText("Best score: "+highest_score_get(difficulty_setting,score));
 
         prog_correct.setMax(total_hits);
@@ -908,7 +911,7 @@ public class Game_Timer extends Activity{
                     score_local = scoresBuffer.getRawScore();
                     Log.e("Retrieved Total Score\n",score_local+"");
                 }
-                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score/10+score_local);
+                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score+score_local);
                 Log.e("Total Score Uploaded", "TRUE");
             }
         };

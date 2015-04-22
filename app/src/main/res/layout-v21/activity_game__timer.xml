@@ -67,6 +67,7 @@
             android:text="Science &amp; Tech"
             android:id="@+id/text_view_category"
             android:layout_alignParentTop="false"
+            android:elevation="3dp"
             android:background="@drawable/ui_card"
             android:padding="5dp"
             android:textSize="20dp"
@@ -85,7 +86,8 @@
         android:max="100"
         android:visibility="visible"
         android:progressDrawable="@drawable/custom_progressbar_red"
-        android:layout_below="@+id/linear_topbar" />
+        android:layout_below="@+id/linear_topbar"
+        android:elevation="5dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -97,6 +99,7 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         android:gravity="center"
+        android:elevation="5dp"
         android:text="Chose Category"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -141,7 +144,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:elevation="3dp" />
 
             <RadioButton
                 android:layout_width="match_parent"
@@ -154,7 +158,8 @@
                 android:gravity="center"
                 android:nestedScrollingEnabled="false"
                 android:onClick="onDifficultyRadioClick"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:elevation="3dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -175,7 +180,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:elevation="3dp" />
 
             <RadioButton
                 android:layout_width="match_parent"
@@ -188,7 +194,8 @@
                 android:gravity="center"
                 android:onClick="onDifficultyRadioClick"
                 android:textSize="15dp"
-                android:checked="false" />
+                android:checked="false"
+                android:elevation="3dp" />
         </LinearLayout>
 
         <TextView
@@ -285,6 +292,7 @@
                 android:focusableInTouchMode="false"
                 android:id="@+id/linear_gratz"
                 android:gravity="center"
+                android:elevation="3dp"
                 android:layout_margin="5dp"
                 android:background="@drawable/ui_card">
 
@@ -307,6 +315,7 @@
                     android:visibility="visible"
                     android:progressDrawable="@drawable/custom_progressbar_white"
                     android:layout_below="@+id/linear_topbar"
+                    android:elevation="5dp"
                     android:indeterminate="false"
                     android:minHeight="5dp"
                     android:paddingLeft="10dp"
