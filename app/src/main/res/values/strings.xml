@@ -37,5 +37,8 @@
     <string name="back">Back</string>
     <string name="next_question">Next Question</string>
     <string name="description">Description</string>
+    <string name="stat_c_hits">Correct\nhits</string>
+    <string name="stat_w_hits">Wrong\nhits</string>
+    <string name="stat_acc">Accuracy\n</string>
 
 </resources>

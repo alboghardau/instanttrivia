@@ -39,10 +39,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     RelativeLayout ui_bot_section;
     Button btn_play;
 
-    private LinearLayout lin_top_logo;
-    private RelativeLayout rel_logged;
-
-    public static BlankFragment newInstance(String param1, String param2) {
+    public static BlankFragment newInstance() {
         BlankFragment fragment = new BlankFragment();
         Bundle args = new Bundle();
 
@@ -57,9 +54,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
 
-        }
     }
 
     @Override
@@ -129,6 +124,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
                 ((TextView) v).setTypeface(new_font);
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -166,7 +162,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
 
     private void show_coins(){
         ui_coins.setVisibility(View.VISIBLE);
-        ui_total_coins.setText(""+ StartActivity.settings.getInt("Coins", 25));
+        ui_total_coins.setText(""+ StartActivity.settings.getInt("Coins", 5));
     }
 
     @Override

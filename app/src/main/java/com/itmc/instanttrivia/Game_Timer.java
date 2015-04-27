@@ -365,7 +365,7 @@ public class Game_Timer extends Activity{
 
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){
-        String tester = settings.getString("Color_Theme","Purple");
+        String tester = settings.getString("Color_Theme", "Purple");
         switch (tester){
             case "Red":
                 Views_Editor("red");
@@ -420,8 +420,12 @@ public class Game_Timer extends Activity{
 
         prog_bar.setProgressDrawable(getResources().getDrawable(progress_dwg));
         prog_score.setProgressDrawable(getResources().getDrawable(progress_dwg));
-        text_question.setBackgroundColor(getResources().getColor(primary_color));
-        lin_top.setBackgroundColor((getResources().getColor(darker_color)));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)        {
+            text_question.setTextColor(getResources().getColor(darker_color));
+        }else {
+            text_question.setBackgroundColor(getResources().getColor(primary_color));
+        }
+        lin_top.setBackgroundColor((getResources().getColor(primary_color)));
         text_view_category.setTextColor(getResources().getColor(darker_color));
         text_final_score.setBackground(getResources().getDrawable(final_score_helper));
         text_difficulty.setTextColor(getResources().getColor(darker_color));
@@ -756,7 +760,7 @@ public class Game_Timer extends Activity{
 
     private void settings_coins_update(int hints){
         SharedPreferences.Editor edit = settings.edit();
-        edit.putInt("Coins",hints);
+        edit.putInt("Coins", hints);
         edit.apply();
     }
 
@@ -974,7 +978,6 @@ public class Game_Timer extends Activity{
         //contor used for answers id starting with 200
         Integer cont_id = 200;
 
-
         for (Character ch : answer.toCharArray()) {
             TextView t = new TextView(this);
 
@@ -984,9 +987,9 @@ public class Game_Timer extends Activity{
             t.setMaxWidth(dpToPx(max_width));
             t.setTextColor(Color.WHITE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                t.setElevation(5);       //implement elevation for 5.0+
+                t.setElevation(3);       //implement elevation for 5.0+
             }
-            t.setId(cont_id);
+            t.setId(cont_id.intValue());        //PREVENTS IDE ERROR, SHOWS WARNING
             t.setBackground(getResources().getDrawable(R.drawable.transition_answer));
             t.setPadding(dpToPx(4),0, dpToPx(4),0);
 
@@ -1041,7 +1044,7 @@ public class Game_Timer extends Activity{
         score = score + bonus;
 
         //SEND TO SERVER THE RATIO
-        if(isNetworkAvailable()){
+        if(isNetworkAvailable() && settings.getBoolean("stat_send",true)){
             double q_ratio = (double) bonus/score_per_question;
             new send_async_ratio().execute(question_id, q_ratio+"");
         }
@@ -1289,8 +1292,8 @@ public class Game_Timer extends Activity{
 
         for(int i = 0; i < uniq_ans.size()*0.3 ; i++)
         {
-            for(int j = 100; j < 115; j++){
-                TextView btn = (TextView) findViewById(j);
+            for(Integer j = 100; j < 115; j++){
+                TextView btn = (TextView) findViewById(j.intValue());
                 if(btn.getText().charAt(0) == (uniq.get(i)) && !ans_pressed.contains(btn.getText().charAt(0))){
                     btn.performClick();
                 }
@@ -1327,7 +1330,7 @@ public class Game_Timer extends Activity{
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
-            if(isNetworkAvailable()) {
+            if(isNetworkAvailable() && settings.getBoolean("stat_send",true)) {
                 new send_async_ratio().execute(question_id, "0.0");
             }
         }
@@ -1547,7 +1550,7 @@ public class Game_Timer extends Activity{
                 }else {
                     question_pause();
                     //SEND RATIO TO SERVER
-                    if(isNetworkAvailable()) {
+                    if(isNetworkAvailable() && settings.getBoolean("stat_send", true)) {
                         new send_async_ratio().execute(question_id, "0.0");
                     }
                 }

@@ -13,9 +13,11 @@
         <item name="drawerType">@integer/DRAWERTYPE_NO_HEADER</item>
     </style>
 
-    <style name="ActionTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ActionTheme" parent="android:Theme.Material.Light.NoActionBar">
 
     </style>
+
+    <style name="MaterialBar" parent="android:Theme.Material.Light.DarkActionBar"></style>
 
     <style name="ActionTheme.Options_Style_Purple">
         <item name="colorPrimary">@color/purple_500</item>
@@ -45,6 +47,36 @@
         <item name="colorPrimary">@color/orange_500</item>
         <item name="colorPrimaryDark">@color/orange_700</item>
         <item name="colorAccent">@color/orange_300</item>
+    </style>
+
+    <style name="MaterialBar.Options_Style_Purple">
+        <item name="android:colorPrimary">@color/deep_purple_500</item>
+        <item name="android:colorPrimaryDark">@color/deep_purple_700</item>
+        <item name="android:colorAccent">@color/deep_purple_300</item>
+    </style>
+
+    <style name="MaterialBar.Options_Style_Red">
+        <item name="android:colorPrimary">@color/red_500</item>
+        <item name="android:colorPrimaryDark">@color/red_700</item>
+        <item name="android:colorAccent">@color/red_300</item>
+    </style>
+
+    <style name="MaterialBar.Options_Style_Blue">
+        <item name="android:colorPrimary">@color/blue_500</item>
+        <item name="android:colorPrimaryDark">@color/blue_700</item>
+        <item name="android:colorAccent">@color/blue_300</item>
+    </style>
+
+    <style name="MaterialBar.Options_Style_LGreen">
+        <item name="android:colorPrimary">@color/light_green_500</item>
+        <item name="android:colorPrimaryDark">@color/light_green_700</item>
+        <item name="android:colorAccent">@color/light_green_300</item>
+    </style>
+
+    <style name="MaterialBar.Options_Style_Orange">
+        <item name="android:colorPrimary">@color/orange_500</item>
+        <item name="android:colorPrimaryDark">@color/orange_700</item>
+        <item name="android:colorAccent">@color/orange_300</item>
     </style>
 
 </resources>

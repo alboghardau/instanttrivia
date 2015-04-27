@@ -95,14 +95,17 @@
         android:id="@+id/text_question"
         android:layout_below="@+id/timer_bar"
         android:layout_centerHorizontal="true"
-        android:background="@color/purple_500"
+        android:background="@drawable/ui_card"
         android:textColor="@color/white"
         android:textSize="16dp"
         android:gravity="center"
-        android:elevation="5dp"
+        android:elevation="3dp"
         android:text="@string/question"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:visibility="gone" />
 
     <LinearLayout
@@ -338,7 +341,7 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text=""
+                            android:text="@string/stat_c_hits"
                             android:id="@+id/textView3"
                             android:textSize="15dp"
                             android:gravity="center" />
@@ -384,10 +387,10 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text=""
                             android:id="@+id/textView5"
                             android:textSize="15dp"
-                            android:gravity="center" />
+                            android:gravity="center"
+                            android:text="@string/stat_w_hits" />
 
                         <RelativeLayout
                             android:layout_width="fill_parent"
@@ -428,10 +431,10 @@
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text=""
                             android:id="@+id/textView2"
                             android:textSize="15dp"
-                            android:gravity="center" />
+                            android:gravity="center"
+                            android:text="@string/stat_acc" />
 
                         <RelativeLayout
                             android:layout_width="fill_parent"

@@ -20,7 +20,7 @@ public class DbOP {
     public int db_version = 43; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
     private int max_in_category = 1;
 
-    ArrayList<Integer> seen = new ArrayList<Integer>();
+    ArrayList<Integer> seen = new ArrayList<>();
 
     public DbOP(Context context){
         mydbhelp = new DatabaseHandler(context);
@@ -88,6 +88,7 @@ public class DbOP {
             mydbhelp.openDataBase();
 
         } catch (SQLException sqle) {
+            sqle.printStackTrace();
             throw sqle;
         }
 
@@ -98,7 +99,6 @@ public class DbOP {
     public String[] read_rand_question_difficulty(int diff, int cat){
 
         String[] question = new String[4];
-        Cursor cursor = null;
 
         String id = "diff = " + diff+" AND cat_id = "+ cat;
 
@@ -107,7 +107,7 @@ public class DbOP {
         if(diff == 5 && cat == 1) id = null;
         int result;
 
-        cursor = db.query("quest", null, id, null, null, null, null);
+        Cursor cursor = db.query("quest", null, id, null, null, null, null);
 
         result = cursor.getCount();
 
@@ -115,16 +115,14 @@ public class DbOP {
         Random r = new Random();
         int i = (r.nextInt(result));
 
-        while(seen.contains((Integer)i) == true)
-        {
+        while(seen.contains(i)){
             i = (r.nextInt(result));
         }
         cursor.moveToPosition(i);
-        seen.add((Integer)i);
+        seen.add(i);
 
         //prevents repeating questions
-        if(seen.size() > 10)
-        {
+        if(seen.size() > 10){
             seen.clear();
         }
         Log.e("q no", seen.size()+"");
@@ -140,19 +138,18 @@ public class DbOP {
 
     public ArrayList<String> read_10_questions(int difficulty, int category){
 
-        Cursor cursor = null;
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         String where = "WHERE diff = " + difficulty+" AND cat_id = "+ category;
         if(difficulty == 5) where = "WHERE cat_id = "+ category;
         if(category == 1) where = "WHERE diff = "+ difficulty;
         if(difficulty == 5 && category == 1) where = "";
 
-        cursor = db.rawQuery("SELECT * FROM quest "+where+" ORDER BY played,RANDOM() LIMIT 10", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM quest "+where+" ORDER BY played,RANDOM() LIMIT 10", null);
 
         cursor.moveToFirst();
 
-        while(cursor.isAfterLast() == false){
+        while(!cursor.isAfterLast()){
 
             result.add(cursor.getInt(0) + "");  //id
             result.add(cursor.getString(1));    //question
@@ -169,24 +166,18 @@ public class DbOP {
 
     //UPDATES THE PLAYED COLUMN OF THE QUESTION TABLE
     private void update_db_played(int id,int played){
-        Cursor cursor = null;
-
-        cursor = db.rawQuery("UPDATE quest SET played="+played+" WHERE id="+id,null);
+        Cursor cursor = db.rawQuery("UPDATE quest SET played="+played+" WHERE id="+id,null);
         cursor.moveToFirst();
         cursor.close();
     }
 
     //TEST PURPOSE ONLY READS A QUESTION
-    public String[] read_spec_questions(int idq)
-    {
+    public String[] read_spec_questions(int idq){
         String[] question = new String[4];
-        Cursor cursor = null;
-
         String id = "id = " + idq;
-
         int result;
 
-        cursor = db.query("quest", null, id, null, null, null, null);
+        Cursor cursor = db.query("quest", null, id, null, null, null, null);
 
         result = cursor.getCount();
 
@@ -208,17 +199,13 @@ public class DbOP {
     //READS CATEGORIES WITH A MINIMUM NO O QUESTIONS/EACH DIFFICULTY
     public ArrayList<String> read_cats(int diff)
     {
-        Cursor cursor = null;
-
-        cursor = db.rawQuery("SELECT * FROM cats", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM cats", null);
         cursor.moveToFirst();
-       // String[][] cats = new String[][];
 
-        ArrayList<String> cat = new ArrayList<String>();
-        ArrayList<Integer> cat_id = new ArrayList<Integer>();
+        ArrayList<String> cat = new ArrayList<>();
 
         int i = 0;
-        while(cursor.isAfterLast() == false)
+        while(!cursor.isAfterLast())
         {
             int id = cursor.getInt(0);
             if(diff == 5 && cursor.getInt(2) > max_in_category){

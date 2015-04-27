@@ -1,34 +1,30 @@
 package com.itmc.instanttrivia;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.TypefaceSpan;
+import android.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
-
-public class Options extends ActionBarActivity {
+public class Options extends Activity {
 
     SharedPreferences settings;
 
     RadioButton radio_red, radio_blue, radio_purple, radio_lgreen, radio_orange;
     RadioButton opt_radio_easy, opt_radio_medium, opt_radio_hard, opt_radio_random;
-    TextView opt_color_header, opt_question_diff;
-    TextView opt_text_easy, opt_text_med, opt_text_hard, opt_text_random;
+    TextView opt_color_header, opt_question_diff, opt_send_stat;
+    TextView opt_text_easy, opt_text_med, opt_text_hard, opt_text_random, opt_send_description;
     RelativeLayout opt_rel_easy, opt_rel_medium, opt_rel_hard, opt_rel_random;
+    Switch switch_stats;
 
     Typeface font;
 
@@ -43,9 +39,15 @@ public class Options extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            final ActionBar actionBar = getActionBar();
+            if(actionBar!=null) {
+                actionBar.setTitle("Settings");
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }
+
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
-
-
 
         radio_red = (RadioButton)findViewById(R.id.radio_red);
         radio_blue = (RadioButton)findViewById(R.id.radio_blue);
@@ -64,11 +66,22 @@ public class Options extends ActionBarActivity {
         opt_text_med = (TextView) findViewById(R.id.opt_text_medium);
         opt_text_hard = (TextView) findViewById(R.id.opt_text_hard);
         opt_text_random = (TextView) findViewById(R.id.opt_text_random);
+        opt_send_stat = (TextView) findViewById(R.id.opt_send_stat);
+        opt_send_description = (TextView) findViewById(R.id.opt_send_description);
 
         opt_rel_easy = (RelativeLayout) findViewById(R.id.opt_rel_easy);
         opt_rel_medium = (RelativeLayout) findViewById(R.id.opt_rel_medium);
         opt_rel_hard = (RelativeLayout) findViewById(R.id.opt_rel_hard);
         opt_rel_random = (RelativeLayout) findViewById(R.id.opt_rel_random);
+
+        switch_stats = (Switch) findViewById(R.id.switch_stats);
+        switch_stats.setChecked(settings.getBoolean("stat_send", true));
+        switch_stats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                statistics_switch();
+            }
+        });
 
         //set fonts
         opt_color_header.setTypeface(font);
@@ -77,6 +90,8 @@ public class Options extends ActionBarActivity {
         opt_text_med.setTypeface(font);
         opt_text_hard.setTypeface(font);
         opt_text_random.setTypeface(font);
+        opt_send_stat.setTypeface(font);
+        opt_send_description.setTypeface(font);
 
         radio_check(settings.getString("Color_Theme", "Purple"));
         diff_check(settings.getInt("question_diff", 5));
@@ -84,7 +99,6 @@ public class Options extends ActionBarActivity {
         //sets rest of theme settings
         Theme_Setter2();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -138,23 +152,44 @@ public class Options extends ActionBarActivity {
     //function NOT USED FOR NOW / CAN NOT CHANGE FONT ON ACTION BAR
     //has to be called before inflating the layout
     private void Theme_Setter(){
-        String tester = settings.getString("Color_Theme","Purple");
-        switch (tester){
-            case "Red":
-                setTheme(R.style.ActionTheme_Options_Style_Red);
-                break;
-            case "Purple":
-                setTheme(R.style.ActionTheme_Options_Style_Purple);
-                break;
-            case "Blue":
-                setTheme(R.style.ActionTheme_Options_Style_Blue);
-                break;
-            case "LGreen":
-                setTheme(R.style.ActionTheme_Options_Style_LGreen);
-                break;
-            case "Orange":
-                setTheme(R.style.ActionTheme_Options_Style_Orange);
-                break;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            String tester = settings.getString("Color_Theme", "Purple");
+            switch (tester) {
+                case "Red":
+                    setTheme(R.style.ActionTheme_Options_Style_Red);
+                    break;
+                case "Purple":
+                    setTheme(R.style.ActionTheme_Options_Style_Purple);
+                    break;
+                case "Blue":
+                    setTheme(R.style.ActionTheme_Options_Style_Blue);
+                    break;
+                case "LGreen":
+                    setTheme(R.style.ActionTheme_Options_Style_LGreen);
+                    break;
+                case "Orange":
+                    setTheme(R.style.ActionTheme_Options_Style_Orange);
+                    break;
+            }
+        }else {
+            String tester = settings.getString("Color_Theme", "Purple");
+            switch (tester) {
+                case "Red":
+                    setTheme(R.style.MaterialBar_Options_Style_Red);
+                    break;
+                case "Purple":
+                    setTheme(R.style.MaterialBar_Options_Style_Purple);
+                    break;
+                case "Blue":
+                    setTheme(R.style.MaterialBar_Options_Style_Blue);
+                    break;
+                case "LGreen":
+                    setTheme(R.style.MaterialBar_Options_Style_LGreen);
+                    break;
+                case "Orange":
+                    setTheme(R.style.MaterialBar_Options_Style_Orange);
+                    break;
+            }
         }
     }
 
@@ -185,11 +220,25 @@ public class Options extends ActionBarActivity {
         }
     }
 
+    private void statistics_switch(){
+        boolean statEnabler = settings.getBoolean("stat_send", true);
+        SharedPreferences.Editor editor = settings.edit();
+        if(statEnabler){
+            editor.putBoolean("stat_send", false);
+            editor.apply();
+            switch_stats.setChecked(false);
+        }else{
+            editor.putBoolean("stat_send", true);
+            editor.apply();
+            switch_stats.setChecked(true);
+        }
+    }
+
     //sets the color setting in preferences and restarts app
     private void update_options_color(String option){
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("Color_Theme", option);
-        editor.commit();
+        editor.apply();
 
         Intent i = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage( getBaseContext().getPackageName() );
@@ -201,7 +250,7 @@ public class Options extends ActionBarActivity {
     private void update_options_difficulty(int difficulty){
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("question_diff", difficulty);
-        editor.commit();
+        editor.apply();
     }
 
     //question difficulty radio clicker
