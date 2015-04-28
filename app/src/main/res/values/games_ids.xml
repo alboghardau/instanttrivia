@@ -30,6 +30,50 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_still_noob">CgkIyc6Y-6gaEAIQFA</string>
     <string name="achievement_dont_give_up">CgkIyc6Y-6gaEAIQFQ</string>
 
+    <!--CATEGORIES INCREMENTAL ACHIEVEMENTS-->
+    <string name="achievement_first_trip">CgkIyc6Y-6gaEAIQGQ</string>
+    <string name="achievement_beyond_borders">CgkIyc6Y-6gaEAIQGA</string>
+    <string name="achievement_top_of_the_hill">CgkIyc6Y-6gaEAIQGg</string>
+    <string name="achievement_cliff_jumper">CgkIyc6Y-6gaEAIQHQ</string>
+    <string name="achievement_around_the_world">CgkIyc6Y-6gaEAIQHw</string>
+    <string name="achievement_climbing_everest">CgkIyc6Y-6gaEAIQIA</string>
+    <string name="achievement_peasant">CgkIyc6Y-6gaEAIQIQ</string>
+    <string name="achievement_kings_servant">CgkIyc6Y-6gaEAIQIg</string>
+    <string name="achievement_knight_in_armor">CgkIyc6Y-6gaEAIQIw</string>
+    <string name="achievement_master_of_the_castle">CgkIyc6Y-6gaEAIQJA</string>
+    <string name="achievement_ancient_pharaoh">CgkIyc6Y-6gaEAIQJQ</string>
+    <string name="achievement_worlds_conquerer">CgkIyc6Y-6gaEAIQJg</string>
+    <string name="achievement_buzz_buzz">CgkIyc6Y-6gaEAIQJw</string>
+    <string name="achievement_caterpillar_in_the_rain">CgkIyc6Y-6gaEAIQKA</string>
+    <string name="achievement_survival_instinct">CgkIyc6Y-6gaEAIQKQ</string>
+    <string name="achievement_garden_of_life">CgkIyc6Y-6gaEAIQKg</string>
+    <string name="achievement_the_beauty_of_evolution">CgkIyc6Y-6gaEAIQKw</string>
+    <string name="achievement_king_of_the_jungle">CgkIyc6Y-6gaEAIQLA</string>
+    <string name="achievement_inventor_of_the_wheel">CgkIyc6Y-6gaEAIQLQ</string>
+    <string name="achievement_cant_live_without_wifi">CgkIyc6Y-6gaEAIQLg</string>
+    <string name="achievement_dont_blow_the_lab">CgkIyc6Y-6gaEAIQLw</string>
+    <string name="achievement_chain_reaction">CgkIyc6Y-6gaEAIQMA</string>
+    <string name="achievement_mad_scientist">CgkIyc6Y-6gaEAIQMQ</string>
+    <string name="achievement_time_travel_discovered">CgkIyc6Y-6gaEAIQMg</string>
+    <string name="achievement_know_yourself">CgkIyc6Y-6gaEAIQMw</string>
+    <string name="achievement_worlds_citizen">CgkIyc6Y-6gaEAIQNA</string>
+    <string name="achievement_mythical_beast">CgkIyc6Y-6gaEAIQNQ</string>
+    <string name="achievement_easy_to_adapt">CgkIyc6Y-6gaEAIQNg</string>
+    <string name="achievement_true_humanity">CgkIyc6Y-6gaEAIQNw</string>
+    <string name="achievement_pure_knowledge">CgkIyc6Y-6gaEAIQOA</string>
+    <string name="achievement_first_sketch">CgkIyc6Y-6gaEAIQOQ</string>
+    <string name="achievement_virtuoso">CgkIyc6Y-6gaEAIQOg</string>
+    <string name="achievement_melody_maestro">CgkIyc6Y-6gaEAIQOw</string>
+    <string name="achievement_classical_artist">CgkIyc6Y-6gaEAIQPA</string>
+    <string name="achievement_own_art_gallery">CgkIyc6Y-6gaEAIQPQ</string>
+    <string name="achievement_best_seller">CgkIyc6Y-6gaEAIQPg</string>
+    <string name="achievement_enjoy_the_show">CgkIyc6Y-6gaEAIQPw</string>
+    <string name="achievement_singing_in_the_rain">CgkIyc6Y-6gaEAIQQA</string>
+    <string name="achievement_olympics_winner">CgkIyc6Y-6gaEAIQQQ</string>
+    <string name="achievement_hollywood_star">CgkIyc6Y-6gaEAIQQg</string>
+    <string name="achievement_oscar_winner">CgkIyc6Y-6gaEAIQQw</string>
+    <string name="achievement_hal_of_fame">CgkIyc6Y-6gaEAIQRA</string>
+
     <!-- LEADERBOARDS-->
     <string name="leaderboard_total_score">CgkIyc6Y-6gaEAIQBA</string>
     <string name="leaderboard_time_trial__easy_level">CgkIyc6Y-6gaEAIQAQ</string>

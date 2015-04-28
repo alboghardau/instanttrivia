@@ -882,6 +882,72 @@ public class Game_Timer extends Activity{
         if(game_difficulty == 3 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
     }
 
+    private void achievements_categories(){
+        //GEORGRAPHY ID 2
+        if(category.equals("Geography")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_first_trip),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_beyond_borders),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_top_of_the_hill),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_cliff_jumper),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_around_the_world),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_climbing_everest),1);
+        }
+        //HISTORY ID 3
+        if(category.equals("History")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_peasant),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_kings_servant),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_knight_in_armor),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_master_of_the_castle),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_ancient_pharaoh),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_worlds_conquerer),1);
+        }
+        //BILOGY ID 7
+        if(category.equals("Biology")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_buzz_buzz),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_caterpillar_in_the_rain),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_survival_instinct),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_garden_of_life),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_the_beauty_of_evolution),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_king_of_the_jungle),1);
+        }
+        //SCIENTE AND TECH ID 11
+        if(category.equals("Science & Tech")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_inventor_of_the_wheel),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_cant_live_without_wifi),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_dont_blow_the_lab),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_chain_reaction),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_mad_scientist),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_time_travel_discovered),1);
+        }
+        //CULTURE ID 13
+        if(category.equals("Culture")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_know_yourself),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_worlds_citizen),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_mythical_beast),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_easy_to_adapt),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_true_humanity),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_pure_knowledge),1);
+        }
+        //ARTS ID 15
+        if(category.equals("Arts")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_first_sketch),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_virtuoso),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_melody_maestro),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_classical_artist),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_own_art_gallery),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_best_seller),1);
+        }
+        //ENTERTAINMENT ID 15
+        if(category.equals("Entertainment")){
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_enjoy_the_show),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_singing_in_the_rain),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_olympics_winner),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_hollywood_star),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_oscar_winner),1);
+            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_hal_of_fame),1);
+        }
+    }
+
     //updates total score leadeboard
     private void score_total_update(){
         //update difficulty score
@@ -1047,6 +1113,10 @@ public class Game_Timer extends Activity{
         if(isNetworkAvailable() && settings.getBoolean("stat_send",true)){
             double q_ratio = (double) bonus/score_per_question;
             new send_async_ratio().execute(question_id, q_ratio+"");
+        }
+        //SEND ACHIEVEMENT FOR CATEGORIES
+        if(isNetworkAvailable()){
+            achievements_categories();
         }
     }
 
