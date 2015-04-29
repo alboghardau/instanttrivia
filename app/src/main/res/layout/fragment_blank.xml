@@ -190,7 +190,8 @@
                     android:id="@+id/textView15"
                     android:gravity="center"
                     android:textSize="15dp"
-                    android:text="Easy" />
+                    android:text="Easy"
+                    android:textColor="@color/grey_700" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -224,7 +225,8 @@
                     android:id="@+id/textView18"
                     android:gravity="center"
                     android:textSize="15dp"
-                    android:text="Medium" />
+                    android:text="Medium"
+                    android:textColor="@color/grey_700" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -258,7 +260,8 @@
                     android:id="@+id/textView19"
                     android:gravity="center"
                     android:textSize="15dp"
-                    android:text="Hard" />
+                    android:text="Hard"
+                    android:textColor="@color/grey_700" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -292,7 +295,8 @@
                     android:id="@+id/textView20"
                     android:gravity="center"
                     android:textSize="15dp"
-                    android:text="Random" />
+                    android:text="Random"
+                    android:textColor="@color/grey_700" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -332,7 +336,8 @@
             android:elevation="3dp"
             android:padding="10dp"
             android:background="@drawable/button_lollipop"
-            android:stateListAnimator="@null" />
+            android:stateListAnimator="@null"
+            android:textColor="@color/grey_900" />
 
     </RelativeLayout>
 

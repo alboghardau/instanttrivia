@@ -474,6 +474,13 @@ public class Game_Timer extends Activity{
         return lin;
     }
 
+    private void categories_deactivate(){
+        for (int i = 0; i < grid_categories.getChildCount(); i++) {
+            View child = grid_categories.getChildAt(i);
+            child.setEnabled(false);
+        }
+    }
+
     private void categories_generate_list(){
         final ArrayList<String> categories = db.read_cats(difficulty_setting);
         Log.e("Categories", categories.toString());
@@ -495,6 +502,7 @@ public class Game_Timer extends Activity{
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                categories_deactivate();    //DEACTIVATE BUTTONS TO PREVENT CLICK AGAIN
                 pd.show();
             }
 
@@ -514,7 +522,6 @@ public class Game_Timer extends Activity{
                 super.onPostExecute(aVoid);
                 pd.dismiss();
                 animate_game_start();
-
             }
         };
         task.execute((Void[])null);
@@ -1115,7 +1122,7 @@ public class Game_Timer extends Activity{
             new send_async_ratio().execute(question_id, q_ratio+"");
         }
         //SEND ACHIEVEMENT FOR CATEGORIES
-        if(isNetworkAvailable()){
+        if(mGoogleApiClient != null && isNetworkAvailable()){
             achievements_categories();
         }
     }
@@ -1747,7 +1754,7 @@ public class Game_Timer extends Activity{
 
         private void server_send_ratio(String id, String ratio) {
             HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://instanttrivia.atwebpages.com/o_scripts/record_play.php");
+            HttpPost httpPost = new HttpPost("http://instanttrivia.website/o_scripts/record_play.php");
 
             try {
                 List<NameValuePair> nameValuePairs = new ArrayList<>();
