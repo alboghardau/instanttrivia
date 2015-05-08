@@ -1,5 +1,6 @@
 package com.itmc.instanttrivia;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +48,23 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -94,9 +111,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //DATABASE UPDATE
         db = new DbOP(this);
         db.testnewdb();
-        db.close();
+
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
+
+        new update_database().execute("20150401000000");
 
 
         //INITIALIZE FB SDK AND SHARE DIALOG
@@ -715,6 +734,11 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
+    }
 
 
     @Override
@@ -722,6 +746,102 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         super.onPause();
         if(isNetworkAvailable()) {
             AppEventsLogger.deactivateApp(this);
+        }
+    }
+
+    //UPDATE QUESTIONS
+    public class update_database extends AsyncTask<String, Integer, Void> {
+
+        ProgressDialog progressDialog;
+        InputStream inputStream;
+        String json;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(StartActivity.this);
+            progressDialog.setTitle("Updating database!");
+            progressDialog.setMessage("Please wait.");
+            progressDialog.setCancelable(false);
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
+        }
+
+
+        @Override
+        protected Void doInBackground(String... params) {
+            json_response(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            //parse JSON data
+            try {
+                JSONArray jArray = new JSONArray(json);
+                ArrayList<Integer> arrayList = db.readAllIds();
+
+                for(int i=0; i < jArray.length(); i++) {
+
+                    JSONObject jObject = jArray.getJSONObject(i);
+
+                    int id = jObject.getInt("id");
+                    String question = jObject.getString("question");
+                    String answer = jObject.getString("answer");
+                    int cat_id = jObject.getInt("cat_id");
+                    String cat_name = jObject.getString("cat_name");
+                    int diff = jObject.getInt("diff");
+                    long time_stamp = jObject.getLong("time_stamp");
+
+                    db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
+
+                    Log.e("SYNC", question+"/"+answer);
+
+                } // End Loop
+
+
+            } catch (JSONException e) {
+                Log.e("JSONException", "Error: " + e.toString());
+            } // catch (JSONException e)
+            progressDialog.dismiss();
+        }
+
+        //RECEIVE JSON FROM SERVER
+        private void json_response(String time) {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://instanttrivia.website/o_scripts/update_json.php");
+
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<>();
+                nameValuePairs.add(new BasicNameValuePair("time", time));
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                HttpResponse response = httpClient.execute(httpPost);
+                HttpEntity httpEntity = response.getEntity();
+                inputStream = httpEntity.getContent();
+
+                try {
+                    BufferedReader bReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"), 8);
+                    StringBuilder sBuilder = new StringBuilder();
+
+                    String line = null;
+                    while ((line = bReader.readLine()) != null) {
+                        sBuilder.append(line + "\n");
+                    }
+
+                    inputStream.close();
+                    json = sBuilder.toString();
+
+                    Log.e("SYNC",json);
+
+                } catch (Exception e) {
+                    Log.e("StringBuilding", "Error converting result " + e.toString());
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                Log.e("Server Rat","FAILED");
+            }
         }
     }
 

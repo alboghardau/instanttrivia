@@ -17,7 +17,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 43; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 44; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
     private int max_in_category = 1;
 
     ArrayList<Integer> seen = new ArrayList<>();
@@ -169,6 +169,40 @@ public class DbOP {
         Cursor cursor = db.rawQuery("UPDATE quest SET played="+played+" WHERE id="+id,null);
         cursor.moveToFirst();
         cursor.close();
+    }
+
+    //UPDATE QUESTION FROM JSON, DOING APPROPIATE ACTION
+    public void updateQuestionFromJSON(int id, String question, String answer, int cat_id, String cat_name, int diff, long time_stamp,ArrayList<Integer> arrayList){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("question", question);
+        contentValues.put("answer", answer);
+        contentValues.put("cat_id", cat_id);
+        contentValues.put("cat_name", cat_name);
+        contentValues.put("diff", diff);
+        contentValues.put("time_stamp", time_stamp);
+
+        if(arrayList.contains(id)){
+            db.update("quest", contentValues, "id=" + id, null);
+            Log.e("SYNC", "Updated "+id);
+        }else{
+            contentValues.put("id", id);
+            db.insert("quest", null, contentValues);
+            Log.e("SYNC", "Inserted " + id);
+        }
+    }
+
+    //READ ALL EXISTING IDS
+    public ArrayList<Integer> readAllIds(){
+        ArrayList<Integer> arrayList = new ArrayList();
+        Cursor cursor = db.rawQuery("SELECT * FROM quest",null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            arrayList.add(cursor.getInt(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return arrayList;
     }
 
     //TEST PURPOSE ONLY READS A QUESTION
