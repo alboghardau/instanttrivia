@@ -205,29 +205,32 @@ public class DbOP {
         return arrayList;
     }
 
+    //READ HIGHEST TIMESTAMP
+    public long readLatestTimeStam(){
+        long timeStamp;
+        Cursor cursor = db.rawQuery("SELECT time_stamp FROM quest ORDER BY time_stamp DESC LIMIT 1", null);
+        cursor.moveToFirst();
+        timeStamp = cursor.getLong(0);
+        Log.e("SYNC SEND","T/S "+cursor.getLong(cursor.getColumnIndex("time_stamp")));
+        cursor.close();
+
+        return timeStamp;
+    }
+
     //TEST PURPOSE ONLY READS A QUESTION
-    public String[] read_spec_questions(int idq){
+    public void read_spec_questions(int idq) {
         String[] question = new String[4];
         String id = "id = " + idq;
         int result;
 
         Cursor cursor = db.query("quest", null, id, null, null, null, null);
+        cursor.moveToFirst();
 
-        result = cursor.getCount();
+        Log.e("READ Q","T/S "+cursor.getLong(cursor.getColumnIndex("time_stamp")));
 
-        //get random return id
-        Random r = new Random();
-        int i = (r.nextInt(result));
 
-        cursor.moveToPosition(i);
-        int index = cursor.getColumnIndex("question");
-        int index2 = cursor.getColumnIndex("answer");
-
-        question[0] = cursor.getString(index);
-        question[1] = cursor.getString(index2);
 
         cursor.close();
-        return question;
     }
 
     //READS CATEGORIES WITH A MINIMUM NO O QUESTIONS/EACH DIFFICULTY

@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -330,6 +331,7 @@ public class Game_Timer extends Activity{
 
     private void Theme_Setter(){
         String tester = settings.getString("Color_Theme","Purple");
+        assert tester != null;
         switch (tester){
             case "Red":
                 setTheme(R.style.ActionTheme_Options_Style_Red);
@@ -366,6 +368,7 @@ public class Game_Timer extends Activity{
     //sets colors for internal views of layout
     private void Theme_Setter_Views(){
         String tester = settings.getString("Color_Theme", "Purple");
+        assert tester != null;
         switch (tester){
             case "Red":
                 Views_Editor("red");
@@ -413,13 +416,13 @@ public class Game_Timer extends Activity{
         int right_helper = getResources().getIdentifier("drawable/hints_help_"+color+"_700",null,getPackageName());
         int final_score_helper = getResources().getIdentifier("drawable/card_inside_"+color+"_700",null,getPackageName());
 
-        image_help.setBackground(getResources().getDrawable(right_helper));
-        image_time.setBackground(getResources().getDrawable(left_helper));
+        image_help.setBackground(ContextCompat.getDrawable(this, right_helper));
+        image_time.setBackground(ContextCompat.getDrawable(this, left_helper));
         image_help.setColorFilter(getResources().getColor(R.color.white));
         image_time.setColorFilter(getResources().getColor(R.color.white));
 
-        prog_bar.setProgressDrawable(getResources().getDrawable(progress_dwg));
-        prog_score.setProgressDrawable(getResources().getDrawable(progress_dwg));
+        prog_bar.setProgressDrawable(ContextCompat.getDrawable(this, progress_dwg));
+        prog_score.setProgressDrawable(ContextCompat.getDrawable(this,progress_dwg));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)        {
             text_question.setTextColor(getResources().getColor(darker_color));
         }else {
@@ -427,7 +430,7 @@ public class Game_Timer extends Activity{
         }
         lin_top.setBackgroundColor((getResources().getColor(primary_color)));
         text_view_category.setTextColor(getResources().getColor(darker_color));
-        text_final_score.setBackground(getResources().getDrawable(final_score_helper));
+        text_final_score.setBackground(ContextCompat.getDrawable(this,final_score_helper));
         text_difficulty.setTextColor(getResources().getColor(darker_color));
         text_category.setTextColor(getResources().getColor(darker_color));
     }
@@ -441,7 +444,7 @@ public class Game_Timer extends Activity{
 
         lin.setLayoutParams(params);
         lin.setGravity(Gravity.CENTER_VERTICAL);
-        lin.setBackground(getResources().getDrawable(R.drawable.button_lollipop));
+        lin.setBackground(ContextCompat.getDrawable(this, R.drawable.button_lollipop));
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             lin.setElevation(dpToPx(2));
         }
@@ -1040,7 +1043,7 @@ public class Game_Timer extends Activity{
         LinearLayout line = new LinearLayout(this);
         line.setOrientation(LinearLayout.HORIZONTAL);
         line.setGravity(Gravity.CENTER);
-        line.setDividerDrawable(getResources().getDrawable(R.drawable.vertical_divider));
+        line.setDividerDrawable(ContextCompat.getDrawable(this, R.drawable.vertical_divider));
         line.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         line.setMinimumHeight(dpToPx(36)); //SOLVES shadow clipping in 5.0+
         lin_answer.addView(line);
@@ -1152,7 +1155,7 @@ public class Game_Timer extends Activity{
         for(int i = 0; i < ans_arr.size(); i++){
             if(ans_arr.get(i) != " ".charAt(0) && !ans_pressed.contains(ans_arr.get(i))) {
                 TextView txt = (TextView) findViewById(cont_id + i);
-                txt.setBackground(getResources().getDrawable(R.drawable.answer_red));
+                txt.setBackground(ContextCompat.getDrawable(this, R.drawable.answer_red));
                 txt.setText(ans_arr.get(i).toString());
             }
         }
@@ -1166,7 +1169,7 @@ public class Game_Timer extends Activity{
             Button t = new Button(this);
 
             t.setText(buttons.get(i).toString());
-            t.setBackground(getResources().getDrawable(R.drawable.button_lollipop));
+            t.setBackground(ContextCompat.getDrawable(this, R.drawable.button_lollipop));
             t.setTextColor(getResources().getColor(R.color.abc_primary_text_material_light));
             GridLayout.LayoutParams par = new GridLayout.LayoutParams();
             par.width = dpToPx((int)DpWidth()/6);
@@ -1241,12 +1244,12 @@ public class Game_Timer extends Activity{
 
         //change background for buttons after click
         if(correct){
-            pressed.setBackground(getResources().getDrawable(R.drawable.button_lollipop_true));
+            pressed.setBackground(ContextCompat.getDrawable(this, R.drawable.button_lollipop_true));
             AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
             ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));
         }else{
-            pressed.setBackground(getResources().getDrawable(R.drawable.button_lollipop_false));
+            pressed.setBackground(ContextCompat.getDrawable(this, R.drawable.button_lollipop_false));
             AnimationDrawable ani = (AnimationDrawable) pressed.getBackground();
             ani.start();
             pressed.setTextColor(getResources().getColor(R.color.white));

@@ -1,11 +1,11 @@
 package com.itmc.instanttrivia;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -22,6 +22,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,14 +36,12 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
 import com.facebook.share.widget.LikeView;
-import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
-import com.google.android.gms.games.leaderboard.Leaderboard;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
@@ -94,7 +93,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private boolean mSignInClicked = false;
 
     boolean mExplicitSignOut = false;
-    boolean mInSignInFlow = false;
+    //boolean mInSignInFlow = false;
 
     private static int RC_SIGN_IN = 9001;
 
@@ -108,14 +107,16 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
 
-        //DATABASE UPDATE
         db = new DbOP(this);
         db.testnewdb();
 
 
+
+
+
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
-        new update_database().execute("20150401000000");
+
 
 
         //INITIALIZE FB SDK AND SHARE DIALOG
@@ -145,7 +146,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
 
         //add home fragment
-        Intent options = new Intent(this, Options.class);
         frag = new BlankFragment();
 
         setTitle("TEST");
@@ -160,7 +160,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addSection(section);
 
         //SECTION ACHIEVEMENTS
-        MaterialSection section_achievements = newSection("Achievements",getResources().getDrawable(R.drawable.icon_trophy_award),new MaterialSectionListener() {
+        MaterialSection section_achievements = newSection("Achievements", ContextCompat.getDrawable(this, R.drawable.icon_trophy_award),new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 if(mGoogleApiClient.isConnected()){
@@ -178,7 +178,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addSection(section_achievements);
 
         //SECTION LEADERBOARDS
-        MaterialSection section_leader = newSection("Leader-Boards",getResources().getDrawable(R.drawable.icon_trophy_leader),new MaterialSectionListener() {
+        MaterialSection section_leader = newSection("Leader-Boards",ContextCompat.getDrawable(this, R.drawable.icon_trophy_leader),new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 if(mGoogleApiClient.isConnected()) {
@@ -196,16 +196,16 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addSection(section_leader);
 
         //SECTION GOOGLE SIGN IN
-        MaterialSection sign_in = newSection("Sign In",getResources().getDrawable(R.drawable.icon_gplus_box),new MaterialSectionListener() {
+        MaterialSection sign_in = newSection("Sign In", ContextCompat.getDrawable(this, R.drawable.icon_gplus_box), new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
-                if(isNetworkAvailable()){
+                if (isNetworkAvailable()) {
                     // Signin button clicked
                     mSignInClicked = true;
                     mGoogleApiClient.connect();
                     options_signed_in(true);
-                }else{
-                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!", Toast.LENGTH_SHORT);
+                } else {
+                    Toast t = Toast.makeText(getApplicationContext(), "Internet not connected!", Toast.LENGTH_SHORT);
                     t.show();
                 }
             }
@@ -216,7 +216,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addSection(sign_in);
 
         //SIGN OUT SECTION
-        MaterialSection section_signout = newSection("Sign Out",getResources().getDrawable(R.drawable.icon_logout), new MaterialSectionListener() {
+        MaterialSection section_signout = newSection("Sign Out",ContextCompat.getDrawable(this, R.drawable.icon_logout), new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 // user explicitly signed out, so turn off auto sign in
@@ -243,7 +243,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         }
 
         //SETTINGS SECTION
-        MaterialSection section_settings = newSection("Settings", getResources().getDrawable(R.drawable.icon_settings),new Intent(this, Options.class));
+        MaterialSection section_settings = newSection("Settings", ContextCompat.getDrawable(this, R.drawable.icon_settings),new Intent(this, Options.class));
         section_settings.setTypeface(font);
         section_settings.useRealColor();
         section_settings.setIconColor(getResources().getColor(R.color.light_green_500));
@@ -251,7 +251,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //LIKE OUR PAGE SECTION
         if(appInstalledOrNot("com.facebook.katana")) {
-            MaterialSection section_like_page = newSection("Like", getResources().getDrawable(R.drawable.icon_like), new MaterialSectionListener() {
+            MaterialSection section_like_page = newSection("Like", ContextCompat.getDrawable(this, R.drawable.icon_like), new MaterialSectionListener() {
                 @Override
                 public void onClick(MaterialSection section){
                     if(isNetworkAvailable()){
@@ -270,7 +270,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //FACEBOOK INVITE FRIENDS SECTION
         if(appInstalledOrNot("com.facebook.katana")) {
-            MaterialSection section_invite_friends = newSection("Invite Friends", getResources().getDrawable(R.drawable.icon_facebook), new MaterialSectionListener() {
+            MaterialSection section_invite_friends = newSection("Invite Friends", ContextCompat.getDrawable(this, R.drawable.icon_facebook), new MaterialSectionListener() {
                 @Override
                 public void onClick(MaterialSection section) {
                     String appLinkUrl, previewImageUrl;
@@ -298,7 +298,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //RATE US SECTION
         if(!settings.getBoolean("Rated", false)) {
             this.addDivisor();
-            MaterialSection section_rate_us = newSection("Rate Us! +25 Coins", getResources().getDrawable(R.drawable.icon_star), new MaterialSectionListener() {
+            MaterialSection section_rate_us = newSection("Rate Us! +25 Coins", ContextCompat.getDrawable(this, R.drawable.icon_star), new MaterialSectionListener() {
                 @Override
                 public void onClick(MaterialSection section) {
                     Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -308,7 +308,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                         settings_coins_update(coins_left() + 25);
                         settings_rated(true);
                     } catch (ActivityNotFoundException e) {
-
+                        Log.e("Rate", e.toString());
                     }
                 }
             });
@@ -329,7 +329,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         }
 
         //CHANGE DISPLAY FOR SIGN ON
-        if(settings.getBoolean("SIGNED_IN", false) == false) {
+        if(!settings.getBoolean("SIGNED_IN", false)) {
             display_change_state(false);
         }else{
             display_change_state(true);
@@ -340,13 +340,23 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         //onGameFirstRun will initialize the difficulty
         initialize_question_diff();
+
+        try{
+            if(isNetworkAvailable() && db.db_ver()>=44) {
+                new update_database().execute(db.readLatestTimeStam() + "");
+            }
+        }catch (Exception e){
+
+        }
+
+
     }
 
     //CHECK IF APP IS INSTALLED
     private boolean appInstalledOrNot(String uri)
     {
         PackageManager pm = getPackageManager();
-        boolean app_installed = false;
+        boolean app_installed;
         try
         {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
@@ -364,7 +374,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         if(settings.getInt("question_diff",0) == 0){
             SharedPreferences.Editor edit = settings.edit();
             edit.putInt("question_diff",5);
-            edit.commit();
+            edit.apply();
         }
     }
 
@@ -372,7 +382,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private void settings_rated(boolean set){
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean("Rated", set);
-        edit.commit();
+        edit.apply();
     }
 
     private void get_pic_result(){
@@ -488,7 +498,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     }
 
     private void display_change_state(Boolean signed){
-        if (signed == true){
+        if (signed){
             section_hide("Sign In");
             section_show("Achievements");
             section_show("Leader-Boards");
@@ -506,7 +516,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private void section_hide(String title){
         List<MaterialSection> sections = getSectionList();
         for(int i =0 ; i<sections.size(); i++){
-            if(sections.get(i).getTitle() == title){
+            if(sections.get(i).getTitle().equals(title)){
                 sections.get(i).getView().setVisibility(View.GONE);
             }
         }
@@ -514,7 +524,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private void section_show(String title){
         List<MaterialSection> sections = getSectionList();
         for(int i =0 ; i<sections.size(); i++){
-            if(sections.get(i).getTitle() == title){
+            if(sections.get(i).getTitle().equals(title)){
                 sections.get(i).getView().setVisibility(View.VISIBLE);
             }
         }
@@ -523,7 +533,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private void options_signed_in(boolean state){
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("SIGNED_IN",state);
-        editor.commit();
+        editor.apply();
     }
 
     private boolean isNetworkAvailable() {
@@ -535,6 +545,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
     private void Theme_Setter(){
         String tester = settings.getString("Color_Theme","Purple");
+        assert tester != null;
         switch (tester){
             case "Red":
                 colorPrimary = getResources().getColor(R.color.red_500);
@@ -586,7 +597,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     private void settings_coins_update(int hints){
         SharedPreferences.Editor edit = settings.edit();
         edit.putInt("Coins",hints);
-        edit.commit();
+        edit.apply();
     }
 
     @Override
@@ -594,7 +605,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         super.onStart();
         Boolean sign_tester = settings.getBoolean("SIGNED_IN",false);
         Log.e("Signed IN onStart", sign_tester+"");
-        if (sign_tester == true && isNetworkAvailable()) {
+        if (sign_tester && isNetworkAvailable()) {
             // auto sign in
             mGoogleApiClient.connect();
             Log.e("Sing in on start","Apelat");
@@ -680,7 +691,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         if(new_score > h_score){
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("highest_score"+difficulty, new_score);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -723,7 +734,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             };
             pendingResult.setResultCallback(scoreCallback);
         }
-        edit.commit();
+        edit.apply();
     }
 
     @Override
@@ -756,6 +767,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         InputStream inputStream;
         String json;
 
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -771,40 +783,20 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         @Override
         protected Void doInBackground(String... params) {
-            json_response(params[0]);
+            try {
+                json_response(params[0]);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
-            //parse JSON data
-            try {
-                JSONArray jArray = new JSONArray(json);
-                ArrayList<Integer> arrayList = db.readAllIds();
-
-                for(int i=0; i < jArray.length(); i++) {
-
-                    JSONObject jObject = jArray.getJSONObject(i);
-
-                    int id = jObject.getInt("id");
-                    String question = jObject.getString("question");
-                    String answer = jObject.getString("answer");
-                    int cat_id = jObject.getInt("cat_id");
-                    String cat_name = jObject.getString("cat_name");
-                    int diff = jObject.getInt("diff");
-                    long time_stamp = jObject.getLong("time_stamp");
-
-                    db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
-
-                    Log.e("SYNC", question+"/"+answer);
-
-                } // End Loop
-
-
-            } catch (JSONException e) {
-                Log.e("JSONException", "Error: " + e.toString());
-            } // catch (JSONException e)
             progressDialog.dismiss();
+            Toast ta = Toast.makeText(StartActivity.this, "Database Updated!", Toast.LENGTH_LONG);
+            ta.show();
         }
 
         //RECEIVE JSON FROM SERVER
@@ -842,6 +834,34 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 // TODO Auto-generated catch block
                 Log.e("Server Rat","FAILED");
             }
+
+            //parse JSON data
+            try {
+                JSONArray jArray = new JSONArray(json);
+                ArrayList<Integer> arrayList = db.readAllIds();
+
+                for(int i=0; i < jArray.length(); i++) {
+
+                    JSONObject jObject = jArray.getJSONObject(i);
+
+                    int id = jObject.getInt("id");
+                    String question = jObject.getString("question");
+                    String answer = jObject.getString("answer");
+                    int cat_id = jObject.getInt("cat_id");
+                    String cat_name = jObject.getString("cat_name");
+                    int diff = jObject.getInt("diff");
+                    long time_stamp = jObject.getLong("time_stamp");
+
+                    db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
+
+                    Log.e("SYNC", question+"/"+answer);
+
+                } // End Loop
+
+
+            } catch (JSONException e) {
+                Log.e("JSONException", "Error: " + e.toString());
+            } // catch (JSONException e)
         }
     }
 
