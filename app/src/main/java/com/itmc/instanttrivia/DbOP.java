@@ -1,9 +1,7 @@
 package com.itmc.instanttrivia;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +9,6 @@ import android.database.SQLException;
 import android.database.sqlite.*;
 import android.util.Log;
 
-import com.itmc.instanttrivia.DatabaseHandler;
 
 public class DbOP {
 
@@ -41,7 +38,7 @@ public class DbOP {
     //test if newer database has been added delete old one upload new one
     public void testnewdb()
     {
-        if(mydbhelp.checkDataBase() == true)
+        if(mydbhelp.checkDataBase())
         {
             try{
                 mydbhelp.openDataBase();
@@ -211,24 +208,24 @@ public class DbOP {
         Cursor cursor = db.rawQuery("SELECT time_stamp FROM quest ORDER BY time_stamp DESC LIMIT 1", null);
         cursor.moveToFirst();
         timeStamp = cursor.getLong(0);
-        Log.e("SYNC SEND","T/S "+cursor.getLong(cursor.getColumnIndex("time_stamp")));
+        Log.e("SYNC SEND", "T/S " + cursor.getLong(cursor.getColumnIndex("time_stamp")));
         cursor.close();
 
         return timeStamp;
     }
 
+    public void deleteFromQuest(int id){
+
+    }
+
     //TEST PURPOSE ONLY READS A QUESTION
     public void read_spec_questions(int idq) {
-        String[] question = new String[4];
         String id = "id = " + idq;
-        int result;
 
         Cursor cursor = db.query("quest", null, id, null, null, null, null);
         cursor.moveToFirst();
 
         Log.e("READ Q","T/S "+cursor.getLong(cursor.getColumnIndex("time_stamp")));
-
-
 
         cursor.close();
     }

@@ -821,11 +821,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     while ((line = bReader.readLine()) != null) {
                         sBuilder.append(line + "\n");
                     }
-
                     inputStream.close();
                     json = sBuilder.toString();
-
-                    Log.e("SYNC",json);
 
                 } catch (Exception e) {
                     Log.e("StringBuilding", "Error converting result " + e.toString());
@@ -835,14 +832,15 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 Log.e("Server Rat","FAILED");
             }
 
-            //parse JSON data
+            //PARSE JSON RESPONSE DATA
             try {
-                JSONArray jArray = new JSONArray(json);
+                JSONObject jArray = new JSONObject(json);
+                JSONArray jQuestions = jArray.getJSONArray("questions");
                 ArrayList<Integer> arrayList = db.readAllIds();
 
-                for(int i=0; i < jArray.length(); i++) {
+                for(int i=0; i < jQuestions.length(); i++) {
 
-                    JSONObject jObject = jArray.getJSONObject(i);
+                    JSONObject jObject = jQuestions.getJSONObject(i);
 
                     int id = jObject.getInt("id");
                     String question = jObject.getString("question");
