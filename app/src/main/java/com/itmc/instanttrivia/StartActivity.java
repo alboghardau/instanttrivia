@@ -836,8 +836,10 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             try {
                 JSONObject jArray = new JSONObject(json);
                 JSONArray jQuestions = jArray.getJSONArray("questions");
+                JSONArray jDeleted = jArray.getJSONArray("deleted");
                 ArrayList<Integer> arrayList = db.readAllIds();
 
+                //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
 
                     JSONObject jObject = jQuestions.getJSONObject(i);
@@ -851,11 +853,18 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     long time_stamp = jObject.getLong("time_stamp");
 
                     db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
+                }
 
-                    Log.e("SYNC", question+"/"+answer);
+                //LOOP FOR QUESTIONS DELETE
+                for(int i=0; i < jDeleted.length(); i++){
 
-                } // End Loop
+                    JSONObject jObject = jDeleted.getJSONObject(i);
 
+                    int id = jObject.getInt("id");
+                    long time_stamp = jObject.getLong("time_stamp");
+
+                    db.deleteFromQuest(id);
+                }
 
             } catch (JSONException e) {
                 Log.e("JSONException", "Error: " + e.toString());

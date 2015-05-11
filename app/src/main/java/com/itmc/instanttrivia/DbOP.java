@@ -204,18 +204,28 @@ public class DbOP {
 
     //READ HIGHEST TIMESTAMP
     public long readLatestTimeStam(){
-        long timeStamp;
+        long timeStamp1, timeStamp2;
         Cursor cursor = db.rawQuery("SELECT time_stamp FROM quest ORDER BY time_stamp DESC LIMIT 1", null);
         cursor.moveToFirst();
-        timeStamp = cursor.getLong(0);
-        Log.e("SYNC SEND", "T/S " + cursor.getLong(cursor.getColumnIndex("time_stamp")));
+        timeStamp1 = cursor.getLong(0);
+
+        cursor = db.rawQuery("SELECT time_stamp FROM question_deleted ORDER BY time_stamp DESC LIMIT 1", null);
+        cursor.moveToFirst();
+        timeStamp2 = cursor.getLong(0);
         cursor.close();
 
-        return timeStamp;
+        Log.e("SYNC SEND", "T/S " + timeStamp1 + "/" + timeStamp2);
+
+        if(timeStamp1>timeStamp2){
+            return timeStamp1;
+        }else {
+            return timeStamp2;
+        }
     }
 
     public void deleteFromQuest(int id){
-
+        db.delete("quest", "id="+id, null);
+        Log.e("SYNC", "Deleted: "+id);
     }
 
     //TEST PURPOSE ONLY READS A QUESTION
