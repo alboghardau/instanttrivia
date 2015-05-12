@@ -343,7 +343,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         try{
             if(isNetworkAvailable() && db.db_ver()>=44) {
-                new update_database().execute(db.readLatestTimeStam() + "");
+                new update_database().execute(db.readTimeStamp() + "");
             }
         }catch (Exception e){
 
@@ -838,6 +838,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 JSONArray jQuestions = jArray.getJSONArray("questions");
                 JSONArray jDeleted = jArray.getJSONArray("deleted");
                 ArrayList<Integer> arrayList = db.readAllIds();
+                long timeStamp = db.readTimeStamp();
 
                 //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
@@ -852,6 +853,9 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     int diff = jObject.getInt("diff");
                     long time_stamp = jObject.getLong("time_stamp");
 
+                    //UPDATE TIME STAMP
+                    if (timeStamp < time_stamp) timeStamp = time_stamp;
+
                     db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
                 }
 
@@ -863,8 +867,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     int id = jObject.getInt("id");
                     long time_stamp = jObject.getLong("time_stamp");
 
+                    //UPDATE TIME STAMP
+                    if (timeStamp < time_stamp) timeStamp = time_stamp;
+
                     db.deleteFromQuest(id);
                 }
+
+                db.updateTimeStamp(timeStamp);
 
             } catch (JSONException e) {
                 Log.e("JSONException", "Error: " + e.toString());

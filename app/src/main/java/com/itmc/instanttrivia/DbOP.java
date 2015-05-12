@@ -14,7 +14,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 44; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 45; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
     private int max_in_category = 1;
 
     ArrayList<Integer> seen = new ArrayList<>();
@@ -200,6 +200,23 @@ public class DbOP {
         }
         cursor.close();
         return arrayList;
+    }
+
+    public void updateTimeStamp(long timeStamp){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("time_stamp", timeStamp);
+        db.update("time_stamp",contentValues,null,null);
+    }
+
+    public long readTimeStamp(){
+        long timeStamp;
+        Cursor cursor = db.rawQuery("SELECT time_stamp FROM time_stamp", null);
+        cursor.moveToFirst();
+        timeStamp = cursor.getLong(0);
+        cursor.close();
+        Log.e("SYNC", timeStamp+"");
+
+        return timeStamp;
     }
 
     //READ HIGHEST TIMESTAMP
