@@ -200,22 +200,27 @@ public class Options extends Activity {
             case "Red":
                 opt_color_header.setTextColor(getResources().getColor(R.color.red_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.red_700));
+                opt_send_stat.setTextColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
                 opt_color_header.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.deep_purple_700));
+                opt_send_stat.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 break;
             case "Blue":
                 opt_color_header.setTextColor(getResources().getColor(R.color.blue_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.blue_700));
+                opt_send_stat.setTextColor(getResources().getColor(R.color.blue_700));
                 break;
             case "LGreen":
                 opt_color_header.setTextColor(getResources().getColor(R.color.light_green_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.light_green_700));
+                opt_send_stat.setTextColor(getResources().getColor(R.color.light_green_700));
                 break;
             case "Orange":
                 opt_color_header.setTextColor(getResources().getColor(R.color.orange_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.orange_700));
+                opt_send_stat.setTextColor(getResources().getColor(R.color.orange_700));
                 break;
         }
     }

@@ -767,19 +767,18 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         InputStream inputStream;
         String json;
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
             progressDialog = new ProgressDialog(StartActivity.this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setTitle("Updating database!");
             progressDialog.setMessage("Please wait.");
             progressDialog.setCancelable(false);
-            progressDialog.setIndeterminate(true);
+            progressDialog.setProgress(0);
             progressDialog.show();
         }
-
 
         @Override
         protected Void doInBackground(String... params) {
@@ -840,6 +839,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 ArrayList<Integer> arrayList = db.readAllIds();
                 long timeStamp = db.readTimeStamp();
 
+                progressDialog.setMax(jQuestions.length()+jDeleted.length());
+
                 //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
 
@@ -857,6 +858,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     if (timeStamp < time_stamp) timeStamp = time_stamp;
 
                     db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
+                    progressDialog.incrementProgressBy(1);
                 }
 
                 //LOOP FOR QUESTIONS DELETE
@@ -871,6 +873,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     if (timeStamp < time_stamp) timeStamp = time_stamp;
 
                     db.deleteFromQuest(id);
+                    progressDialog.incrementProgressBy(1);
                 }
 
                 db.updateTimeStamp(timeStamp);
