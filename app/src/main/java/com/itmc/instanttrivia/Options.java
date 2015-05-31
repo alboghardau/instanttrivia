@@ -21,10 +21,10 @@ public class Options extends Activity {
 
     RadioButton radio_red, radio_blue, radio_purple, radio_lgreen, radio_orange;
     RadioButton opt_radio_easy, opt_radio_medium, opt_radio_hard, opt_radio_random;
-    TextView opt_color_header, opt_question_diff, opt_send_stat;
+    TextView opt_color_header, opt_question_diff, opt_send_stat, opt_db_update;
     TextView opt_text_easy, opt_text_med, opt_text_hard, opt_text_random, opt_send_description;
     RelativeLayout opt_rel_easy, opt_rel_medium, opt_rel_hard, opt_rel_random;
-    Switch switch_stats;
+    Switch switch_stats, switch_db_update, switch_db_wifi;
 
     Typeface font;
 
@@ -68,6 +68,7 @@ public class Options extends Activity {
         opt_text_random = (TextView) findViewById(R.id.opt_text_random);
         opt_send_stat = (TextView) findViewById(R.id.opt_send_stat);
         opt_send_description = (TextView) findViewById(R.id.opt_send_description);
+        opt_db_update = (TextView) findViewById(R.id.opt_db_update);
 
         opt_rel_easy = (RelativeLayout) findViewById(R.id.opt_rel_easy);
         opt_rel_medium = (RelativeLayout) findViewById(R.id.opt_rel_medium);
@@ -82,6 +83,23 @@ public class Options extends Activity {
                 statistics_switch();
             }
         });
+        switch_db_update = (Switch) findViewById(R.id.switch_db_update);
+        switch_db_update.setChecked(settings.getBoolean("update_db", true));
+        switch_db_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                update_db_switch();
+            }
+        });
+        switch_db_wifi = (Switch) findViewById(R.id.switch_db_wifi);
+        switch_db_wifi.setChecked(settings.getBoolean("uppdate_wifi", true));
+        switch_db_wifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                update_db_wifi();
+            }
+        });
+
 
         //set fonts
         opt_color_header.setTypeface(font);
@@ -92,6 +110,7 @@ public class Options extends Activity {
         opt_text_random.setTypeface(font);
         opt_send_stat.setTypeface(font);
         opt_send_description.setTypeface(font);
+        opt_db_update.setTypeface(font);
 
         radio_check(settings.getString("Color_Theme", "Purple"));
         diff_check(settings.getInt("question_diff", 5));
@@ -201,27 +220,60 @@ public class Options extends Activity {
                 opt_color_header.setTextColor(getResources().getColor(R.color.red_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.red_700));
                 opt_send_stat.setTextColor(getResources().getColor(R.color.red_700));
+                opt_db_update.setTextColor(getResources().getColor(R.color.red_700));
                 break;
             case "Purple":
                 opt_color_header.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 opt_send_stat.setTextColor(getResources().getColor(R.color.deep_purple_700));
+                opt_db_update.setTextColor(getResources().getColor(R.color.deep_purple_700));
                 break;
             case "Blue":
                 opt_color_header.setTextColor(getResources().getColor(R.color.blue_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.blue_700));
                 opt_send_stat.setTextColor(getResources().getColor(R.color.blue_700));
+                opt_db_update.setTextColor(getResources().getColor(R.color.blue_700));
                 break;
             case "LGreen":
                 opt_color_header.setTextColor(getResources().getColor(R.color.light_green_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.light_green_700));
                 opt_send_stat.setTextColor(getResources().getColor(R.color.light_green_700));
+                opt_db_update.setTextColor(getResources().getColor(R.color.light_green_700));
                 break;
             case "Orange":
                 opt_color_header.setTextColor(getResources().getColor(R.color.orange_700));
                 opt_question_diff.setTextColor(getResources().getColor(R.color.orange_700));
                 opt_send_stat.setTextColor(getResources().getColor(R.color.orange_700));
+                opt_db_update.setTextColor(getResources().getColor(R.color.orange_700));
                 break;
+        }
+    }
+
+    private void update_db_switch(){
+        boolean updateEnabler = settings.getBoolean("update_db", true);
+        SharedPreferences.Editor editor = settings.edit();
+        if(updateEnabler){
+            editor.putBoolean("update_db", false);
+            editor.apply();
+            switch_db_update.setChecked(false);
+        }else {
+            editor.putBoolean("update_db", true);
+            editor.apply();
+            switch_db_update.setChecked(true);
+        }
+    }
+
+    private void update_db_wifi(){
+        boolean wifiEnabler = settings.getBoolean("update_wifi", true);
+        SharedPreferences.Editor editor = settings.edit();
+        if(wifiEnabler){
+            editor.putBoolean("update_wifi", false);
+            editor.apply();
+            switch_db_wifi.setChecked(false);
+        }else{
+            editor.putBoolean("update_wifi", true);
+            editor.apply();
+            switch_db_wifi.setChecked(true);
         }
     }
 
@@ -323,6 +375,8 @@ public class Options extends Activity {
                 radio_color_reset();
                 radio_purple.setChecked(true);
                 break;
+
+            //ORANGE BUTTON
             case R.id.linear_opt_orange:
                 update_options_color("Orange");
                 radio_color_reset();

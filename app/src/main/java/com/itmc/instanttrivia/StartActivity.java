@@ -21,11 +21,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -341,15 +343,23 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //onGameFirstRun will initialize the difficulty
         initialize_question_diff();
 
+        //DATABASEUPDATE BASED ON SETTINGS
         try{
-            if(isNetworkAvailable() && db.db_ver()>=44) {
-                new update_database().execute(db.readTimeStamp() + "");
+            if(isNetworkAvailable() && db.db_ver()>=44 && settings.getBoolean("update_db",true)) {
+                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (settings.getBoolean("update_wifi",true)) {
+                    if(mWifi.isConnected()){
+                        new update_database().execute(db.readTimeStamp() + "");
+                    }
+                }else{
+                    new update_database().execute(db.readTimeStamp() + "");
+                }
             }
         }catch (Exception e){
 
         }
-
-
     }
 
     //CHECK IF APP IS INSTALLED
@@ -771,20 +781,32 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(StartActivity.this);
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+                progressDialog = new ProgressDialog(StartActivity.this);
+            }else{
+                progressDialog = new ProgressDialog(StartActivity.this, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+            }
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progressDialog.setTitle("Updating database!");
             progressDialog.setMessage("Please wait.");
             progressDialog.setCancelable(false);
-            progressDialog.setProgress(0);
+            progressDialog.setMax(1);
+            progressDialog.setProgress(1);
+
+
+
             progressDialog.show();
+//            TextView pd_msg = (TextView) progressDialog.findViewById(android.R.id.message);
+//            pd_msg.setTextColor(getResources().getColor(R.color.grey_900));
+//            TextView pd_no = (TextView) progressDialog.findViewById(android.R.id.);
         }
 
         @Override
         protected Void doInBackground(String... params) {
             try {
                 json_response(params[0]);
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -839,7 +861,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 ArrayList<Integer> arrayList = db.readAllIds();
                 long timeStamp = db.readTimeStamp();
 
-                progressDialog.setMax(jQuestions.length()+jDeleted.length());
+                progressDialog.setMax(jQuestions.length()+jDeleted.length()+1);
+                progressDialog.setProgress(1);
 
                 //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
