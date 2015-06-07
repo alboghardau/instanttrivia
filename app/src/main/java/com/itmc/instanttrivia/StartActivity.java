@@ -781,7 +781,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         protected void onPreExecute() {
             super.onPreExecute();
 
-
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
                 progressDialog = new ProgressDialog(StartActivity.this);
             }else{
@@ -793,13 +792,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             progressDialog.setCancelable(false);
             progressDialog.setMax(1);
             progressDialog.setProgress(1);
-
-
-
             progressDialog.show();
-//            TextView pd_msg = (TextView) progressDialog.findViewById(android.R.id.message);
-//            pd_msg.setTextColor(getResources().getColor(R.color.grey_900));
-//            TextView pd_no = (TextView) progressDialog.findViewById(android.R.id.);
         }
 
         @Override
@@ -863,6 +856,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
                 progressDialog.setMax(jQuestions.length()+jDeleted.length()+1);
                 progressDialog.setProgress(1);
+
 
                 //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
