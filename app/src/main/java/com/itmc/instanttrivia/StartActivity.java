@@ -1,7 +1,6 @@
 package com.itmc.instanttrivia;
 
 import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -773,26 +772,13 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     //UPDATE QUESTIONS
     public class update_database extends AsyncTask<String, Integer, Void> {
 
-        ProgressDialog progressDialog;
         InputStream inputStream;
         String json;
+        int inserted = 0;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
-                progressDialog = new ProgressDialog(StartActivity.this);
-            }else{
-                progressDialog = new ProgressDialog(StartActivity.this, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
-            }
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setTitle("Updating database!");
-            progressDialog.setMessage("Please wait.");
-            progressDialog.setCancelable(false);
-            progressDialog.setMax(1);
-            progressDialog.setProgress(1);
-            progressDialog.show();
         }
 
         @Override
@@ -808,9 +794,17 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         @Override
         protected void onPostExecute(Void v) {
-            progressDialog.dismiss();
-            Toast ta = Toast.makeText(StartActivity.this, "Database Updated!", Toast.LENGTH_LONG);
-            ta.show();
+            if(inserted == 1){
+                Toast ta = Toast.makeText(StartActivity.this, "Database Updated! "+inserted+" new question.", Toast.LENGTH_LONG);
+                ta.show();
+            }
+            if(inserted > 1){
+                Toast ta = Toast.makeText(StartActivity.this, "Database Updated! "+inserted+" new questions.", Toast.LENGTH_LONG);
+                ta.show();
+            }else{
+                Toast ta = Toast.makeText(StartActivity.this, "No database updates!", Toast.LENGTH_LONG);
+                ta.show();
+            }
         }
 
         //RECEIVE JSON FROM SERVER
@@ -854,9 +848,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                 ArrayList<Integer> arrayList = db.readAllIds();
                 long timeStamp = db.readTimeStamp();
 
-                progressDialog.setMax(jQuestions.length()+jDeleted.length()+1);
-                progressDialog.setProgress(1);
-
+                inserted = jQuestions.length();
 
                 //LOOP FOR QUESTIONS UPDATE / INSERT
                 for(int i=0; i < jQuestions.length(); i++) {
@@ -874,8 +866,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     //UPDATE TIME STAMP
                     if (timeStamp < time_stamp) timeStamp = time_stamp;
 
-                    db.updateQuestionFromJSON(id,question,answer,cat_id,cat_name,diff,time_stamp,arrayList);
-                    progressDialog.incrementProgressBy(1);
+                    db.updateQuestionFromJSON(id, question, answer, cat_id, cat_name, diff, time_stamp, arrayList);
+
                 }
 
                 //LOOP FOR QUESTIONS DELETE
@@ -890,7 +882,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
                     if (timeStamp < time_stamp) timeStamp = time_stamp;
 
                     db.deleteFromQuest(id);
-                    progressDialog.incrementProgressBy(1);
+
                 }
 
                 db.updateTimeStamp(timeStamp);
