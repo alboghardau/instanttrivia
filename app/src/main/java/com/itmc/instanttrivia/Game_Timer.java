@@ -49,6 +49,9 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -159,6 +162,10 @@ public class Game_Timer extends Activity{
     private DbOP db;
 
     public GoogleApiClient mGoogleApiClient;
+
+    public static GoogleAnalytics analytics;
+    public static Tracker tracker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,10 +298,19 @@ public class Game_Timer extends Activity{
         image_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    helper_time_used++;
-                    hints_extra_time();
+                helper_time_used++;
+                hints_extra_time();
             }
         });
+
+        //GOOGLE ANALYTICS INITIALIZE
+        analytics = GoogleAnalytics.getInstance(this);
+        analytics.setLocalDispatchPeriod(1800);
+
+        tracker = analytics.newTracker("UA-60465509-3"); // Replace with actual tracker/property Id
+        tracker.enableExceptionReporting(true);
+        tracker.enableAutoActivityTracking(true);
+        tracker.setScreenName("Questions");
     }
 
     protected void onActivityResult(int requestCode, int resultCode,
@@ -1746,6 +1762,11 @@ public class Game_Timer extends Activity{
         @Override
         protected Double doInBackground(String... params) {
             server_send_ratio(params[0], params[1]);
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Questions")
+                    .setAction("Played")
+                    .setLabel("submit")
+                    .build());
             return null;
         }
 

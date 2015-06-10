@@ -37,6 +37,9 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
 import com.facebook.share.widget.LikeView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -101,24 +104,35 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     int colorPrimary;
     int colorDark;
 
+    public static GoogleAnalytics analytics;
+    public static Tracker tracker;
 
     @Override
     public void init(Bundle savedInstanceState) {
-
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
 
         db = new DbOP(this);
         db.testnewdb();
 
-
-
-
-
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
+        //GOOGLE ANALYTICS
+        if(isNetworkAvailable()) {
+            analytics = GoogleAnalytics.getInstance(this);
+            analytics.setLocalDispatchPeriod(1800);
 
+            tracker = analytics.newTracker("UA-60465509-3"); // Replace with actual tracker/property Id
+            tracker.enableExceptionReporting(true);
+            tracker.enableAutoActivityTracking(true);
+            tracker.setScreenName("Main Menu");
 
+            tracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("UX")
+                    .setAction("click")
+                    .setLabel("submit")
+                    .build());
+        }
 
         //INITIALIZE FB SDK AND SHARE DIALOG
         FacebookSdk.sdkInitialize(getApplicationContext());
