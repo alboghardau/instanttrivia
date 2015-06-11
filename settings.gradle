@@ -1,2 +1,2 @@
-include ':app', ':BaseGameUtils', ':MaterialNavigationDrawerModule'
+include ':app', ':BaseGameUtils', ':MaterialNavigationDrawerModule', ':TapForTap'
 

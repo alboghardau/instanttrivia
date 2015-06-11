@@ -117,23 +117,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
-        //GOOGLE ANALYTICS
-        if(isNetworkAvailable()) {
-            analytics = GoogleAnalytics.getInstance(this);
-            analytics.setLocalDispatchPeriod(1800);
-
-            tracker = analytics.newTracker("UA-60465509-3"); // Replace with actual tracker/property Id
-            tracker.enableExceptionReporting(true);
-            tracker.enableAutoActivityTracking(true);
-            tracker.setScreenName("Main Menu");
-
-            tracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("UX")
-                    .setAction("click")
-                    .setLabel("submit")
-                    .build());
-        }
-
         //INITIALIZE FB SDK AND SHARE DIALOG
         FacebookSdk.sdkInitialize(getApplicationContext());
         appInviteDialog = new AppInviteDialog(this);
