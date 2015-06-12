@@ -60,7 +60,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.GameHelper;
-import com.tapfortap.Banner;
+
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -89,7 +89,6 @@ public class Game_Timer extends Activity{
     ProgressBar prog_bar, prog_score;
     RadioButton radio_easy, radio_medium, radio_hard, radio_random;
     ImageView image_help, image_time;
-    Banner banner;
 
     int animation_time = 700;
 
@@ -278,10 +277,6 @@ public class Game_Timer extends Activity{
 
         //dispaly animation on start
         animate_start();
-
-        if(isNetworkAvailable()){
-            ads_add();
-        }
 
         btn_nextq.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1214,7 +1209,6 @@ public class Game_Timer extends Activity{
     //TRIGGERS GAME END / SHOWS STATISTICS
     private void game_end(){
         if(game_paused){
-            ads_display(false);             //hide ads
 
             btn_nextq.setEnabled(false);
             lin_inter.animate().setDuration(animation_time).setInterpolator(interpolator).alpha(0).setListener(new AnimatorListenerAdapter() {
@@ -1455,7 +1449,6 @@ public class Game_Timer extends Activity{
         buttons_display("hide");
         hints_help_enable(false);
         hints_time_enable(false);
-        ads_display(true);
         inter_display("show");
         timer.cancel();
         Log.e("FUNCTION","question_pause");
@@ -1465,7 +1458,6 @@ public class Game_Timer extends Activity{
     private void question_resume(){
         question_animate("hide","");
         answer_display("hide");
-        ads_display(false);
 
         lin_inter.setAlpha(1f);
         lin_inter.animate().setStartDelay(0).setDuration(animation_time).setInterpolator(interpolator).alpha(0f).setListener(new AnimatorListenerAdapter() {
@@ -1698,45 +1690,6 @@ public class Game_Timer extends Activity{
         } catch (Exception e) {
             Log.e("Font O Err",e.toString());
         }
-    }
-
-    private void ads_display(boolean state){
-        if(isNetworkAvailable()) {
-            if (state) {
-                banner.setVisibility(View.VISIBLE);
-            } else {
-                banner.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private void ads_add(){
-        banner = Banner.create(this, new Banner.BannerListener() {
-            @Override
-            public void bannerOnReceive(Banner banner) {
-
-            }
-
-            @Override
-            public void bannerOnFail(Banner banner, String s, Throwable throwable) {
-
-            }
-
-            @Override
-            public void bannerOnTap(Banner banner) {
-
-            }
-        });
-        banner.setVisibility(View.GONE);
-        RelativeLayout.LayoutParams para= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        para.addRule(RelativeLayout.CENTER_IN_PARENT);
-        para.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        para.width = dpToPx((int)(DpWidth()));
-        para.height = (int)(para.width/6.4);
-
-        banner.setLayoutParams(para);
-        rel_base.addView(banner);
     }
 
     //CHECK IF APP IS INSTALLED

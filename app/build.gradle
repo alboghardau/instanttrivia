@@ -15,8 +15,8 @@ android {
         applicationId "com.itmc.instanttrivia"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 19
-        versionName "1.4.1"
+        versionCode 20
+        versionName "1.4.2"
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -46,12 +46,10 @@ repositories {
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.google.android.gms:play-services:7.5.0'
     compile project(':BaseGameUtils')
     compile 'com.android.support:support-v4:22.2.0'
-    compile project(":TapForTap")
     compile project(':MaterialNavigationDrawerModule')
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
 
