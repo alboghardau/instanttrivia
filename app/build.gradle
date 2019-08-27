@@ -9,12 +9,12 @@ android {
             storePassword 'B18cW93xg'
         }
     }
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.itmc.instanttrivia"
-        minSdkVersion 16
-        targetSdkVersion 22
+        minSdkVersion 26
+        targetSdkVersion 26
         versionCode 20
         versionName "1.4.2"
         signingConfig signingConfigs.config
@@ -46,11 +46,12 @@ repositories {
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services:7.5.0'
-    compile project(':BaseGameUtils')
-    compile 'com.android.support:support-v4:22.2.0'
-    compile project(':MaterialNavigationDrawerModule')
-    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    implementation 'com.android.support:appcompat-v7:22.2.0'
+    implementation 'com.google.android.gms:play-services:7.5.0'
+    implementation project(':BaseGameUtils')
+    implementation 'com.android.support:support-v4:22.2.0'
+    implementation project(':MaterialNavigationDrawerModule')
+    implementation 'com.facebook.android:facebook-android-sdk:4.0.0'
+
 
 }

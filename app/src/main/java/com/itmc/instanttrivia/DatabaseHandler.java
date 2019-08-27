@@ -54,22 +54,24 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public boolean checkDataBase(){
 
         File dbFile = new File(DB_PATH + DB_NAME);
+        Log.e("DB EXISTS","DB EXISTS");
         return dbFile.exists();
-// this part was causing application to crash :-S         
+
+// this part was causing application to crash :-S
 //            SQLiteDatabase checkDB = null;
-//     
+//
 //            try{
 //            String myPath = DB_PATH + DB_NAME;
 //            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-//                
-//                
-//     
-//            }catch(SQLiteException e){     
-//                //database does't exist yet.     
-//            }     
-//            if(checkDB != null){     
-//                checkDB.close();     
-//            }     
+//
+//
+//
+//            }catch(SQLiteException e){
+//                //database does't exist yet.
+//            }
+//            if(checkDB != null){
+//                checkDB.close();
+//            }
 //            return checkDB != null ? true : false;
     }
 

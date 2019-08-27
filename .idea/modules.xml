@@ -3,11 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BaseGameUtils/BaseGameUtils.iml" filepath="$PROJECT_DIR$/BaseGameUtils/BaseGameUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/InstantTrivia.iml" filepath="$PROJECT_DIR$/InstantTrivia.iml" />
       <module fileurl="file://$PROJECT_DIR$/MaterialNavigationDrawerModule/MaterialNavigationDrawerModule.iml" filepath="$PROJECT_DIR$/MaterialNavigationDrawerModule/MaterialNavigationDrawerModule.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TapForTap/TapForTap.iml" filepath="$PROJECT_DIR$/TapForTap/TapForTap.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/instanttrivia.iml" filepath="$PROJECT_DIR$/instanttrivia.iml" />
-      <module fileurl="file://$PROJECT_DIR$/instanttrivia.iml" filepath="$PROJECT_DIR$/instanttrivia.iml" />
     </modules>
   </component>
 </project>

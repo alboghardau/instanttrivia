@@ -51,14 +51,7 @@ import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,8 +105,8 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
 
-        db = new DbOP(this);
-        db.testnewdb();
+//        db = new DbOP(this);
+//        db.testnewdb();
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
@@ -339,23 +332,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         //onGameFirstRun will initialize the difficulty
         initialize_question_diff();
 
-        //DATABASEUPDATE BASED ON SETTINGS
-        try{
-            if(isNetworkAvailable() && db.db_ver()>=44 && settings.getBoolean("update_db",true)) {
-                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-                if (settings.getBoolean("update_wifi",true)) {
-                    if(mWifi.isConnected()){
-                        new update_database().execute(db.readTimeStamp() + "");
-                    }
-                }else{
-                    new update_database().execute(db.readTimeStamp() + "");
-                }
-            }
-        }catch (Exception e){
-
-        }
     }
 
     //CHECK IF APP IS INSTALLED
@@ -766,129 +743,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         }
     }
 
-    //UPDATE QUESTIONS
-    public class update_database extends AsyncTask<String, Integer, Void> {
 
-        InputStream inputStream;
-        String json;
-        int inserted = 0;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                json_response(params[0]);
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            if(inserted == 1){
-                Toast ta = Toast.makeText(StartActivity.this, "Database Updated! "+inserted+" new question.", Toast.LENGTH_LONG);
-                ta.show();
-            }
-            if(inserted > 1){
-                Toast ta = Toast.makeText(StartActivity.this, "Database Updated! "+inserted+" new questions.", Toast.LENGTH_LONG);
-                ta.show();
-            }else{
-                Toast ta = Toast.makeText(StartActivity.this, "No database updates!", Toast.LENGTH_LONG);
-                ta.show();
-            }
-        }
-
-        //RECEIVE JSON FROM SERVER
-        private void json_response(String time) {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://instanttrivia.website/o_scripts/update_json.php");
-
-            try {
-                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("time", time));
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                HttpResponse response = httpClient.execute(httpPost);
-                HttpEntity httpEntity = response.getEntity();
-                inputStream = httpEntity.getContent();
-
-                try {
-                    BufferedReader bReader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"), 8);
-                    StringBuilder sBuilder = new StringBuilder();
-
-                    String line = null;
-                    while ((line = bReader.readLine()) != null) {
-                        sBuilder.append(line + "\n");
-                    }
-                    inputStream.close();
-                    json = sBuilder.toString();
-
-                } catch (Exception e) {
-                    Log.e("StringBuilding", "Error converting result " + e.toString());
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                Log.e("Server Rat","FAILED");
-            }
-
-            //PARSE JSON RESPONSE DATA
-            try {
-                JSONObject jArray = new JSONObject(json);
-                JSONArray jQuestions = jArray.getJSONArray("questions");
-                JSONArray jDeleted = jArray.getJSONArray("deleted");
-                ArrayList<Integer> arrayList = db.readAllIds();
-                long timeStamp = db.readTimeStamp();
-
-                inserted = jQuestions.length();
-
-                //LOOP FOR QUESTIONS UPDATE / INSERT
-                for(int i=0; i < jQuestions.length(); i++) {
-
-                    JSONObject jObject = jQuestions.getJSONObject(i);
-
-                    int id = jObject.getInt("id");
-                    String question = jObject.getString("question");
-                    String answer = jObject.getString("answer");
-                    int cat_id = jObject.getInt("cat_id");
-                    String cat_name = jObject.getString("cat_name");
-                    int diff = jObject.getInt("diff");
-                    long time_stamp = jObject.getLong("time_stamp");
-
-                    //UPDATE TIME STAMP
-                    if (timeStamp < time_stamp) timeStamp = time_stamp;
-
-                    db.updateQuestionFromJSON(id, question, answer, cat_id, cat_name, diff, time_stamp, arrayList);
-
-                }
-
-                //LOOP FOR QUESTIONS DELETE
-                for(int i=0; i < jDeleted.length(); i++){
-
-                    JSONObject jObject = jDeleted.getJSONObject(i);
-
-                    int id = jObject.getInt("id");
-                    long time_stamp = jObject.getLong("time_stamp");
-
-                    //UPDATE TIME STAMP
-                    if (timeStamp < time_stamp) timeStamp = time_stamp;
-
-                    db.deleteFromQuest(id);
-
-                }
-
-                db.updateTimeStamp(timeStamp);
-
-            } catch (JSONException e) {
-                Log.e("JSONException", "Error: " + e.toString());
-            } // catch (JSONException e)
-        }
-    }
 
     /**
      * Background Async task to load user profile picture from url

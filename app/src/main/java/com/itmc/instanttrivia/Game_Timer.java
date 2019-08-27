@@ -62,13 +62,7 @@ import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.example.games.basegameutils.GameHelper;
 
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1714,7 +1708,6 @@ public class Game_Timer extends Activity{
 
         @Override
         protected Double doInBackground(String... params) {
-            server_send_ratio(params[0], params[1]);
             tracker.send(new HitBuilders.EventBuilder()
                     .setCategory("Questions")
                     .setAction("Played")
@@ -1729,22 +1722,7 @@ public class Game_Timer extends Activity{
             Log.e("Server Rat","SCS");
         }
 
-        private void server_send_ratio(String id, String ratio) {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("http://instanttrivia.website/o_scripts/record_play.php");
 
-            try {
-                List<NameValuePair> nameValuePairs = new ArrayList<>();
-                nameValuePairs.add(new BasicNameValuePair("id", id));
-                nameValuePairs.add(new BasicNameValuePair("ratio", ratio));
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                HttpResponse response = httpClient.execute(httpPost);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                Log.e("Server Rat","FAILED");
-            }
-        }
     }
 
     //overides back buttons pressed not to exit activity

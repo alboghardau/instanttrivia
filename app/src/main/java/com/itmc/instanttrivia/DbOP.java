@@ -27,9 +27,10 @@ public class DbOP {
     public int db_ver(){
         int dbver = 0;
         Cursor cursor;
-        cursor = db.query("version", null, null, null, null, null, null);
+        cursor = db.rawQuery("SELECT number FROM version",null);
         cursor.moveToFirst();
         dbver = cursor.getInt(0);
+
 
         cursor.close();
         return dbver;
@@ -42,7 +43,9 @@ public class DbOP {
         {
             try{
                 mydbhelp.openDataBase();
+                Log.e("DB","DB Opened");
             } catch (SQLException sqle) {
+                Log.e("DB","DB Crash");
                 throw sqle;
             }
 
