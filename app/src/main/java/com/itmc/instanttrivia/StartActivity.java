@@ -49,7 +49,7 @@ import com.google.android.gms.games.Player;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.example.games.basegameutils.BaseGameUtils;
+
 
 
 import org.json.JSONArray;
@@ -68,7 +68,7 @@ import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 import it.neokree.materialnavigationdrawer.elements.listeners.MaterialSectionListener;
 
 
-public class StartActivity extends MaterialNavigationDrawer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class StartActivity extends MaterialNavigationDrawer{
 
     public static SharedPreferences settings;
 
@@ -150,82 +150,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         this.addDivisor();
         this.addSection(section);
 
-        //SECTION ACHIEVEMENTS
-        MaterialSection section_achievements = newSection("Achievements", ContextCompat.getDrawable(this, R.drawable.icon_trophy_award),new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                if(mGoogleApiClient.isConnected()){
-                    startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),1);
-                }else{
-                    display_change_state(false);
-                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!",Toast.LENGTH_SHORT);
-                    t.show();
-                }
-            }
-        });
-        section_achievements.setTypeface(font);
-        section_achievements.useRealColor();
-        section_achievements.setIconColor(getResources().getColor(R.color.orange_500));
-        this.addSection(section_achievements);
-
-        //SECTION LEADERBOARDS
-        MaterialSection section_leader = newSection("Leader-Boards",ContextCompat.getDrawable(this, R.drawable.icon_trophy_leader),new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                if(mGoogleApiClient.isConnected()) {
-                    startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), 1);
-                }else{
-                    display_change_state(false);
-                    Toast t = Toast.makeText(getApplicationContext(),"Internet not connected!",Toast.LENGTH_SHORT);
-                    t.show();
-                }
-            }
-        });
-        section_leader.setTypeface(font);
-        section_leader.useRealColor();
-        section_leader.setIconColor(getResources().getColor(R.color.blue_500));
-        this.addSection(section_leader);
-
-        //SECTION GOOGLE SIGN IN
-        MaterialSection sign_in = newSection("Sign In", ContextCompat.getDrawable(this, R.drawable.icon_gplus_box), new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                if (isNetworkAvailable()) {
-                    // Signin button clicked
-                    mSignInClicked = true;
-                    mGoogleApiClient.connect();
-                    options_signed_in(true);
-                } else {
-                    Toast t = Toast.makeText(getApplicationContext(), "Internet not connected!", Toast.LENGTH_SHORT);
-                    t.show();
-                }
-            }
-        });
-        sign_in.setTypeface(font);
-        sign_in.useRealColor();
-        sign_in.setIconColor(getResources().getColor(R.color.red_500));
-        this.addSection(sign_in);
-
-        //SIGN OUT SECTION
-        MaterialSection section_signout = newSection("Sign Out",ContextCompat.getDrawable(this, R.drawable.icon_logout), new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                // user explicitly signed out, so turn off auto sign in
-                mExplicitSignOut = true;
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    Games.signOut(mGoogleApiClient);
-                    mGoogleApiClient.disconnect();
-                }
-                //registers signed out option
-                options_signed_in(false);
-                //show hide buttons
-                display_change_state(false);
-            }
-        });
-        section_signout.setTypeface(font);
-        section_signout.useRealColor();
-        section_signout.setIconColor(getResources().getColor(R.color.red_500));
-        this.addSection(section_signout);
 
         //DIVIDER // SUB HEADER
         if(appInstalledOrNot("com.facebook.katana")){
@@ -258,81 +182,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
             section_like_page.setIconColor(getResources().getColor(R.color.facebook_blue));
             this.addSection(section_like_page);
         }
-
-        //FACEBOOK INVITE FRIENDS SECTION
-        if(appInstalledOrNot("com.facebook.katana")) {
-            MaterialSection section_invite_friends = newSection("Invite Friends", ContextCompat.getDrawable(this, R.drawable.icon_facebook), new MaterialSectionListener() {
-                @Override
-                public void onClick(MaterialSection section) {
-                    String appLinkUrl, previewImageUrl;
-                    appLinkUrl = "https://fb.me/1561478857410205";
-                    previewImageUrl = "http://s17.postimg.org/t7g1erdf3/new_version_promo.png";
-
-                    if (AppInviteDialog.canShow() && isNetworkAvailable()) {
-                        AppInviteContent content = new AppInviteContent.Builder()
-                                .setApplinkUrl(appLinkUrl)
-                                .setPreviewImageUrl(previewImageUrl)
-                                .build();
-                        appInviteDialog.show(content);
-                    } else {
-                        Toast t = Toast.makeText(getApplicationContext(), "Internet not connected", Toast.LENGTH_SHORT);
-                        t.show();
-                    }
-                }
-            });
-            section_invite_friends.setTypeface(font);
-            section_invite_friends.useRealColor();
-            section_invite_friends.setIconColor(getResources().getColor(R.color.facebook_blue));
-            this.addSection(section_invite_friends);
-        }
-
-        //RATE US SECTION
-        if(!settings.getBoolean("Rated", false)) {
-            this.addDivisor();
-            MaterialSection section_rate_us = newSection("Rate Us! +25 Coins", ContextCompat.getDrawable(this, R.drawable.icon_star), new MaterialSectionListener() {
-                @Override
-                public void onClick(MaterialSection section) {
-                    Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                    try {
-                        startActivity(goToMarket);
-                        settings_coins_update(coins_left() + 25);
-                        settings_rated(true);
-                    } catch (ActivityNotFoundException e) {
-                        Log.e("Rate", e.toString());
-                    }
-                }
-            });
-            section_rate_us.setTypeface(font);
-            section_rate_us.useRealColor();
-            section_rate_us.setIconColor(getResources().getColor(R.color.green_500));
-            this.addSection(section_rate_us);
-        }
-
-        //GOOGLE API INITIALIZE
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).setViewForPopups(null)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES).build();
-
-        if(!isNetworkAvailable()){
-            options_signed_in(false);
-        }
-
-        //CHANGE DISPLAY FOR SIGN ON
-        if(!settings.getBoolean("SIGNED_IN", false)) {
-            display_change_state(false);
-        }else{
-            display_change_state(true);
-        }
-
-        //hide first fragment
-        section_hide("");
-
-        //onGameFirstRun will initialize the difficulty
-        initialize_question_diff();
-
-
     }
 
     //CHECK IF APP IS INSTALLED
@@ -366,114 +215,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         SharedPreferences.Editor edit = settings.edit();
         edit.putBoolean("Rated", set);
         edit.apply();
-    }
-
-    private void get_pic_result(){
-
-        //reads url or player photo
-        Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
-        String personPhotoUrl = p.getIconImageUrl();
-        String name = p.getDisplayName();
-
-        frag.ui_top_scores.setVisibility(View.VISIBLE);
-        //request data from server for total score
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        final ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                //gets player's score from server
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                //test if player has any score
-                if(scoresBuffer != null){
-                    long score = scoresBuffer.getRawScore();
-                    frag.ui_total_trophy.setVisibility(View.VISIBLE);
-                    frag.ui_total_score.setText("" + score);
-                }else{
-                    frag.ui_total_trophy.setVisibility(View.VISIBLE);
-                    frag.ui_total_score.setText("0");
-                }
-            }
-        };
-        pendingResult.setResultCallback(scoreCallback);
-
-        //GET SCORE FROM SERVER - EASY LEVEL
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_easy = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> easy_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                if(scoresBuffer != null){
-                    long score = scoresBuffer.getRawScore();
-                    frag.ui_score_easy.setText("" + score);
-                    highest_score_set(1, (int) score);
-                }else{
-                    frag.ui_score_easy.setText("0");
-                }
-            }
-        };
-        pending_easy.setResultCallback(easy_callback);
-
-        //GET SCORE FROM SERVER - MEDIUM LEVEL
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_medium = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__medium_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> medium_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                if(scoresBuffer != null){
-                    long score = scoresBuffer.getRawScore();
-                    frag.ui_score_med.setText("" + score);
-                    highest_score_set(2, (int) score);
-                }else{
-                    frag.ui_score_med.setText("0");
-                }
-            }
-        };
-        pending_medium.setResultCallback(medium_callback);
-
-        //GET SCORE FROM SERVER - HARD LEVEL
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_hard = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__hard_level),LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> hard_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                if(scoresBuffer != null){
-                    long score = scoresBuffer.getRawScore();
-                    frag.ui_score_hard.setText("" + score);
-                    highest_score_set(3, (int) score);
-                }else{
-                    frag.ui_score_hard.setText("0");
-                }
-            }
-        };
-        pending_hard.setResultCallback(hard_callback);
-
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pending_random = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_time_trial__random), LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> random_callback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                if(scoresBuffer != null){
-                    long score = scoresBuffer.getRawScore();
-                    frag.ui_score_random.setText(""+ score);
-                    highest_score_set(5,(int) score);
-                }else{
-                    frag.ui_score_random.setText("0");
-                }
-            }
-        };
-        pending_random.setResultCallback(random_callback);
-
-        //loads profile picture
-        if(personPhotoUrl != null) {
-            new LoadProfileImage(frag.ui_profile).execute(personPhotoUrl);
-        }else
-        {
-            frag.ui_profile.setImageResource(R.drawable.unknown_profile);
-        }
-
-        //display loged in as textview
-        frag.ui_loged_as.setText("Loged in as " + name);
-        frag.ui_loged_as.setPadding(0,dpToPx(5),0,dpToPx(5));
     }
 
     private static int dpToPx(int dp) {
@@ -589,8 +330,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
         Boolean sign_tester = settings.getBoolean("SIGNED_IN",false);
         Log.e("Signed IN onStart", sign_tester+"");
         if (sign_tester && isNetworkAvailable()) {
-            // auto sign in
-            mGoogleApiClient.connect();
+
             Log.e("Sing in on start","Apelat");
         }
     }
@@ -598,72 +338,7 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
-    }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        display_change_state(true);
-        get_pic_result();           //display picture and stats
-        scores_late_upload();       //uploads saved scores
-    }
-
-    //resolves connection problems
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-        if (mResolvingConnectionFailure) {
-            // already resolving
-            return;
-        }
-
-        // if the sign-in button was clicked or if auto sign-in is enabled,
-        // launch the sign-in flow
-        if (mSignInClicked || mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
-            mSignInClicked = false;
-            mResolvingConnectionFailure = true;
-
-            // Attempt to resolve the connection failure using BaseGameUtils.
-            // The R.string.signin_other_error value should reference a generic
-            // error string in your strings.xml file, such as "There was
-            // an issue with sign-in, please try again later."
-            if (!BaseGameUtils.resolveConnectionFailure(this,
-                    mGoogleApiClient, connectionResult,
-                    RC_SIGN_IN, "Can't Sign In")) {
-                mResolvingConnectionFailure = false;
-            }
-        }
-        // Put code here to display the sign-in button
-        display_change_state(false);
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
-        //HANDLE FB CALLBACKS
-        callbackManager.onActivityResult(requestCode, resultCode, intent);
-
-        //HANDLE GOOGLE LOG IN
-        if (requestCode == RC_SIGN_IN) {
-            mSignInClicked = false;
-            mResolvingConnectionFailure = false;
-            if (resultCode == RESULT_OK) {
-                mGoogleApiClient.connect();
-            } else {
-                // Bring up an error dialog to alert the user that sign-in
-                // failed. The R.string.signin_failure should reference an error
-                // string in your strings.xml file that tells the user they
-                // could not be signed in, such as "Unable to sign in."
-                BaseGameUtils.showActivityResultError(this,
-                        requestCode, resultCode, R.string.connection_problems);
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // Attempt to reconnect
-        mGoogleApiClient.connect();
     }
 
     //GET HIGHEST SCORE
@@ -745,54 +420,6 @@ public class StartActivity extends MaterialNavigationDrawer implements GoogleApi
 
 
 
-    /**
-     * Background Async task to load user profile picture from url
-     * */
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
 
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                //Log.e("Error", e.getMessage());
-//                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-
-            bmImage.setImageBitmap(getCroppedBitmap(result));
-        }
-    }
-
-    public Bitmap getCroppedBitmap(Bitmap bitmap) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
-        //return _bmp;
-        return output;
-    }
 }

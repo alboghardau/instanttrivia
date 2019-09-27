@@ -59,7 +59,7 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.games.leaderboard.Leaderboards;
-import com.google.example.games.basegameutils.GameHelper;
+
 
 
 
@@ -206,26 +206,6 @@ public class Game_Timer extends Activity{
 
         overrideFonts(this,rel_base);
 
-        //FACEBOOK INITIALIZE
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
-
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e("FB SHARE", "CANCEL");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Log.e("FB SHARE", "SHARING ERROR! - " + e.getMessage());
-            }
-        });
 
         //set interpolator
         interpolator = new DecelerateInterpolator(1);
@@ -248,19 +228,6 @@ public class Game_Timer extends Activity{
         db = new DbOP(this);
         db.startdb();
 
-        //temporary fix passing of mGoogleApiClient form start activity to this
-        Log.e("SignIn Status b4", settings.getBoolean("SIGNED_IN",false)+"");
-        if(settings.getBoolean("SIGNED_IN", false)){
-            GameHelper gameHelper = new GameHelper(this,GameHelper.CLIENT_GAMES);
-            gameHelper.setup(new GameHelper.GameHelperListener() {
-                @Override public void onSignInFailed() {}
-                @Override public void onSignInSucceeded() {}
-            });
-            mGoogleApiClient = gameHelper.getApiClient();
-            mGoogleApiClient.connect();
-        }else{
-            mGoogleApiClient = null;
-        }
 
         //sets difficulty
         difficulty_set(settings.getInt("question_diff",5));

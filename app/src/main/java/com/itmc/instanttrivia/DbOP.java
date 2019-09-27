@@ -147,6 +147,7 @@ public class DbOP {
 
         Cursor cursor = db.rawQuery("SELECT * FROM quest "+where+" ORDER BY played,RANDOM() LIMIT 10", null);
 
+
         cursor.moveToFirst();
 
         while(!cursor.isAfterLast()){
@@ -263,7 +264,7 @@ public class DbOP {
     //READS CATEGORIES WITH A MINIMUM NO O QUESTIONS/EACH DIFFICULTY
     public ArrayList<String> read_cats(int diff)
     {
-        Cursor cursor = db.rawQuery("SELECT * FROM cats", null);
+        Cursor cursor = db.query("cats", null,null, null,null,null,null);
         cursor.moveToFirst();
 
         ArrayList<String> cat = new ArrayList<>();

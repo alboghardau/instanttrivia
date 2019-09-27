@@ -8,7 +8,7 @@
     <application></application>
 
     <uses-sdk
-        android:minSdkVersion="10"
+
         android:targetSdkVersion="21"
         tools:overrideLibrary="com.balysv.materialripple">
     </uses-sdk>
