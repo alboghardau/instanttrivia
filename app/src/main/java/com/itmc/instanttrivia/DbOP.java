@@ -14,7 +14,7 @@ public class DbOP {
 
     public DatabaseHandler mydbhelp = null;
     public SQLiteDatabase db;
-    public int db_version = 48; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
+    public int db_version = 49; //TODO UPDATE VARIABLE WHEN DATABASE IS UPDATED. VARIABLE HAS TO BE IDENTICAL AS THE ONE ON DATABASE TABLE version.
     private int max_in_category = 1;
 
     ArrayList<Integer> seen = new ArrayList<>();
@@ -31,7 +31,7 @@ public class DbOP {
         cursor.moveToFirst();
         dbver = cursor.getInt(0);
 
-
+        Log.v("DB VERSION",String.valueOf(dbver));
         cursor.close();
         return dbver;
     }
