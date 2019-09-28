@@ -21,6 +21,27 @@ public class DbOP {
 
     public DbOP(Context context){
         mydbhelp = new DatabaseHandler(context);
+
+    }
+
+    public void startDatabase(){
+        try{
+            mydbhelp.createDataBase();
+            
+        }catch(IOException ioe) {
+            throw new Error("Unable to create db");
+        }
+
+        try{
+            mydbhelp.openDataBase();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            throw sqle;
+        }
+
+        db = mydbhelp.getReadableDatabase();
+
     }
 
     //return database version from table version
@@ -31,7 +52,7 @@ public class DbOP {
         cursor.moveToFirst();
         dbver = cursor.getInt(0);
 
-        Log.v("DB VERSION",String.valueOf(dbver));
+        Log.e("DB VERSION",String.valueOf(dbver));
         cursor.close();
         return dbver;
     }
@@ -50,6 +71,7 @@ public class DbOP {
             }
 
             db = mydbhelp.getReadableDatabase();
+
 
             int i = db_ver();
             Log.e("Database Version", i+"");
@@ -93,6 +115,8 @@ public class DbOP {
         }
 
         db = mydbhelp.getReadableDatabase();
+
+
     }
 
     //returns question
@@ -146,7 +170,6 @@ public class DbOP {
         if(difficulty == 5 && category == 1) where = "";
 
         Cursor cursor = db.rawQuery("SELECT * FROM quest "+where+" ORDER BY played,RANDOM() LIMIT 10", null);
-
 
         cursor.moveToFirst();
 

@@ -43,22 +43,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
+
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
-import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-import com.google.android.gms.games.leaderboard.Leaderboards;
+
+
 
 
 
@@ -154,11 +143,6 @@ public class Game_Timer extends Activity{
 
     private DbOP db;
 
-    public GoogleApiClient mGoogleApiClient;
-
-    public static GoogleAnalytics analytics;
-    public static Tracker tracker;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,8 +210,7 @@ public class Game_Timer extends Activity{
 
         //start database operator
         db = new DbOP(this);
-        db.startdb();
-
+        db.testnewdb();
 
         //sets difficulty
         difficulty_set(settings.getInt("question_diff",5));
@@ -259,14 +242,6 @@ public class Game_Timer extends Activity{
             }
         });
 
-        //GOOGLE ANALYTICS INITIALIZE
-        analytics = GoogleAnalytics.getInstance(this);
-        analytics.setLocalDispatchPeriod(1800);
-
-        tracker = analytics.newTracker("UA-60465509-3"); // Replace with actual tracker/property Id
-        tracker.enableExceptionReporting(true);
-        tracker.enableAutoActivityTracking(true);
-        tracker.setScreenName("Questions");
     }
 
     protected void onActivityResult(int requestCode, int resultCode,
@@ -767,23 +742,7 @@ public class Game_Timer extends Activity{
             });
         }
 
-        //UPDATE SCORES, ACUM CU TRIPLA PROTECTIE, if not SING IN setting is not true will not test, preventing NULL exception
-        //send scores to google server
-        if(mGoogleApiClient != null){
-            Log.e("API ACTION:", "Api client is initialized");
-            if(mGoogleApiClient.isConnected() && difficulty_setting != 0 && question_category!=0) {
-                Log.e("API ACTION:", "Uploading Scores!");
-                //update leaderboards total score
-                score_total_update();
-                //update achievements
-                achievements_questions_update();
-            }else{
-                Log.e("API ACTION:", "Can not upload scores, not connected");
-            }
-        }else{
-            score_save_later(); //saves scores in settings for later upload
-            Log.e("API ACTION:", "Scores saved for later upload");
-        }
+
 
         //FINAL SCORE
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
@@ -838,123 +797,6 @@ public class Game_Timer extends Activity{
         }).start();
     }
 
-    private void achievements_questions_update(){
-        if(question_correct > 0) { //increment must be greater than 0
-            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_newbie), question_correct);
-            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_begginer), question_correct);
-            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_enthusiast), question_correct);
-            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_master), question_correct);
-            Games.Achievements.increment(mGoogleApiClient, getString(R.string.achievement_trivia_hero), question_correct);
-        }
-
-        if(game_difficulty == 1 && score > 400) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_expert));
-        if(game_difficulty == 2 && score > 800) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_expert));
-        if(game_difficulty == 3 && score > 1200) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_expert));
-
-        if(game_difficulty == 1 && score > 430) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_easy_level_freak));
-        if(game_difficulty == 2 && score > 860) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_medium_level_freak));
-        if(game_difficulty == 3 && score > 1290) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_hard_level_freak));
-
-        if(game_difficulty == 1 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
-        if(game_difficulty == 2 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_noob_fairy));
-        if(game_difficulty == 3 && question_wrong == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_dont_give_up));
-
-        if(game_difficulty == 1 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__easy));
-        if(game_difficulty == 2 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__medium));
-        if(game_difficulty == 3 && total_buttons_wrong == 0 && question_correct == 10) Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_perfect_play__hard));
-    }
-
-    private void achievements_categories(){
-        //GEORGRAPHY ID 2
-        if(category.equals("Geography")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_first_trip),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_beyond_borders),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_top_of_the_hill),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_cliff_jumper),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_around_the_world),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_climbing_everest),1);
-        }
-        //HISTORY ID 3
-        if(category.equals("History")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_peasant),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_kings_servant),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_knight_in_armor),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_master_of_the_castle),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_ancient_pharaoh),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_worlds_conquerer),1);
-        }
-        //BILOGY ID 7
-        if(category.equals("Biology")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_buzz_buzz),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_caterpillar_in_the_rain),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_survival_instinct),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_garden_of_life),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_the_beauty_of_evolution),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_king_of_the_jungle),1);
-        }
-        //SCIENTE AND TECH ID 11
-        if(category.equals("Science & Tech")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_inventor_of_the_wheel),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_cant_live_without_wifi),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_dont_blow_the_lab),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_chain_reaction),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_mad_scientist),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_time_travel_discovered),1);
-        }
-        //CULTURE ID 13
-        if(category.equals("Culture")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_know_yourself),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_worlds_citizen),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_mythical_beast),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_easy_to_adapt),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_true_humanity),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_pure_knowledge),1);
-        }
-        //ARTS ID 15
-        if(category.equals("Arts")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_first_sketch),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_virtuoso),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_melody_maestro),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_classical_artist),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_own_art_gallery),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_best_seller),1);
-        }
-        //ENTERTAINMENT ID 15
-        if(category.equals("Entertainment")){
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_enjoy_the_show),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_singing_in_the_rain),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_olympics_winner),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_hollywood_star),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_oscar_winner),1);
-            Games.Achievements.increment(mGoogleApiClient,getString(R.string.achievement_hal_of_fame),1);
-        }
-    }
-
-    //updates total score leadeboard
-    private void score_total_update(){
-        //update difficulty score
-        Games.Leaderboards.submitScore(mGoogleApiClient, getString(leaderboard_name), score);
-
-        //update total score
-        //request data from server
-        PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL);
-        ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-            @Override
-            public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                //gets player's score from server
-                LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                long score_local = 0;
-                //test if player has any score
-                if(scoresBuffer != null){
-                    score_local = scoresBuffer.getRawScore();
-                    Log.e("Retrieved Total Score\n",score_local+"");
-                }
-                Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), score+score_local);
-                Log.e("Total Score Uploaded", "TRUE");
-            }
-        };
-        pendingResult.setResultCallback(scoreCallback);
-    }
 
     //will save the scores for future upload
     private void score_save_later(){
@@ -1091,15 +933,8 @@ public class Game_Timer extends Activity{
         val.start();
         score = score + bonus;
 
-        //SEND TO SERVER THE RATIO
-        if(isNetworkAvailable() && settings.getBoolean("stat_send",true)){
-            double q_ratio = (double) bonus/score_per_question;
-            new send_async_ratio().execute(question_id, q_ratio+"");
-        }
-        //SEND ACHIEVEMENT FOR CATEGORIES
-        if(mGoogleApiClient != null && isNetworkAvailable()){
-            achievements_categories();
-        }
+
+
     }
 
     private void answer_display_refresh(ArrayList<Character> answer, Character pressed) {
@@ -1381,9 +1216,7 @@ public class Game_Timer extends Activity{
         if(pressed_wrong == max_wrong) {
             //reset pressed variables
             question_wrong++;
-            if(isNetworkAvailable() && settings.getBoolean("stat_send",true)) {
-                new send_async_ratio().execute(question_id, "0.0");
-            }
+
         }
 
         if(answer_check_complete()){
@@ -1598,10 +1431,7 @@ public class Game_Timer extends Activity{
                     game_end();
                 }else {
                     question_pause();
-                    //SEND RATIO TO SERVER
-                    if(isNetworkAvailable() && settings.getBoolean("stat_send", true)) {
-                        new send_async_ratio().execute(question_id, "0.0");
-                    }
+
                 }
             }
         };
@@ -1670,27 +1500,7 @@ public class Game_Timer extends Activity{
         return app_installed ;
     }
 
-    //SEND QUESTION RATIO TO SERVER
-    public class send_async_ratio extends AsyncTask<String, Integer, Double> {
 
-        @Override
-        protected Double doInBackground(String... params) {
-            tracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Questions")
-                    .setAction("Played")
-                    .setLabel("submit")
-                    .build());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Double aDouble) {
-            super.onPostExecute(aDouble);
-            Log.e("Server Rat","SCS");
-        }
-
-
-    }
 
     //overides back buttons pressed not to exit activity
     @Override

@@ -30,37 +30,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
+
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.AppInviteContent;
+
 import com.facebook.share.widget.AppInviteDialog;
 import com.facebook.share.widget.LikeView;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.games.Games;
-import com.google.android.gms.games.Player;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
-import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-import com.google.android.gms.games.leaderboard.Leaderboards;
 
 
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -76,7 +55,7 @@ public class StartActivity extends MaterialNavigationDrawer{
 
     private DbOP db;
 
-    public GoogleApiClient mGoogleApiClient;
+
 
     //FACEBOOK
     AppInviteDialog appInviteDialog;
@@ -97,43 +76,18 @@ public class StartActivity extends MaterialNavigationDrawer{
     int colorPrimary;
     int colorDark;
 
-    public static GoogleAnalytics analytics;
-    public static Tracker tracker;
-
     @Override
     public void init(Bundle savedInstanceState) {
         settings = getSharedPreferences("InstantOptions", MODE_PRIVATE);
         Theme_Setter();
 
-//        db = new DbOP(this);
-//        db.testnewdb();
+        db = new DbOP(this);
+        db.testnewdb();
+
 
         font = Typeface.createFromAsset(this.getAssets(), "typeface/bubblegum.otf");
 
-        //INITIALIZE FB SDK AND SHARE DIALOG
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        appInviteDialog = new AppInviteDialog(this);
-        callbackManager = CallbackManager.Factory.create();
-        //CALLBACK RESPONSE FOR INVITE FRIENDS
-        appInviteDialog.registerCallback(callbackManager, new FacebookCallback<AppInviteDialog.Result>() {
-            @Override
-            public void onSuccess(AppInviteDialog.Result result) {
-                Log.e("FB CallB","YES");
-                //FB POLICY DOESNT WANT REWARDS FOR ACTIONS EXCEPT LIKE YOUR PAGE
-            }
 
-            @Override
-            public void onCancel() {
-                Log.e("FB CallB","Canceled");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Log.e("FB CallB","Error");
-            }
-        });
-        //LIKE INTERFACE
-        likeView = new LikeView(this);
 
 
         //add home fragment
@@ -353,47 +307,7 @@ public class StartActivity extends MaterialNavigationDrawer{
         }
     }
 
-    //UPDATE SCORES SAVED LATER WHEN CONNECTED
-    private void scores_late_upload(){
-        final SharedPreferences.Editor edit = settings.edit();
-        if(settings.getInt("saved_score_easy", 0) > 0){
-            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__easy_level),settings.getInt("saved_score_easy", 0));
-            edit.putInt("saved_score_easy", 0);
-        }
-        if(settings.getInt("saved_score_medium", 0) > 0){
-            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__medium_level),settings.getInt("saved_score_medium", 0));
-            edit.putInt("saved_score_medium", 0);
-        }
-        if(settings.getInt("saved_score_hard", 0) > 0){
-            Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_time_trial__hard_level),settings.getInt("saved_score_hard", 0));
-            edit.putInt("saved_score_hard", 0);
-        }
-        if(settings.getInt("saved_total_score", 0) > 0){
-            Log.e("SAVED TOTAL SCORE:", settings.getInt("saved_total_score",0)+"");
-            //update total score
-            //request data from server
-            PendingResult<Leaderboards.LoadPlayerScoreResult> pendingResult = Games.Leaderboards.loadCurrentPlayerLeaderboardScore(mGoogleApiClient, getString(R.string.leaderboard_total_score), LeaderboardVariant.TIME_SPAN_ALL_TIME, LeaderboardVariant.COLLECTION_SOCIAL);
-            ResultCallback<Leaderboards.LoadPlayerScoreResult> scoreCallback = new ResultCallback<Leaderboards.LoadPlayerScoreResult>() {
-                @Override
-                public void onResult(Leaderboards.LoadPlayerScoreResult loadPlayerScoreResult) {
-                    //gets player's score from server
-                    LeaderboardScore scoresBuffer = loadPlayerScoreResult.getScore();
-                    long score_local = 0;
-                    //test if player has any score
-                    if(scoresBuffer != null){
-                        score_local = scoresBuffer.getRawScore();
-                        Log.e("Retrieved Total Score:",score_local+"");
-                    }
-                    Games.Leaderboards.submitScore(mGoogleApiClient,getString(R.string.leaderboard_total_score), settings.getInt("saved_total_score", 0)+score_local);
-                    Log.e("Total Score Uploaded", "TRUE");
-                    edit.putInt("saved_total_score", 0);
-                    edit.commit();
-                }
-            };
-            pendingResult.setResultCallback(scoreCallback);
-        }
-        edit.apply();
-    }
+
 
     @Override
     protected void onResume() {

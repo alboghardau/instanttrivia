@@ -9,13 +9,13 @@ android {
             storePassword 'B18cW93xg'
         }
     }
-    compileSdkVersion 22
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.itmc.instanttrivia"
         minSdkVersion 22
-        targetSdkVersion 22
-        versionCode 20
-        versionName "1.4.2"
+        targetSdkVersion 26
+        versionCode 21
+        versionName "1.4.3"
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -36,6 +36,12 @@ android {
         exclude "META-INF/LICENSE.txt"
         exclude "META-INF/NOTICE.txt"
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 repositories {
@@ -46,7 +52,6 @@ repositories {
 
 dependencies {
     implementation 'com.android.support:appcompat-v7:22.2.0'
-    implementation 'com.google.android.gms:play-services:7.5.0'
     implementation 'com.android.support:support-v4:22.2.0'
     implementation project(':MaterialNavigationDrawerModule')
     implementation 'com.facebook.android:facebook-android-sdk:4.0.0'
