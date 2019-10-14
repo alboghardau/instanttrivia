@@ -244,8 +244,7 @@ public class Game_Timer extends Activity{
 
     }
 
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         //HANDLE FB CALLBACKS
         callbackManager.onActivityResult(requestCode, resultCode, intent);
 
@@ -742,8 +741,6 @@ public class Game_Timer extends Activity{
             });
         }
 
-
-
         //FINAL SCORE
         LinearLayout lin_score = (LinearLayout) findViewById(R.id.linear_finalscore);
         lin_score.setVisibility(View.VISIBLE);
@@ -796,7 +793,6 @@ public class Game_Timer extends Activity{
             }
         }).start();
     }
-
 
     //will save the scores for future upload
     private void score_save_later(){
@@ -1431,7 +1427,6 @@ public class Game_Timer extends Activity{
                     game_end();
                 }else {
                     question_pause();
-
                 }
             }
         };

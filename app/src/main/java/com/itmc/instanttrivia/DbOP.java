@@ -72,7 +72,6 @@ public class DbOP {
 
             db = mydbhelp.getReadableDatabase();
 
-
             int i = db_ver();
             Log.e("Database Version", i+"");
             if(db_version > i)
@@ -113,7 +112,6 @@ public class DbOP {
             sqle.printStackTrace();
             throw sqle;
         }
-
         db = mydbhelp.getReadableDatabase();
 
 
@@ -195,6 +193,7 @@ public class DbOP {
         cursor.close();
     }
 
+    //FUNCTION NOT USED DUE TO LACK OF WEBSITE FOR THE MOMENT
     //UPDATE QUESTION FROM JSON, DOING APPROPIATE ACTION
     public void updateQuestionFromJSON(int id, String question, String answer, int cat_id, String cat_name, int diff, long time_stamp,ArrayList<Integer> arrayList){
 

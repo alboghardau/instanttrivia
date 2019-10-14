@@ -1,6 +1,5 @@
 package com.itmc.instanttrivia;
 
-
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +29,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     public void createDataBase() throws IOException{
-
         boolean dbExist = checkDataBase();
 
         if (!dbExist) {
@@ -112,8 +110,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db){
     }
 
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 
     }
 }

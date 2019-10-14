@@ -12,7 +12,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.itmc.instanttrivia"
-        minSdkVersion 22
+        minSdkVersion 17
         targetSdkVersion 26
         versionCode 21
         versionName "1.4.3"
