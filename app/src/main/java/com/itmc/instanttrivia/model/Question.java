@@ -5,6 +5,8 @@ public class Question {
     int id;
     String question;
     String answer;
+    int categoryId;
+    String categoryName;
 
     public Question(int id, String question, String answer) {
         this.id = id;
@@ -34,5 +36,21 @@ public class Question {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
