@@ -1,4 +1,4 @@
-package com.itmc.instanttrivia.model;
+package com.itmc.instanttrivia.models;
 
 public class Question {
 
