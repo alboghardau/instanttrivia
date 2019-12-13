@@ -11,11 +11,11 @@ android {
             storePassword 'B18cW93xg'
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.itmc.instanttrivia"
-        minSdkVersion 17
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 21
         versionName "1.4.3"
         signingConfig signingConfigs.config
